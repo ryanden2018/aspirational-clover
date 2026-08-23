@@ -1,0 +1,6 @@
+@aspirational_clover.Server_HostAddress = http://localhost:5250
+
+GET {{aspirational_clover.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
