@@ -1,8 +1,0 @@
-<Solution>
-  <Project Path="aspirational-clover.AppHost/aspirational-clover.AppHost.csproj" />
-  <Project Path="aspirational-clover.client/aspirational-clover.client.esproj">
-    <Build />
-  </Project>
-  <Project Path="aspirational-clover.Server/aspirational-clover.Server.csproj" />
-  <Project Path="aspirational-clover.ServiceDefaults/aspirational-clover.ServiceDefaults.csproj" />
-</Solution>
