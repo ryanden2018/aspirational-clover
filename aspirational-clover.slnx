@@ -5,4 +5,5 @@
   </Project>
   <Project Path="aspirational-clover.Server/aspirational-clover.Server.csproj" />
   <Project Path="aspirational-clover.ServiceDefaults/aspirational-clover.ServiceDefaults.csproj" />
+  <Project Path="aspirational-clover.Tests/aspirational-clover.Tests.csproj" />
 </Solution>
