@@ -28,24 +28,24 @@ public static class WebApplicationExtensions
         var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
 
         // Idempotent check
-        if (db.WeatherForecasts.Any())
+        if (db.Documents.Any())
         {
             return;
         }
 
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        //var summaries = new[]
+        //{
+        //    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        //};
 
-        var items = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+        //var items = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        //{
+        //    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+        //    TemperatureC = Random.Shared.Next(-20, 55),
+        //    Summary = summaries[Random.Shared.Next(summaries.Length)]
+        //}).ToArray();
 
-        db.WeatherForecasts.AddRange(items);
-        db.SaveChanges();
+        //db.WeatherForecasts.AddRange(items);
+        //db.SaveChanges();
     }
 }

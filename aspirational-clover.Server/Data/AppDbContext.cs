@@ -7,6 +7,10 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<WeatherForecast> WeatherForecasts => Set<WeatherForecast>();
+    public DbSet<Document> Documents => Set<Document>();
+    public DbSet<Layer> Layers => Set<Layer>();
+    public DbSet<Circle> Circles => Set<Circle>();
+    public DbSet<Rectangle> Rectangles => Set<Rectangle>();
+    public DbSet<TextBox> TextBoxes => Set<TextBox>();
 }
 

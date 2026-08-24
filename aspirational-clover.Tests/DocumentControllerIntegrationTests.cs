@@ -9,11 +9,11 @@ using System.Net.Http;
 
 namespace aspirational_clover.Tests;
 
-public class WeatherForecastIntegrationTests : IClassFixture<WebApplicationFactory<aspirational_clover.Server.Program>>
+public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFactory<aspirational_clover.Server.Program>>
 {
     private readonly WebApplicationFactory<aspirational_clover.Server.Program> _factory;
 
-    public WeatherForecastIntegrationTests(WebApplicationFactory<aspirational_clover.Server.Program> factory)
+    public DocumentControllerIntegrationTests(WebApplicationFactory<aspirational_clover.Server.Program> factory)
     {
         _factory = factory;
     }
@@ -23,7 +23,7 @@ public class WeatherForecastIntegrationTests : IClassFixture<WebApplicationFacto
     {
         var client = _factory.CreateClient();
 
-        var res = await client.GetAsync("/WeatherForecast");
+        var res = await client.GetAsync("/Document");
 
         Assert.Equal(HttpStatusCode.OK, res.StatusCode);
 
@@ -46,7 +46,7 @@ public class WeatherForecastIntegrationTests : IClassFixture<WebApplicationFacto
         };
 
         var json = JsonSerializer.Serialize(newItem);
-        var postRes = await client.PostAsync("/WeatherForecast", new StringContent(json, Encoding.UTF8, "application/json"));
+        var postRes = await client.PostAsync("/Document", new StringContent(json, Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.Created, postRes.StatusCode);
 
         var createdBody = await postRes.Content.ReadAsStringAsync();
@@ -54,7 +54,7 @@ public class WeatherForecastIntegrationTests : IClassFixture<WebApplicationFacto
         var id = createdDoc.RootElement.GetProperty("id").GetInt32();
 
         // GET by id
-        var getRes = await client.GetAsync($"/WeatherForecast/{id}");
+        var getRes = await client.GetAsync($"/Document/{id}");
         Assert.Equal(HttpStatusCode.OK, getRes.StatusCode);
 
         // PUT update
@@ -67,20 +67,20 @@ public class WeatherForecastIntegrationTests : IClassFixture<WebApplicationFacto
         };
 
         var putJson = JsonSerializer.Serialize(updated);
-        var putRes = await client.PutAsync($"/WeatherForecast/{id}", new StringContent(putJson, Encoding.UTF8, "application/json"));
+        var putRes = await client.PutAsync($"/Document/{id}", new StringContent(putJson, Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.NoContent, putRes.StatusCode);
 
-        var getRes2 = await client.GetAsync($"/WeatherForecast/{id}");
+        var getRes2 = await client.GetAsync($"/Document/{id}");
         Assert.Equal(HttpStatusCode.OK, getRes2.StatusCode);
         var getBody2 = await getRes2.Content.ReadAsStringAsync();
         using var getDoc2 = JsonDocument.Parse(getBody2);
         Assert.Equal("Updated", getDoc2.RootElement.GetProperty("summary").GetString());
 
         // DELETE
-        var delRes = await client.DeleteAsync($"/WeatherForecast/{id}");
+        var delRes = await client.DeleteAsync($"/Document/{id}");
         Assert.Equal(HttpStatusCode.NoContent, delRes.StatusCode);
 
-        var getRes3 = await client.GetAsync($"/WeatherForecast/{id}");
+        var getRes3 = await client.GetAsync($"/Document/{id}");
         Assert.Equal(HttpStatusCode.NotFound, getRes3.StatusCode);
     }
 }
