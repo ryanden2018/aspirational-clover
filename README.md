@@ -10,4 +10,4 @@ and have trouble doing so.
 
 Clone the solution, run Clean followed by Rebuild, then run the solution with ***https***. After a few
 minutes, your web browser should automatically open to the Aspire dashboard. You can then create
-a new tab and open it to ***https://localhost:7203/*** to view the application running locally.
+a new tab and open it to `https://localhost:7203/` to view the application running locally.
