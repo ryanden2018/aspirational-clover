@@ -10,4 +10,14 @@ public class ShapeDTO
     public Circle? Circle { get; set; }
     public Rectangle? Rectangle { get; set; }
     public TextBox? TextBox { get; set; }
+
+    public int LayerID { get; set; }
+
+    public ShapeDTO(Circle? circle = null, Rectangle? rectangle = null, TextBox? textBox = null)
+    {
+        Circle = circle;
+        Rectangle = rectangle;
+        TextBox = textBox;
+        LayerID = circle?.LayerId ?? rectangle?.LayerId ?? textBox?.LayerId ?? 0;
+    }
 }

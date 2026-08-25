@@ -5,7 +5,6 @@ using aspirational_clover.Server.Interfaces;
 public class Rectangle : IFillable, ILayerable, ITransformable
 {
     public int Id { get; set; }
-    public string? DocSlug { get; set; }
     public int LayerId { get; set; }
     public string? FillColorFrom { get; set; }
     public string? FillColorTo { get; set; }
