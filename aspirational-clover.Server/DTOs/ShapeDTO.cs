@@ -33,7 +33,7 @@ public class ShapeDTO
     /// shape property (Circle, Rectangle, TextBox, ...) and should match the LayerId of that shape.
     /// </summary>
 
-    public int LayerID { get; set; }
+    public int LayerId { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the ShapeDTO class with the specified shape data. The constructor accepts optional parameters
@@ -48,6 +48,6 @@ public class ShapeDTO
         Circle = circle;
         Rectangle = rectangle;
         TextBox = textBox;
-        LayerID = circle?.LayerId ?? rectangle?.LayerId ?? textBox?.LayerId ?? 0;
+        LayerId = circle?.LayerId ?? rectangle?.LayerId ?? textBox?.LayerId ?? 0;
     }
 }

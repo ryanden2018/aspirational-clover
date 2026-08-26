@@ -16,7 +16,7 @@ public static class DocumentContainerDTOExtensions
     /// </summary>
     public static DocumentContainerDTO PopulateLayers(this DocumentContainerDTO documentDTO, List<LayerDTO> layerDTOs, List<ShapeDTO> shapeDTOs)
     {        
-        var shapesDictionary = shapeDTOs?.GroupBy(shape => shape.LayerID)
+        var shapesDictionary = shapeDTOs?.GroupBy(shape => shape.LayerId)
             .ToDictionary(group => group.Key, group => group.ToList());
 
         var layerDictionary = layerDTOs?.GroupBy(layer => layer.DocumentId).ToDictionary(group => group.Key, group =>

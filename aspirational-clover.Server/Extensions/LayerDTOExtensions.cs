@@ -25,7 +25,7 @@ public static class LayerDTOExtensions
                 ZIndex = layerDTO.ZIndex ?? 0 // Default to 0 if null
             })
         {
-            Shapes = shapeDTOs?.Where(shapeDTO => shapeDTO.LayerID == layerDTO.Id).ToList() ?? new List<ShapeDTO>()
+            Shapes = shapeDTOs?.Where(shapeDTO => shapeDTO.LayerId == layerDTO.Id).ToList() ?? new List<ShapeDTO>()
         };
     }
 }

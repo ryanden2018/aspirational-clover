@@ -224,7 +224,7 @@
             Gets or sets the TextBox shape data. If this property is non-null, it indicates that the shape represented by this DTO is a TextBox.
             </summary>
         </member>
-        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.LayerID">
+        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.LayerId">
             <summary>
             Gets or sets the ID of the layer to which the shape belongs. This property is a convenience field that allows for easy 
             access to the layer information without needing to access the individual shape properties. It is set based on the non-null 
