@@ -7,6 +7,9 @@
     <RootNamespace>aspirational_clover.Server</RootNamespace>
     <UserSecretsId>521c1396-a4c7-4e94-bbf7-79fd0248da28</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <!-- Generate XML documentation file so OpenAPI tooling can surface <summary> tags -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
