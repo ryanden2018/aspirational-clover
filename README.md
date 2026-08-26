@@ -20,3 +20,13 @@ afraid you're on your own, because I only ever run this stack in `https`.)
 From the root of the solution, run:
 
 `dotnet test aspirational-clover.Tests`
+
+## PostgreSQL
+
+For running locally, an in-memory database is used; however, in production mode, we use PostgreSQL. The dummy connection string is stored 
+in `appsettings.json` and can be overridden by environment variables. Note that since this application centers around the concept
+of a 'document', we might expect to use a NoSQL solution. However, the application is intended as an analogy to a real-world business
+application, such as a shopping cart; just as a shopping cart has items, a `Document` has `Layer`s. Moreover, just as an item can have
+parts, a `Layer` can have shapes (`Circle`s, `Rectangle`s, etc.). Thus the on-screen representation of a `Document` as a collection of `Layer`s
+containing shapes is analogous to a shopping cart containing items which are themselves composed of parts.
+
