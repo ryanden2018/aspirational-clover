@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using aspirational_clover.Server.Models;
 using aspirational_clover.Server.DTOs;
 using aspirational_clover.Server.Interfaces;
+using aspirational_clover.Server.Extensions;
 
 namespace aspirational_clover.Server.Controllers;
 
@@ -81,6 +81,21 @@ public class DocumentController : ControllerBase
     {
         // Ensure id is not set by client
         model.Id = 0;
+
+        if (model.Layers != null)
+        {
+            foreach (var layer in model.Layers)
+            {
+                layer.Id = 0; // Ensure layer ids are not set by client
+                if (layer.Shapes != null)
+                {
+                    foreach (var shape in layer.Shapes)
+                    {
+                        shape.DestructivelyRemoveShapeIds(); // Ensure shape IDs are not set by client (TODO: add a test for this at the controller level)
+                    }
+                }
+            }
+        }
 
         var created = await _documentService.CreateDocument(model);
         await _db.SaveChangesAsync();

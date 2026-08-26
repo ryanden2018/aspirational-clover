@@ -1,8 +1,8 @@
 ﻿using aspirational_clover.Server.DTOs;
-using aspirational_clover.Server.Models;
 using aspirational_clover.Server.Extensions;
-using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Interfaces;
+using aspirational_clover.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace aspirational_clover.Server.Services;
 
@@ -88,15 +88,71 @@ public class DocumentService : IDocumentService
         return populatedDocument ?? new DocumentDTO(item);
     }
 
+    private void CreateCircle(int layerId, Circle? circle)
+    {
+        if (circle == null) return;
+        circle.LayerId = layerId;
+        _db.Circles.Add(circle);
+    }
+
+    private void CreateRectangle(int layerId, Rectangle? rectangle)
+    {
+        if (rectangle == null) return;
+        rectangle.LayerId = layerId;
+        _db.Rectangles.Add(rectangle);
+    }
+
+    private void CreateTextBox(int layerId, TextBox? textBox)
+    {
+        if (textBox == null) return;
+        textBox.LayerId = layerId;
+        _db.TextBoxes.Add(textBox);
+    }
+
+    private void CreateShape(int layerId, ShapeDTO shapeDTO)
+    {
+        shapeDTO.LayerId = layerId;
+        CreateCircle(layerId, shapeDTO.Circle);
+        CreateRectangle(layerId, shapeDTO.Rectangle);
+        CreateTextBox(layerId, shapeDTO.TextBox);
+    }
+
+    private void CreateLayer(int documentId, LayerDTO layerDTO)
+    {
+        var layer = layerDTO.ProjectToModel();
+        layer.DocumentId = documentId;
+        _db.Layers.Add(layer);
+        var layerId = layer.Id;
+        layerDTO.Id = layerId;
+        var shapes = layerDTO.Shapes ?? new List<ShapeDTO>();
+
+        foreach (var shapeDTO in shapes)
+        {
+            CreateShape(layerId, shapeDTO);
+        }
+    }
+
     /// <summary>
-    /// Creates a new document along with its associated hydrated layers and shapes.
+    /// Creates a new document along with its associated hydrated layers and shapes. This DOES NOT validate for
+    /// the zero-ness of IDs contained within the DTO, so it is expected that the caller (such as a controller) will
+    /// check this or enforce it before calling in this method.
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
     public Task<DocumentDTO?> CreateDocument(DocumentDTO documentDTO)
     {
-        // _db.Documents.Add(model);
-        throw new NotImplementedException();
+        var document = documentDTO.ProjectToModel();
+        _db.Documents.Add(document);
+        var documentId = document.Id;
+        documentDTO.Id = documentId;
+        var layers = documentDTO.Layers ?? new List<LayerDTO>();
+
+        foreach (var layerDTO in layers)
+        {
+            CreateLayer(documentId, layerDTO);
+        }
+
+        return Task.FromResult<DocumentDTO?>(documentDTO);
     }
 
 

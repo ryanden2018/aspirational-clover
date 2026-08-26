@@ -28,5 +28,23 @@ public static class LayerDTOExtensions
             Shapes = shapeDTOs?.Where(shapeDTO => shapeDTO.LayerId == layerDTO.Id).ToList() ?? new List<ShapeDTO>()
         };
     }
+
+    /// <summary>
+    /// Project a LayerDTO to a Layer model. This method creates a new Layer instance with the same properties as the LayerDTO,
+    /// but without the Shapes property (which is hydrated at runtime).
+    /// </summary>
+    /// <param name="layerDTO"></param>
+    /// <returns></returns>
+    public static Layer ProjectToModel(this LayerDTO layerDTO)
+    {
+        return new Layer
+        {
+            Id = layerDTO.Id,
+            DocumentId = layerDTO.DocumentId,
+            Name = layerDTO.Name,
+            Hidden = layerDTO.Hidden ?? false, // Default to false if null
+            ZIndex = layerDTO.ZIndex ?? 0 // Default to 0 if null
+        };
+    }
 }
 

@@ -254,6 +254,19 @@
             Neither the source container nor its documents are modified; a new instance is returned.
             </summary>
         </member>
+        <member name="T:aspirational_clover.Server.Extensions.DocumentDTOExtensions">
+            <summary>
+            Extension methods for DocumentDTO
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.DocumentDTOExtensions.ProjectToModel(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Project a DocumentDTO to a Document model. This method creates a new Document instance with the same properties as the DocumentDTO,
+            but without the Layers property (which is hydrated at runtime).
+            </summary>
+            <param name="documentDTO"></param>
+            <returns></returns>
+        </member>
         <member name="T:aspirational_clover.Server.Extensions.LayerDTOExtensions">
             <summary>
             Extension methods for LayerDTO
@@ -265,6 +278,26 @@
             instance with the same properties as the original, but with Shapes property populated
             based on the provided shapes.
             </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.LayerDTOExtensions.ProjectToModel(aspirational_clover.Server.DTOs.LayerDTO)">
+            <summary>
+            Project a LayerDTO to a Layer model. This method creates a new Layer instance with the same properties as the LayerDTO,
+            but without the Shapes property (which is hydrated at runtime).
+            </summary>
+            <param name="layerDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="T:aspirational_clover.Server.Extensions.ShapeDTOExtensions">
+            <summary>
+            Extension methods for ShapeDTO
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.ShapeDTOExtensions.DestructivelyRemoveShapeIds(aspirational_clover.Server.DTOs.ShapeDTO)">
+            <summary>
+            Destructively set all ID properties of the ShapeDTO and its contained shapes to 0. This is useful for creating a 
+            new shape based on an existing one without retaining any database IDs.
+            </summary>
+            <param name="shapeDTO"></param>
         </member>
         <member name="T:aspirational_clover.Server.Extensions.WebApplicationExtensions">
             <summary>
@@ -661,7 +694,9 @@
         </member>
         <member name="M:aspirational_clover.Server.Services.DocumentService.CreateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
             <summary>
-            Creates a new document along with its associated hydrated layers and shapes.
+            Creates a new document along with its associated hydrated layers and shapes. This DOES NOT validate for
+            the zero-ness of IDs contained within the DTO, so it is expected that the caller (such as a controller) will
+            check this or enforce it before calling in this method.
             </summary>
             <param name="documentDTO"></param>
             <returns></returns>
