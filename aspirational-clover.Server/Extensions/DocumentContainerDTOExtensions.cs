@@ -3,6 +3,9 @@ using aspirational_clover.Server.Models;
 
 namespace aspirational_clover.Server.Extensions;
 
+/// <summary>
+/// Extension methods for DocumentContainerDTO
+/// </summary>
 public static class DocumentContainerDTOExtensions
 {
     /// <summary>

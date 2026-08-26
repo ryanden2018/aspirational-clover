@@ -7,6 +7,9 @@ using aspirational_clover.Server.Models;
 
 namespace aspirational_clover.Server.Extensions;
 
+/// <summary>
+/// Extension methods for WebApplication
+/// </summary>
 public static class WebApplicationExtensions
 {
     /// <summary>

@@ -16,6 +16,11 @@ public class DocumentController : ControllerBase
     private readonly Data.AppDbContext _db;
     private readonly IDocumentService _documentService;
 
+    /// <summary>
+    /// Initializes a new instance of the DocumentController class.
+    /// </summary>
+    /// <param name="db"></param>
+    /// <param name="documentService"></param>
     public DocumentController(Data.AppDbContext db, IDocumentService documentService)
     {
         _db = db;

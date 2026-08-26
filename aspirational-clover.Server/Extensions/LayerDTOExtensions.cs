@@ -3,6 +3,9 @@ using aspirational_clover.Server.Models;
 
 namespace aspirational_clover.Server.Extensions;
 
+/// <summary>
+/// Extension methods for LayerDTO
+/// </summary>
 public static class LayerDTOExtensions
 {
     /// <summary>

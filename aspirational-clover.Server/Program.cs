@@ -1,12 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Data;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Http;
-using System.Diagnostics;
-using Microsoft.AspNetCore.ResponseCompression;
 
 using aspirational_clover.Server.Extensions;
 using aspirational_clover.Server.Services;
@@ -15,8 +9,15 @@ using Scalar.AspNetCore;
 
 namespace aspirational_clover.Server;
 
+/// <summary>
+/// Root Program class for the application.
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// Main method defining application start-up.
+    /// </summary>
+    /// <param name="args"></param>
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
