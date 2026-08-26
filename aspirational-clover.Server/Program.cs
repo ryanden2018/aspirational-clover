@@ -3,10 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
+using Microsoft.AspNetCore.ResponseCompression;
 
 using aspirational_clover.Server.Extensions;
 using aspirational_clover.Server.Services;
 using aspirational_clover.Server.Interfaces;
+using Scalar.AspNetCore;
 
 namespace aspirational_clover.Server;
 
@@ -71,10 +76,10 @@ public class Program
         app.UseDefaultFiles();
         app.MapStaticAssets();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (env.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference();
         }
 
         app.UseHttpsRedirection();
