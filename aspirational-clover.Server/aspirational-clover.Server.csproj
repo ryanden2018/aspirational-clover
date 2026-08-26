@@ -27,10 +27,6 @@
     <ProjectReference Include="..\aspirational-clover.ServiceDefaults\aspirational-clover.ServiceDefaults.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
   <!-- Copy client build output into server wwwroot so static assets are served at runtime -->
   <Target Name="CopyClientDistToWwwRoot" AfterTargets="Build" Condition="Exists('..\aspirational-clover.client\dist\aspirational-clover.client\browser')">
     <ItemGroup>

@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+
 using aspirational_clover.Server.Extensions;
+using aspirational_clover.Server.Services;
+using aspirational_clover.Server.Interfaces;
 
 namespace aspirational_clover.Server;
 
@@ -49,6 +52,10 @@ public class Program
                     opts.UseInMemoryDatabase("Aspire.Fallback.Db"));
             }
         }
+
+        builder.Services.AddTransient<IDocumentService>(
+            provider => new DocumentService(provider.GetRequiredService<AppDbContext>())
+        );
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
