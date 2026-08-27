@@ -5,7 +5,7 @@ const target = env["services__aspirational-clover-server__https__0"] ?? 'https:/
 const PROXY_CONFIG = [
   {
     context: [
-      "/weatherforecast",
+      "/document",
     ],
     target,
     secure: false

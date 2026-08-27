@@ -35,7 +35,7 @@ public static class DocumentContainerDTOExtensions
                         LastUpdatedAt = doc.LastUpdatedAt,
                     })
                 {
-                    Layers = layerDictionary?.ElementAt(doc.Id).Value?.ToList() ?? new List<LayerDTO>()
+                    Layers = layerDictionary?.GetValueOrDefault(doc.Id)?.ToList() ?? new List<LayerDTO>()
                 }).ToList()
         };
     }

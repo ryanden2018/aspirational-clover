@@ -6,6 +6,11 @@
 public interface ILayerable
 {
     /// <summary>
+    /// Gets or sets the ID of this entity.
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
     /// Gets or sets the ID of the layer to which the object belongs.
     /// </summary>
     public int LayerId { get; set; }

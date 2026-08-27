@@ -3,7 +3,6 @@ using aspirational_clover.Server.Extensions;
 using aspirational_clover.Server.Interfaces;
 using aspirational_clover.Server.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace aspirational_clover.Server.Services;
 
@@ -23,6 +22,8 @@ public class DocumentService : IDocumentService
     {
         _db = db;
     }
+    
+    // METHODS THAT NEED TO BE UPDATED WHEN ADDING A SHAPE TYPE
 
     /// <summary>
     /// Get shapes, either by a list of layers or globally.
@@ -39,6 +40,188 @@ public class DocumentService : IDocumentService
                 .Select(t => new ShapeDTO(null, null, t));
         return circles.Concat(rectangles).Concat(textBoxes);
     }
+
+    private void CreateShapeFromDTO(int layerId, ShapeDTO shapeDTO)
+    {
+        shapeDTO.LayerId = layerId;
+        CreateShape(layerId, shapeDTO.Circle, c => _db.Circles.Add(c));
+        CreateShape(layerId, shapeDTO.Rectangle, r => _db.Rectangles.Add(r));
+        CreateShape(layerId, shapeDTO.TextBox, t => _db.TextBoxes.Add(t));
+    }
+
+    private void DeleteShapes(List<ShapeDTO> shapes)
+    {
+        _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => new Circle { Id = s.Circle?.Id ?? 0 }));
+        _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => new Rectangle { Id = s.Rectangle?.Id ?? 0 }));
+        _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => new TextBox { Id = s.TextBox?.Id ?? 0 }));
+    }
+
+    private void UpdateLayerIds(int layerId, List<ShapeDTO>? shapes)
+    {
+        if (shapes == null || layerId == 0) return;
+        foreach (ShapeDTO shapeDTO in shapes)
+        {
+            shapeDTO.LayerId = layerId;
+            if (shapeDTO.Circle != null)
+            {
+                shapeDTO.Circle.LayerId = layerId;
+            }
+            if (shapeDTO.Rectangle != null)
+            {
+                shapeDTO.Rectangle.LayerId = layerId;
+            }
+            if (shapeDTO.TextBox != null)
+            {
+                shapeDTO.TextBox.LayerId = layerId;
+            }
+        }
+    }
+
+    private List<ShapeDTO> ShapeSetDifference(List<ShapeDTO>? originalShapes, List<ShapeDTO>? shapesToRemove)
+    {
+        if (originalShapes == null || shapesToRemove == null) return new List<ShapeDTO>();
+
+        var circleDifferenceIds = originalShapes
+            .Select(s => s.Circle?.Id ?? 0)
+            .Except(shapesToRemove.Select(s => s.Circle?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        var rectangleDifferenceIds = originalShapes
+            .Select(s => s.Rectangle?.Id ?? 0)
+            .Except(shapesToRemove.Select(s => s.Rectangle?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        var textBoxDifferenceIds = originalShapes
+            .Select(s => s.TextBox?.Id ?? 0)
+            .Except(shapesToRemove.Select(s => s.TextBox?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        return originalShapes.Where(s =>
+        {
+            if (s.Circle != null && s.Circle.Id != 0)
+            {
+                return circleDifferenceIds.Contains(s.Circle.Id);
+            }
+
+            if (s.Rectangle != null && s.Rectangle.Id != 0)
+            {
+                return rectangleDifferenceIds.Contains(s.Rectangle.Id);
+            }
+
+            if (s.TextBox != null && s.TextBox.Id != 0)
+            {
+                return textBoxDifferenceIds.Contains(s.TextBox.Id);
+            }
+
+            return false;
+        }).ToList();
+    }
+
+    private List<ShapeDTO> ShapeSetIntersection(List<ShapeDTO>? shapes, List<ShapeDTO>? other)
+    {
+        if (shapes == null || other == null) return new List<ShapeDTO>();
+
+        var circleDifferenceIds = shapes
+            .Select(s => s.Circle?.Id ?? 0)
+            .Intersect(other.Select(s => s.Circle?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        var rectangleDifferenceIds = shapes
+            .Select(s => s.Rectangle?.Id ?? 0)
+            .Intersect(other.Select(s => s.Rectangle?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        var textBoxDifferenceIds = shapes
+            .Select(s => s.TextBox?.Id ?? 0)
+            .Intersect(other.Select(s => s.TextBox?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        return shapes.Where(s =>
+        {
+            if (s.Circle != null && s.Circle.Id != 0)
+            {
+                return circleDifferenceIds.Contains(s.Circle.Id);
+            }
+
+            if (s.Rectangle != null && s.Rectangle.Id != 0)
+            {
+                return rectangleDifferenceIds.Contains(s.Rectangle.Id);
+            }
+
+            if (s.TextBox != null && s.TextBox.Id != 0)
+            {
+                return textBoxDifferenceIds.Contains(s.TextBox.Id);
+            }
+
+            return false;
+        }).ToList();
+    }
+
+    // DO NOT UPDATE LAYER IDS HERE -- THAT IS DONE IN LAYER PROCESSING
+    private void UpdateShapes(List<ShapeDTO>? shapesToUpdate, List<ShapeDTO>? updateSource)
+    {
+        if (shapesToUpdate == null || updateSource == null) return;
+
+        var circlesUpdateMap = updateSource.Where(s => s?.Circle != null && s.Circle.Id != 0).ToDictionary(
+            s => s?.Circle?.Id ?? 0, s => s.Circle);
+
+        var rectangleUpdateMap = updateSource.Where(s => s?.Rectangle != null && s.Rectangle.Id != 0).ToDictionary(
+            s => s?.Rectangle?.Id ?? 0, s => s.Rectangle);
+
+        var textBoxUpdateMap = updateSource.Where(s => s?.TextBox != null && s.TextBox.Id != 0).ToDictionary(
+            s => s?.TextBox?.Id ?? 0, s => s.TextBox);
+
+        foreach (var shape in shapesToUpdate)
+        {
+            if (shape == null) continue;
+
+            if (shape?.Circle != null && shape.Circle.Id != 0)
+            {
+                var update = circlesUpdateMap.GetValueOrDefault(shape.Circle.Id);
+                if (update != null)
+                {
+                    shape.Circle.FillColorFrom = update.FillColorFrom;
+                    shape.Circle.FillColorTo = update.FillColorTo;
+                    shape.Circle.FillAngle = update.FillAngle;
+                    shape.Circle.CenterX = update.CenterX;
+                    shape.Circle.CenterY = update.CenterY;
+                    shape.Circle.Radius = update.Radius;
+                    shape.Circle.RotationAngle = update.RotationAngle;
+                    shape.Circle.RotationCenterOffsetX = update.RotationCenterOffsetX;
+                    shape.Circle.RotationCenterOffsetY = update.RotationCenterOffsetY;
+                    shape.Circle.SkewX = update.SkewX;
+                    shape.Circle.SkewY = update.SkewY;
+                }
+            } else if (shape?.Rectangle != null && shape.Rectangle.Id != 0)
+            {
+                var update = rectangleUpdateMap.GetValueOrDefault(shape.Rectangle.Id);
+                if (update != null)
+                {
+                    shape.Rectangle.FillColorFrom = update.FillColorFrom;
+                    shape.Rectangle.FillColorTo = update.FillColorTo;
+                    shape.Rectangle.FillAngle = update.FillAngle;
+                    shape.Rectangle.X = update.X;
+                    shape.Rectangle.Y = update.Y;
+                    shape.Rectangle.Width = update.Width;
+                    shape.Rectangle.Height = update.Height;
+                    shape.Rectangle.RotationAngle = update.RotationAngle;
+                    shape.Rectangle.RotationCenterOffsetX = update.RotationCenterOffsetX;
+                    shape.Rectangle.RotationCenterOffsetY = update.RotationCenterOffsetY;
+                    shape.Rectangle.SkewX = update.SkewX;
+                    shape.Rectangle.SkewY = update.SkewY;
+                }
+            } else if (shape?.TextBox != null && shape.TextBox.Id != 0)
+            {
+                var update = textBoxUpdateMap.GetValueOrDefault(shape.TextBox.Id);
+                if (update != null)
+                {
+                    shape.TextBox.Content = update.Content;
+                }
+            }
+        }
+    }
+
+    // METHODS THAT SHOULD NOT BE CHANGED WHEN ADDING A SHAPE TYPE
 
     /// <summary>
     /// Retrieves all documents along with their associated hydrated layers and shapes.
@@ -89,41 +272,11 @@ public class DocumentService : IDocumentService
         return populatedDocument ?? new DocumentDTO(item);
     }
 
-    private void CreateCircle(int layerId, Circle? circle)
-    {
-        if (circle == null) return;
-        circle.LayerId = layerId;
-        if (circle.Id == 0)
-        {
-            _db.Circles.Add(circle);
-        }
-    }
-
-    private void CreateRectangle(int layerId, Rectangle? rectangle)
-    {
-        if (rectangle == null) return;
-        rectangle.LayerId = layerId;
-        if (rectangle.Id == 0) {
-            _db.Rectangles.Add(rectangle);
-        }
-    }
-
-    private void CreateTextBox(int layerId, TextBox? textBox)
-    {
-        if (textBox == null) return;
-        textBox.LayerId = layerId;
-        if (textBox.Id == 0)
-        {
-            _db.TextBoxes.Add(textBox);
-        }
-    }
-
-    private void CreateShape(int layerId, ShapeDTO shapeDTO)
-    {
-        shapeDTO.LayerId = layerId;
-        CreateCircle(layerId, shapeDTO.Circle);
-        CreateRectangle(layerId, shapeDTO.Rectangle);
-        CreateTextBox(layerId, shapeDTO.TextBox);
+    private void CreateShape<T>(int layerId, T? shape, Action<T> addShape) where T : ILayerable {
+        if (shape == null) return;
+        shape.LayerId = layerId;
+        shape.Id = 0;
+        addShape(shape);
     }
 
     private void CreateLayerAndShapes(int documentId, LayerDTO layerDTO)
@@ -138,7 +291,7 @@ public class DocumentService : IDocumentService
 
         foreach (var shapeDTO in shapes)
         {
-            CreateShape(layerId, shapeDTO);
+            CreateShapeFromDTO(layerId, shapeDTO);
         }
     }
 
@@ -180,12 +333,7 @@ public class DocumentService : IDocumentService
         return documentDTO;
     }
 
-    private async Task DeleteShapes(List<ShapeDTO> shapes)
-    {
-        _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => new Circle { Id = s.Circle?.Id ?? 0 }));
-        _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => new Rectangle { Id = s.Rectangle?.Id ?? 0 }));
-        _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => new TextBox { Id = s.TextBox?.Id ?? 0 }));
-    }
+
 
     /// <summary>
     /// Updates an existing document along with its associated hydrated layers and shapes.
@@ -219,27 +367,52 @@ public class DocumentService : IDocumentService
         // to allow modifying them.
         existing.LastUpdatedAt = DateTime.UtcNow;
 
-        var existingLayerIds = new HashSet<int>(existingDTO.Layers?.Select(layer => layer.Id) ?? new List<int>());
-        var newLayerIds = new HashSet<int>(documentDTO.Layers?.Select(layer => layer.Id) ?? new List<int>());
+        var existingLayersMap = (existingDTO.Layers ?? new List<LayerDTO>())
+            .ToDictionary(l => l.Id, l => l);
 
-        // Step 1: Create layers that are currently missing; this will also create new
-        // shapes as needed for those layers.
-        documentDTO.Layers?.Where(layer => layer.Id == 0)?.ToList()
-            ?.ForEach(l => CreateLayerAndShapes(documentId, l));
+        var documentLayersMap = (documentDTO.Layers ?? new List<LayerDTO>())
+            .ToDictionary(l => l.Id, l => l);
 
-        // Step 2: Delete layers. Note carefully we need to refer to EXISTING layers to
-        // determine which to delete, but the shapes to delete need to be with reference
-        // to the NEW document.
-        var layerIdsToDelete = existingLayerIds.Except(newLayerIds) ?? new List<int>();
-        _db.Layers.RemoveRange(layerIdsToDelete.Select(l => new Layer {  Id = l }));
-        var shapesToDelete = documentDTO.Layers?.Where(l => layerIdsToDelete.Contains(l.Id))
-            ?.Select(l => l.Shapes)
-            ?.Aggregate((acc, val) => acc?.Concat(val ?? new List<ShapeDTO>()).ToList() ?? new List<ShapeDTO>())
-            ?? new List<ShapeDTO>();
-        await DeleteShapes(shapesToDelete.ToList());
+        // Step 1: Create and delete layers
+        var existingLayerIds = existingLayersMap.Keys;
+        var documentLayerIds = documentLayersMap.Keys;
+        var layerIdsToDelete = existingLayerIds.Except(documentLayerIds);
+        _db.Layers.RemoveRange(layerIdsToDelete.Select(l => new Layer { Id = l }));
+        (existingDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
+            .ToList()
+            .ForEach(l =>
+            {
+                Layer lModel = l.ProjectToModel();
+                _db.Layers.Add(lModel);
+                var layerId = lModel.Id;
+                l.Id = layerId;
+                UpdateLayerIds(layerId, l.Shapes);
+            });
 
-        // Step 3: For all remaining entities, we need to update Layers, as well
-        // as possibly update or create Shapes.
+        // Step 2: Update existing layers
+        var layerIdsToUpdate = existingLayerIds.Intersect(documentLayerIds);
+        await Task.WhenAll(layerIdsToUpdate.Select(async layerId =>
+        {
+            var docLayer = documentLayersMap.ElementAtOrDefault(layerId).Value;
+            var layer = await _db.Layers.Where(l => l.Id == layerId).FirstOrDefaultAsync();
+            if (docLayer == null || layer == null) return;
+            layer.Name = docLayer.Name;
+            layer.Hidden = docLayer.Hidden;
+            layer.ZIndex = docLayer.ZIndex;
+            UpdateLayerIds(layer.Id, docLayer.Shapes); // update the layer IDs of the associated shapes
+        }));
+
+        // Step 3: Delete shapes that are no longer used
+        var documentShapes = documentDTO.Layers?.Aggregate(new List<ShapeDTO>(),
+            (acc, val) => acc.Concat(val?.Shapes ?? new List<ShapeDTO>()).ToList());
+        var existingShapes = existingDTO.Layers?.Aggregate(new List<ShapeDTO>(),
+            (acc, val) => acc.Concat(val?.Shapes ?? new List<ShapeDTO>()).ToList());
+        DeleteShapes(ShapeSetDifference(existingShapes, documentShapes));
+
+        // Step 4: Update shapes
+        // Note: for the intersection, the order is important because only existingShapes will be tracked by Entity Framework
+        var shapesToUpdate = ShapeSetIntersection(existingShapes, documentShapes);
+        UpdateShapes(shapesToUpdate, documentShapes);
 
         return documentDTO;
     }
@@ -249,7 +422,7 @@ public class DocumentService : IDocumentService
     {
         _db.Layers.RemoveRange(layerIds.Select(l => new Layer { Id = l }));
         var shapes = await getShapes(layerIds);
-        await DeleteShapes(shapes.ToList());
+        DeleteShapes(shapes.ToList());
     }
 
     /// <summary>

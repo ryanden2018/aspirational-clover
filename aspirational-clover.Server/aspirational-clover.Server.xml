@@ -381,6 +381,11 @@
             Defines a contract for objects that can be associated with a specific layer, providing a LayerId property to identify the layer they belong to.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ILayerable.Id">
+            <summary>
+            Gets or sets the ID of this entity.
+            </summary>
+        </member>
         <member name="P:aspirational_clover.Server.Interfaces.ILayerable.LayerId">
             <summary>
             Gets or sets the ID of the layer to which the object belongs.
