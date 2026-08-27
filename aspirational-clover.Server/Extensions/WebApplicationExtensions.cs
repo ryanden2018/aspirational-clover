@@ -86,7 +86,7 @@ public static class WebApplicationExtensions
             DocumentSlug = slugs[index],
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow
-        });
+        }).ToList();
 
         db.Documents.AddRange(documents);
 

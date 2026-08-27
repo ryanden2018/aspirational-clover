@@ -20,7 +20,7 @@ public static class DocumentContainerDTOExtensions
             .ToDictionary(group => group.Key, group => group.ToList());
 
         var layerDictionary = layerDTOs?.GroupBy(layer => layer.DocumentId).ToDictionary(group => group.Key, group =>
-            group?.ToList()?.Select(layer => layer.PopulateShapes(shapesDictionary?.ElementAt(layer.Id).Value)));
+            group?.ToList()?.Select(layer => layer.PopulateShapes(shapesDictionary?.GetValueOrDefault(layer.Id))));
 
 
         return new DocumentContainerDTO
