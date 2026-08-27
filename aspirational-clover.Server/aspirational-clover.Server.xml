@@ -694,9 +694,7 @@
         </member>
         <member name="M:aspirational_clover.Server.Services.DocumentService.CreateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
             <summary>
-            Creates a new document along with its associated hydrated layers and shapes. This DOES NOT validate for
-            the zero-ness of IDs contained within the DTO, so it is expected that the caller (such as a controller) will
-            check this or enforce it before calling in this method.
+            Creates a new document along with its associated hydrated layers and shapes.
             </summary>
             <param name="documentDTO"></param>
             <returns></returns>

@@ -3,6 +3,7 @@ using aspirational_clover.Server.Extensions;
 using aspirational_clover.Server.Interfaces;
 using aspirational_clover.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace aspirational_clover.Server.Services;
 
@@ -92,21 +93,29 @@ public class DocumentService : IDocumentService
     {
         if (circle == null) return;
         circle.LayerId = layerId;
-        _db.Circles.Add(circle);
+        if (circle.Id == 0)
+        {
+            _db.Circles.Add(circle);
+        }
     }
 
     private void CreateRectangle(int layerId, Rectangle? rectangle)
     {
         if (rectangle == null) return;
         rectangle.LayerId = layerId;
-        _db.Rectangles.Add(rectangle);
+        if (rectangle.Id == 0) {
+            _db.Rectangles.Add(rectangle);
+        }
     }
 
     private void CreateTextBox(int layerId, TextBox? textBox)
     {
         if (textBox == null) return;
         textBox.LayerId = layerId;
-        _db.TextBoxes.Add(textBox);
+        if (textBox.Id == 0)
+        {
+            _db.TextBoxes.Add(textBox);
+        }
     }
 
     private void CreateShape(int layerId, ShapeDTO shapeDTO)
@@ -117,9 +126,10 @@ public class DocumentService : IDocumentService
         CreateTextBox(layerId, shapeDTO.TextBox);
     }
 
-    private void CreateLayer(int documentId, LayerDTO layerDTO)
+    private void CreateLayerAndShapes(int documentId, LayerDTO layerDTO)
     {
         var layer = layerDTO.ProjectToModel();
+        layer.Id = 0;
         layer.DocumentId = documentId;
         _db.Layers.Add(layer);
         var layerId = layer.Id;
@@ -133,45 +143,113 @@ public class DocumentService : IDocumentService
     }
 
     /// <summary>
-    /// Creates a new document along with its associated hydrated layers and shapes. This DOES NOT validate for
-    /// the zero-ness of IDs contained within the DTO, so it is expected that the caller (such as a controller) will
-    /// check this or enforce it before calling in this method.
+    /// Creates a new document along with its associated hydrated layers and shapes.
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
-    public Task<DocumentDTO?> CreateDocument(DocumentDTO documentDTO)
+    public async Task<DocumentDTO?> CreateDocument(DocumentDTO documentDTO)
     {
+        if (documentDTO.DocumentSlug == null || documentDTO.DocumentSlug == "" || documentDTO.Id != 0)
+        {
+            return null;
+        }
+
+        var maybeExisting = await GetDocumentBySlugWithLayersAndShapes(documentDTO.DocumentSlug);
+        if (maybeExisting != null)
+        {
+            // this slug already exists -- reject
+            return null;
+        }
+
         var document = documentDTO.ProjectToModel();
+        var now = DateTime.UtcNow;
+        document.CreatedAt = now;
+        document.LastUpdatedAt = now;
         _db.Documents.Add(document);
         var documentId = document.Id;
         documentDTO.Id = documentId;
+        documentDTO.CreatedAt = document.CreatedAt;
+        documentDTO.LastUpdatedAt = document.LastUpdatedAt;
         var layers = documentDTO.Layers ?? new List<LayerDTO>();
 
         foreach (var layerDTO in layers)
         {
-            CreateLayer(documentId, layerDTO);
+            CreateLayerAndShapes(documentId, layerDTO);
         }
 
-        return Task.FromResult<DocumentDTO?>(documentDTO);
+        return documentDTO;
     }
 
+    private async Task DeleteShapes(List<ShapeDTO> shapes)
+    {
+        _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => new Circle { Id = s.Circle?.Id ?? 0 }));
+        _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => new Rectangle { Id = s.Rectangle?.Id ?? 0 }));
+        _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => new TextBox { Id = s.TextBox?.Id ?? 0 }));
+    }
 
     /// <summary>
     /// Updates an existing document along with its associated hydrated layers and shapes.
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
-    public Task<DocumentDTO?> UpdateDocument(DocumentDTO documentDTO)
+    public async Task<DocumentDTO?> UpdateDocument(DocumentDTO documentDTO)
     {
-        //var existing = await _db.Documents.FindAsync(id);
-        //if (existing == null) return NotFound();
+        // note carefully: mutating the DTO DOES NOT alter the DB
+        // The purpose of this is to obtain the fully hydrated data structure, which involves a
+        // complex sequence of queries. We have to fetch the relevant entities AGAIN below
+        // in order to obtain objects whose mutations are tracked by Entity Framework.
+        var existingDTO = await GetDocumentByIdWithLayersAndShapes(documentDTO.Id);
+
+        if (existingDTO == null || existingDTO.Id != documentDTO.Id)
+        {
+            return null;
+        }
+
+        var documentId = existingDTO.Id;
+
+        var existing = await _db.Documents.FindAsync(documentId);
+        if (existing == null)
+        {
+            return null;
+        }
+
+        // we only update the LastUpdatedAt value here (altering the slug is not supported here)
+        // NOTE: if we DID alter the slug, we'd have to re-check for conflicting slugs
+        // but right now slugs are just constructed via UUIDs in the client so it seems silly
+        // to allow modifying them.
+        existing.LastUpdatedAt = DateTime.UtcNow;
+
+        var existingLayerIds = new HashSet<int>(existingDTO.Layers?.Select(layer => layer.Id) ?? new List<int>());
+        var newLayerIds = new HashSet<int>(documentDTO.Layers?.Select(layer => layer.Id) ?? new List<int>());
+
+        // Step 1: Create layers that are currently missing; this will also create new
+        // shapes as needed for those layers.
+        documentDTO.Layers?.Where(layer => layer.Id == 0)?.ToList()
+            ?.ForEach(l => CreateLayerAndShapes(documentId, l));
+
+        // Step 2: Delete layers. Note carefully we need to refer to EXISTING layers to
+        // determine which to delete, but the shapes to delete need to be with reference
+        // to the NEW document.
+        var layerIdsToDelete = existingLayerIds.Except(newLayerIds) ?? new List<int>();
+        _db.Layers.RemoveRange(layerIdsToDelete.Select(l => new Layer {  Id = l }));
+        var shapesToDelete = documentDTO.Layers?.Where(l => layerIdsToDelete.Contains(l.Id))
+            ?.Select(l => l.Shapes)
+            ?.Aggregate((acc, val) => acc?.Concat(val ?? new List<ShapeDTO>()).ToList() ?? new List<ShapeDTO>())
+            ?? new List<ShapeDTO>();
+        await DeleteShapes(shapesToDelete.ToList());
+
+        // Step 3: For all remaining entities, we need to update Layers, as well
+        // as possibly update or create Shapes.
+
+        return documentDTO;
+    }
 
 
-        //// Update fields
-        //existing.Date = model.Date;
-        //existing.TemperatureC = model.TemperatureC;
-        //existing.Summary = model.Summary;
-        throw new NotImplementedException();
+    private async void DeleteLayersAndShapes(List<int> layerIds)
+    {
+        _db.Layers.RemoveRange(layerIds.Select(l => new Layer { Id = l }));
+        var shapes = await getShapes(layerIds);
+        await DeleteShapes(shapes.ToList());
     }
 
     /// <summary>
@@ -187,13 +265,8 @@ public class DocumentService : IDocumentService
         if (existing == null) return false;
 
         var layers = await _db.Layers.Where(l => l.DocumentId == id).ToListAsync();
-        var shapes = await getShapes(layers.Select(l => l.Id).ToList());
-
+        DeleteLayersAndShapes(layers.Select(l => l.Id).ToList());
         _db.Documents.Remove(existing);
-        _db.Layers.RemoveRange(layers.Select(l => new Layer { Id = l.Id }));
-        _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => new Circle { Id = s.Circle?.Id ?? 0 }));
-        _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => new Rectangle { Id = s.Rectangle?.Id ?? 0 }));
-        _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => new TextBox { Id = s.TextBox?.Id ?? 0 }));
 
         return true;
     }
