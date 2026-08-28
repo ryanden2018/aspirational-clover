@@ -1,0 +1,725 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>aspirational-clover.Server</name>
+    </assembly>
+    <members>
+        <member name="T:aspirational_clover.Server.Controllers.DocumentController">
+            <summary>
+            Controller for managing documents and their nested layers/shapes.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.#ctor(aspirational_clover.Server.Data.AppDbContext,aspirational_clover.Server.Interfaces.IDocumentService)">
+            <summary>
+            Initializes a new instance of the DocumentController class.
+            </summary>
+            <param name="db"></param>
+            <param name="documentService"></param>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Get">
+            <summary>
+            Returns a list of all documents, including nested layers and shapes.
+            </summary>
+            <returns>Array of DocumentDTO</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.GetById(System.Int32)">
+            <summary>
+            Retrieve a single document by its numeric id.
+            </summary>
+            <param name="id">Document id</param>
+            <returns>DocumentDTO when found</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.GetBySlug(System.String)">
+            <summary>
+            Retrieve a single document by its slug.
+            </summary>
+            <param name="slug">Document slug</param>
+            <returns>DocumentDTO when found</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Post(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Create a new document. The server will ignore any Id supplied by the client.
+            </summary>
+            <param name="model">Document to create</param>
+            <returns>Created DocumentDTO</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Put(System.Int32,aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Update an existing document. Id in the route must match the payload.
+            </summary>
+            <param name="id">Document id</param>
+            <param name="model">Updated document payload</param>
+            <returns>Updated DocumentDTO</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Delete(System.Int32)">
+            <summary>
+            Delete a document by id.
+            </summary>
+            <param name="id">Document id</param>
+        </member>
+        <member name="T:aspirational_clover.Server.Data.AppDbContext">
+            <summary>
+            Represents the application's database context, providing access to the database and managing entity sets for documents, layers, and shapes.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Data.AppDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{aspirational_clover.Server.Data.AppDbContext})">
+            <summary>
+            Initializes a new instance of the AppDbContext class with the specified options.
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="P:aspirational_clover.Server.Data.AppDbContext.Documents">
+            <summary>
+            Gets the DbSet for Document entities, allowing CRUD operations on the Documents table in the database.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Data.AppDbContext.Layers">
+            <summary>
+            Gets the DbSet for Layer entities, allowing CRUD operations on the Layers table in the database.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Data.AppDbContext.Circles">
+            <summary>
+            Gets the DbSet for Circle entities, allowing CRUD operations on the Circles table in the database.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Data.AppDbContext.Rectangles">
+            <summary>
+            Gets the DbSet for Rectangle entities, allowing CRUD operations on the Rectangles table in the database.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Data.AppDbContext.TextBoxes">
+            <summary>
+            Gets the DbSet for TextBox entities, allowing CRUD operations on the TextBoxes table in the database.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.DTOs.DocumentContainerDTO">
+            <summary>
+            Represents a container for a collection of DocumentDTO objects,
+            allowing for the organization and management of multiple documents within a single structure.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.DocumentContainerDTO.DocumentDTOs">
+            <summary>
+            Gets or sets the list of documents contained within this container.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.DTOs.DocumentDTO">
+            <summary>
+            Represents a Data Transfer Object (DTO) for the Document model, encapsulating the essential properties of a document, 
+            including its ID, slug, creation and last update timestamps, and associated layers. This DTO is used for transferring 
+            fully hydrated document data between the server and client while ensuring immutability of certain fields (eg CreatedAt).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.DocumentDTO.Layers">
+            <summary>
+            Gets or sets the list of layers associated with the document. Each layer is represented by a LayerDTO object, which contains
+            the essential properties of a layer, as well as its hydrated shapes.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.DTOs.DocumentDTO.#ctor(aspirational_clover.Server.Models.Document)">
+            <summary>
+            Initializes a new instance of the DocumentDTO class based on the provided Document model. This constructor maps the properties
+            from the Document model to the DocumentDTO, but does not hydrate Layers (see the DocumentDTOExtensions for that). The Layers 
+            property is initialized as an empty list, and should be populated using the extension methods provided in DocumentDTOExtensions.
+            This avoid placing the responsibility of hydrating nested objects in the constructor, which can lead to performance issues
+            and circular dependencies.
+            </summary>
+            <param name="document"></param>
+        </member>
+        <member name="M:aspirational_clover.Server.DTOs.DocumentDTO.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.DTOs.LayerDTO">
+            <summary>
+            Represents a data transfer object (DTO) for a Layer, encapsulating its 
+            properties and associated shapes for use in API responses or other data transfer scenarios.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.LayerDTO.Shapes">
+            <summary>
+            Gets or sets the list of shapes associated with the layer. Each shape is represented by a ShapeDTO object,
+            which should by hydrated with only one of the possible shapes non-null.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.DTOs.LayerDTO.#ctor(aspirational_clover.Server.Models.Layer)">
+            <summary>
+            Initializes a new instance of the LayerDTO class based on the provided Layer model. This constructor maps the properties
+            from the Layer model to the corresponding properties in the LayerDTO. The Shapes property is initialized as an empty list,
+            and should be populated using the extension methods provided in LayerDTOExtensions. This avoid placing the responsibility
+            of hydrating nested objects in the constructor, which can lead to performance issues and circular dependencies.
+            </summary>
+            <param name="layer"></param>
+        </member>
+        <member name="M:aspirational_clover.Server.DTOs.LayerDTO.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.DTOs.ShapeDTO">
+            <summary>
+            Represents a data transfer object (DTO) for shapes, encapsulating the properties of different shape types (Circle, Rectangle, TextBox, ...) 
+            and their associated layer information. This DTO is used to transfer shape data between different layers of the application (e.g.
+            backend and frontend), ensuring that only one shape type is represented at a time. Apart from the LayerID convenience field, exactly
+            one of the shape properties (Circle, Rectangle, TextBox, ...) should be non-null, depending on the shape type. If more than one
+            is non-null, behavior is undefined and should be avoided. If multiple shapes are needed, they should be recorded as a 
+            List&lt;ShapeDTO&gt; in the parent object.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.Circle">
+            <summary>
+            Gets or sets the Circle shape data. If this property is non-null, it indicates that the shape represented by this DTO is a Circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.Rectangle">
+            <summary>
+            Gets or sets the Rectangle shape data. If this property is non-null, it indicates that the shape represented by this DTO is a Rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.TextBox">
+            <summary>
+            Gets or sets the TextBox shape data. If this property is non-null, it indicates that the shape represented by this DTO is a TextBox.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.LayerId">
+            <summary>
+            Gets or sets the ID of the layer to which the shape belongs. This property is a convenience field that allows for easy 
+            access to the layer information without needing to access the individual shape properties. It is set based on the non-null 
+            shape property (Circle, Rectangle, TextBox, ...) and should match the LayerId of that shape.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.DTOs.ShapeDTO.#ctor(aspirational_clover.Server.Models.Circle,aspirational_clover.Server.Models.Rectangle,aspirational_clover.Server.Models.TextBox)">
+            <summary>
+            Initializes a new instance of the ShapeDTO class with the specified shape data. The constructor accepts optional parameters
+            for Circle, Rectangle, and TextBox shapes (but only one shape should be non-null). It sets the corresponding shape property 
+            and determines the LayerID based on the non-null shape's LayerId.
+            </summary>
+            <param name="circle"></param>
+            <param name="rectangle"></param>
+            <param name="textBox"></param>
+        </member>
+        <member name="T:aspirational_clover.Server.Extensions.DocumentContainerDTOExtensions">
+            <summary>
+            Extension methods for DocumentContainerDTO
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.DocumentContainerDTOExtensions.PopulateLayers(aspirational_clover.Server.DTOs.DocumentContainerDTO,System.Collections.Generic.List{aspirational_clover.Server.DTOs.LayerDTO},System.Collections.Generic.List{aspirational_clover.Server.DTOs.ShapeDTO})">
+            <summary>
+            Populate the layers using a provided list of layers and shapes. This method creates a 
+            new DocumentContainerDTO instance with the same documents as the original,
+            but with the Layers property populated per-document based on the provided layers and shapes.
+            Neither the source container nor its documents are modified; a new instance is returned.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Extensions.DocumentDTOExtensions">
+            <summary>
+            Extension methods for DocumentDTO
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.DocumentDTOExtensions.ProjectToModel(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Project a DocumentDTO to a Document model. This method creates a new Document instance with the same properties as the DocumentDTO,
+            but without the Layers property (which is hydrated at runtime).
+            </summary>
+            <param name="documentDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="T:aspirational_clover.Server.Extensions.LayerDTOExtensions">
+            <summary>
+            Extension methods for LayerDTO
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.LayerDTOExtensions.PopulateShapes(aspirational_clover.Server.DTOs.LayerDTO,System.Collections.Generic.List{aspirational_clover.Server.DTOs.ShapeDTO})">
+            <summary>
+            Populate the shapes using a provided list of shapes. This method creates a new LayerDTO
+            instance with the same properties as the original, but with Shapes property populated
+            based on the provided shapes.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.LayerDTOExtensions.ProjectToModel(aspirational_clover.Server.DTOs.LayerDTO)">
+            <summary>
+            Project a LayerDTO to a Layer model. This method creates a new Layer instance with the same properties as the LayerDTO,
+            but without the Shapes property (which is hydrated at runtime).
+            </summary>
+            <param name="layerDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="T:aspirational_clover.Server.Extensions.ShapeDTOExtensions">
+            <summary>
+            Extension methods for ShapeDTO
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.ShapeDTOExtensions.DestructivelyRemoveShapeIds(aspirational_clover.Server.DTOs.ShapeDTO)">
+            <summary>
+            Destructively set all ID properties of the ShapeDTO and its contained shapes to 0. This is useful for creating a 
+            new shape based on an existing one without retaining any database IDs.
+            </summary>
+            <param name="shapeDTO"></param>
+        </member>
+        <member name="T:aspirational_clover.Server.Extensions.WebApplicationExtensions">
+            <summary>
+            Extension methods for WebApplication
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Extensions.WebApplicationExtensions.SeedTestData(Microsoft.AspNetCore.Builder.WebApplication)">
+            <summary>
+            Seed test data into the AppDbContext when running in Development and when enabled via configuration.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Interfaces.IDocumentService">
+            <summary>
+            Defines a contract for a service that manages documents, including operations to retrieve, create, update,
+            and delete documents along with their associated hydrated layers and shapes.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.GetDocumentsWithLayersAndShapes">
+            <summary>
+            Retrieves all documents along with their associated hydrated layers and shapes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.GetDocumentByIdWithLayersAndShapes(System.Int32)">
+            <summary>
+            Retrieves a specific document by its ID, including its associated hydrated layers and shapes.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.GetDocumentBySlugWithLayersAndShapes(System.String)">
+            <summary>
+            Retrieves a specific document by its slug, including its associated hydrated layers and shapes.
+            </summary>
+            <param name="slug"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.CreateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Creates a new document along with its associated hydrated layers and shapes.
+            </summary>
+            <param name="documentDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.UpdateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Updates an existing document along with its associated hydrated layers and shapes.
+            </summary>
+            <param name="documentDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.DeleteDocument(System.Int32)">
+            <summary>
+            Deletes a document by its ID, along with its associated layers and shapes.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:aspirational_clover.Server.Interfaces.IFillable">
+            <summary>
+            Defines a contract for objects that can have fill properties, including fill colors and fill angle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.IFillable.FillColorFrom">
+            <summary>
+            Gets or sets the starting color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.IFillable.FillColorTo">
+            <summary>
+            Gets or sets the ending color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.IFillable.FillAngle">
+            <summary>
+            Gets or sets the angle of the fill, in degrees.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Interfaces.ILayerable">
+            <summary>
+            Defines a contract for objects that can be associated with a specific layer, providing a LayerId property to identify the layer they belong to.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ILayerable.Id">
+            <summary>
+            Gets or sets the ID of this entity.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ILayerable.LayerId">
+            <summary>
+            Gets or sets the ID of the layer to which the object belongs.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Interfaces.ITransformable">
+            <summary>
+            Defines properties for objects that can be transformed, including rotation and skewing.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ITransformable.RotationAngle">
+            <summary>
+            Gets or sets the rotation angle in degrees for the object.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ITransformable.RotationCenterOffsetX">
+            <summary>
+            Gets or sets the X offset for the rotation center of the object, originating from the standard center point.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ITransformable.RotationCenterOffsetY">
+            <summary>
+            Gets or sets the Y offset for the rotation center of the object, originating from the standard center point.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ITransformable.SkewX">
+            <summary>
+            Gets or sets the skew in degrees along the X-axis for the object.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ITransformable.SkewY">
+            <summary>
+            Gets or sets the skew in degrees along the Y-axis for the object.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Models.Circle">
+            <summary>
+            Represents a circle shape with properties for fill, layer, and transformation.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.Id">
+            <summary>
+            Gets or sets the unique identifier for the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.LayerId">
+            <summary>
+            Gets or sets the ID of the layer to which the circle belongs.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.FillColorFrom">
+            <summary>
+            Gets or sets the starting color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.FillColorTo">
+            <summary>
+            Gets or sets the ending color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.FillAngle">
+            <summary>
+            Gets or sets the angle of the fill, in degrees.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.CenterX">
+            <summary>
+            Gets or sets the X coordinate of the center of the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.CenterY">
+            <summary>
+            Gets or sets the Y coordinate of the center of the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.Radius">
+            <summary>
+            Gets or sets the radius of the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.RotationAngle">
+            <summary>
+            Gets or sets the rotation angle in degrees for the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.RotationCenterOffsetX">
+            <summary>
+            Gets or sets the X offset for the rotation center of the circle, originating from the standard center point.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.RotationCenterOffsetY">
+            <summary>
+            Gets or sets the Y offset for the rotation center of the circle, originating from the standard center point.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.SkewX">
+            <summary>
+            Gets or sets the skew in degrees along the X-axis for the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.SkewY">
+            <summary>
+            Gets or sets the skew in degrees along the Y-axis for the circle.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Models.Document">
+            <summary>
+            Represents a document entity with properties for identification, slug, and timestamps for creation and last update.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Document.Id">
+            <summary>
+            Gets or sets the unique identifier for the document.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Document.DocumentSlug">
+            <summary>
+            Gets or sets the slug for the document, which is a URL-friendly string used to identify the document in a human-readable format.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Document.CreatedAt">
+            <summary>
+            Gets or sets the timestamp indicating when the document was created. This property is set by the server during the initial 
+            creation of the document and is immutable by the client.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Document.LastUpdatedAt">
+            <summary>
+            Gets or sets the timestamp indicating when the document was last updated. This property is set by the server during the
+            initial creation of the document and updates, but should not be modified by the client (any value pushed by the client
+            will be ignored).
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Models.Layer">
+            <summary>
+            Represents a layer within a document, allowing for the organization and management of different elements in a 
+            layered structure. Each layer can have properties such as visibility, name, and z-index for rendering order.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Layer.Id">
+            <summary>
+            The unique ID of this layer.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Layer.DocumentId">
+            <summary>
+            The ID of the document to which this layer belongs.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Layer.Name">
+            <summary>
+            The human-readable name of this layer.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Layer.Hidden">
+            <summary>
+            Whether the layer is hidden; if false or null, the layer is visible.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Layer.ZIndex">
+            <summary>
+            The z-index of this layer. Higher z-index takes priority over lower z-index.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Models.Rectangle">
+            <summary>
+            Represents a rectangle shape with properties for fill, layer, and transformation.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.Id">
+            <summary>
+            Gets or sets the unique identifier for the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.LayerId">
+            <summary>
+            Gets or sets the ID of the layer to which this rectangle belongs.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.FillColorFrom">
+            <summary>
+            Gets or sets the starting color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.FillColorTo">
+            <summary>
+            Gets or sets the ending color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.FillAngle">
+            <summary>
+            Gets or sets the angle of the fill, in degrees.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.X">
+            <summary>
+            Gets or sets the X coordinate of the logical top-left point of the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.Y">
+            <summary>
+            Gets or sets the Y coordinate of the logical top-left point of the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.Width">
+            <summary>
+            Gets or sets the width of the rectangle
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.Height">
+            <summary>
+            Gets or sets the height of the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.RotationAngle">
+            <summary>
+            Gets or sets the rotation angle in degrees for the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.RotationCenterOffsetX">
+            <summary>
+            Gets or sets the X offset for the rotation center of the rectangle, originating from the standard center point.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.RotationCenterOffsetY">
+            <summary>
+            Gets or sets the Y offset for the rotation center of the rectangle, originating from the standard center point.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.SkewX">
+            <summary>
+            Gets or sets the skew in degrees along the X-axis for the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.SkewY">
+            <summary>
+            Gets or sets the skew in degrees along the Y-axis for the rectangle.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Models.TextBox">
+            <summary>
+            Represents a text box with formatted text.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.Id">
+            <summary>
+            Gets or sets the unique ID for this text box.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.LayerId">
+            <summary>
+            Gets or sets the ID of the layer to which this text box belongs.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.Content">
+            <summary>
+            The text content, represented as a JSON string which may be interpreted from the front-end as a
+            rich text editor content. The server does not mutate this property; it is managed entirely
+            by the client.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Program">
+            <summary>
+            Root Program class for the application.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Program.Main(System.String[])">
+            <summary>
+            Main method defining application start-up.
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="T:aspirational_clover.Server.Services.DocumentService">
+            <summary>
+            Implementation of the service to manage documents, including create, read, update, and delete, accounting
+            for the hydrated layers and shapes in all methods.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.#ctor(aspirational_clover.Server.Data.AppDbContext)">
+            <summary>
+            Constructor for DocumentService
+            </summary>
+            <param name="db"></param>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.getShapes(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Get shapes, either by a list of layers or globally.
+            </summary>
+            <param name="layerIDs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.GetDocumentsWithLayersAndShapes">
+            <summary>
+            Retrieves all documents along with their associated hydrated layers and shapes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.GetDocumentByIdWithLayersAndShapes(System.Int32)">
+            <summary>
+            Retrieves a specific document by its ID, including its associated hydrated layers and shapes.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.GetDocumentBySlugWithLayersAndShapes(System.String)">
+            <summary>
+            Retrieves a specific document by its slug, including its associated hydrated layers and shapes.
+            </summary>
+            <param name="slug"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.CreateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Creates a new document along with its associated hydrated layers and shapes.
+            </summary>
+            <param name="documentDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.UpdateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Updates an existing document along with its associated hydrated layers and shapes.
+            </summary>
+            <param name="documentDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.DocumentService.DeleteDocument(System.Int32)">
+            <summary>
+            Deletes a document by its ID, along with its associated layers and shapes.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
+            <summary>
+            Generates a documentation comment ID for a type.
+            Example: T:Namespace.Outer+Inner`1 becomes T:Namespace.Outer.Inner`1
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.PropertyInfo)">
+            <summary>
+            Generates a documentation comment ID for a property.
+            Example: P:Namespace.ContainingType.PropertyName or for an indexer P:Namespace.ContainingType.Item(System.Int32)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type,System.String)">
+            <summary>
+            Generates a documentation comment ID for a property given its container type and property name.
+            Example: P:Namespace.ContainingType.PropertyName
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.MethodInfo)">
+            <summary>
+            Generates a documentation comment ID for a method (or constructor).
+            For example:
+              M:Namespace.ContainingType.MethodName(ParamType1,ParamType2)~ReturnType
+              M:Namespace.ContainingType.#ctor(ParamType)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.GetTypeDocId(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a documentation ID string for a type.
+            This method handles nested types (replacing '+' with '.'),
+            generic types, arrays, pointers, by-ref types, and generic parameters.
+            The <paramref name="includeGenericArguments"/> flag controls whether
+            constructed generic type arguments are emitted, while <paramref name="omitGenericArity"/>
+            controls whether the generic arity marker (e.g. "`1") is appended.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.NormalizeDocId(System.String)">
+            <summary>
+            Normalizes a documentation comment ID to match the compiler-style format.
+            Strips the return type suffix for ordinary methods but retains it for conversion operators.
+            </summary>
+            <param name="docId">The documentation comment ID to normalize.</param>
+            <returns>The normalized documentation comment ID.</returns>
+        </member>
+    </members>
+</doc>

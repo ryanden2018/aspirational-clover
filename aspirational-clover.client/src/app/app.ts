@@ -1,11 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
+interface Layer {
+  id: number;
+  documentId: number;
+  name: string;
+  hidden: boolean;
+  zIndex: number;
+}
+
+interface Document {
+  id: number;
+  documentSlug: string;
+  createdAt: string;
+  lastUpdatedAt: string;
+  layers: Layer[];
 }
 
 @Component({
@@ -16,26 +25,26 @@ interface WeatherForecast {
 })
 export class App implements OnInit {
   // null = not loaded yet, [] = loaded but empty
-  public forecasts: WeatherForecast[] | null = null;
+  public documents: Document[] | null = null;
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.getForecasts();
+    this.getDocuments();
   }
 
-  getForecasts() {
-    this.http.get<WeatherForecast[]>('/weatherforecast').subscribe(
+  getDocuments() {
+    this.http.get<Document[]>('/document').subscribe(
       (result) => {
-        console.log('weatherforecast result', result);
-        this.forecasts = result;
+        console.log('document result', result);
+        this.documents = result;
         // Ensure the UI updates if change detection did not run for some reason
         try { this.cdr.detectChanges(); } catch {}
       },
       (error) => {
         console.error(error);
         // mark as loaded but empty to show a helpful message in the UI
-        this.forecasts = [];
+        this.documents = [];
       }
     );
   }

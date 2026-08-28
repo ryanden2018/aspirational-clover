@@ -1,14 +1,23 @@
 
 using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Data;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+
 using aspirational_clover.Server.Extensions;
+using aspirational_clover.Server.Services;
+using aspirational_clover.Server.Interfaces;
+using Scalar.AspNetCore;
 
 namespace aspirational_clover.Server;
 
+/// <summary>
+/// Root Program class for the application.
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// Main method defining application start-up.
+    /// </summary>
+    /// <param name="args"></param>
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +59,10 @@ public class Program
             }
         }
 
+        builder.Services.AddTransient<IDocumentService>(
+            provider => new DocumentService(provider.GetRequiredService<AppDbContext>())
+        );
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
@@ -64,10 +77,10 @@ public class Program
         app.UseDefaultFiles();
         app.MapStaticAssets();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (env.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference();
         }
 
         app.UseHttpsRedirection();
