@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net.Http;
+using aspirational_clover.Server.DTOs;
 
 namespace aspirational_clover.Tests;
 
@@ -38,13 +39,52 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
     {
         var client = _factory.CreateClient();
 
-        var newItem = new
+        var initialRotationAngle = 125;
+
+        var getNewItem = (int rotationAngle, int documentId, int layerId, int circleId) => new
         {
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
-            TemperatureC = 42,
-            Summary = "Integration Test"
+            Id = documentId,
+            DocumentSlug = "test-doc",
+            CreatedAt = DateTime.UtcNow,
+            LastUpdatedAt = DateTime.UtcNow,
+            Layers = new[]
+            {
+                new
+                {
+                    Id = layerId,
+                    DocumentId = documentId,
+                    Name = "layer-1",
+                    Hidden = false,
+                    ZIndex = 0,
+                    Shapes = new[]
+                    {
+                        new
+                        {
+                            Circle = new
+                            {
+                                Id = circleId,
+                                LayerId = layerId,
+                                FillColorFrom = "#FF0000",
+                                FillColorTo = "#A1A1A1",
+                                FillAngle = 220,
+                                CenterX = 30,
+                                CenterY = 20,
+                                Radius = 5,
+                                RotationAngle = rotationAngle,
+                                RotationCenterOffsetX = 2,
+                                RotationCenterOffsetY = 3,
+                                SkewX = -32,
+                                SkewY = 41
+                            },
+                        }
+                    }
+                }
+            }
         };
 
+        var newItem = getNewItem(initialRotationAngle, 0, 0, 0);
+
+        // POST newItem
         var json = JsonSerializer.Serialize(newItem);
         var postRes = await client.PostAsync("/Document", new StringContent(json, Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.Created, postRes.StatusCode);
@@ -52,19 +92,21 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         var createdBody = await postRes.Content.ReadAsStringAsync();
         using var createdDoc = JsonDocument.Parse(createdBody);
         var id = createdDoc.RootElement.GetProperty("id").GetInt32();
+        var layerId = createdDoc.RootElement.GetProperty("layers")[0].GetProperty("id").GetInt32();
+        var circleId = createdDoc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("id").GetInt32();
 
         // GET by id
         var getRes = await client.GetAsync($"/Document/{id}");
         Assert.Equal(HttpStatusCode.OK, getRes.StatusCode);
 
+        var getBody = await getRes.Content.ReadAsStringAsync();
+        using var getDoc = JsonDocument.Parse(getBody);
+        Assert.Equal(getDoc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetInt32(),
+            initialRotationAngle);
+
         // PUT update
-        var updated = new
-        {
-            Id = id,
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(8)),
-            TemperatureC = 10,
-            Summary = "Updated"
-        };
+        var updateRotationAngle = 87;
+        var updated = getNewItem(updateRotationAngle, id, layerId, circleId);
 
         var putJson = JsonSerializer.Serialize(updated);
         var putRes = await client.PutAsync($"/Document/{id}", new StringContent(putJson, Encoding.UTF8, "application/json"));
@@ -74,7 +116,9 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         Assert.Equal(HttpStatusCode.OK, getRes2.StatusCode);
         var getBody2 = await getRes2.Content.ReadAsStringAsync();
         using var getDoc2 = JsonDocument.Parse(getBody2);
-        Assert.Equal("Updated", getDoc2.RootElement.GetProperty("summary").GetString());
+
+        Assert.Equal(getDoc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetInt32(),
+            updateRotationAngle);
 
         // DELETE
         var delRes = await client.DeleteAsync($"/Document/{id}");

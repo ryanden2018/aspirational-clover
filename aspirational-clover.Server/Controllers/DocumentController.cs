@@ -82,6 +82,9 @@ public class DocumentController : ControllerBase
         // Ensure id is not set by client
         model.Id = 0;
 
+        // Ensure slug is not set by the client
+        model.DocumentSlug = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+
         if (model.Layers != null)
         {
             foreach (var layer in model.Layers)
@@ -117,7 +120,7 @@ public class DocumentController : ControllerBase
         if (id != model.Id) return BadRequest("ID mismatch");
         var updated = await _documentService.UpdateDocument(model);
         await _db.SaveChangesAsync();
-        return Ok(updated);
+        return NoContent();
     }
 
     /// <summary>

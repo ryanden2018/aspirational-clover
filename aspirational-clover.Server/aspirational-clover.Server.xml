@@ -111,28 +111,6 @@
             fully hydrated document data between the server and client while ensuring immutability of certain fields (eg CreatedAt).
             </summary>
         </member>
-        <member name="P:aspirational_clover.Server.DTOs.DocumentDTO.Id">
-            <summary>
-            Gets or sets the unique identifier for the document.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.DocumentDTO.DocumentSlug">
-            <summary>
-            Gets or sets the slug for the document, which is a URL-friendly string that uniquely identifies the document.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.DocumentDTO.CreatedAt">
-            <summary>
-            Gets or sets the timestamp indicating when the document was created. This property is immutable by the client and
-            is set by the server during the initial creation of the document.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.DocumentDTO.LastUpdatedAt">
-            <summary>
-            Gets or sets the timestamp indicating when the document was last updated. This property is also immutable by the client
-            but will be automatically updated by the server whenever the document is modified.
-            </summary>
-        </member>
         <member name="P:aspirational_clover.Server.DTOs.DocumentDTO.Layers">
             <summary>
             Gets or sets the list of layers associated with the document. Each layer is represented by a LayerDTO object, which contains
@@ -149,39 +127,15 @@
             </summary>
             <param name="document"></param>
         </member>
+        <member name="M:aspirational_clover.Server.DTOs.DocumentDTO.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
         <member name="T:aspirational_clover.Server.DTOs.LayerDTO">
             <summary>
             Represents a data transfer object (DTO) for a Layer, encapsulating its 
             properties and associated shapes for use in API responses or other data transfer scenarios.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.LayerDTO.Id">
-            <summary>
-            Gets or sets the unique identifier for the layer.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.LayerDTO.DocumentId">
-            <summary>
-            Gets or sets the unique identifier of the document to which this layer belongs.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.LayerDTO.Name">
-            <summary>
-            Gets or sets the name of the layer, which can be used for display purposes or identification within the document.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.LayerDTO.Hidden">
-            <summary>
-            Gets or sets a value indicating whether the layer is hidden. A value of true indicates that the layer is 
-            hidden, while false indicates that it is visible. If null, the visibility state is unspecified but can be
-            rendered as visible in the client.
-            </summary>
-        </member>
-        <member name="P:aspirational_clover.Server.DTOs.LayerDTO.ZIndex">
-            <summary>
-            Gets or sets the Z-index of the layer, which determines its stacking order relative to other layers.
-            A higher Z-index value indicates that the layer is rendered above layers with lower Z-index values.
-            If null, the Z-index is unspecified and may be treated as 0 in rendering.
             </summary>
         </member>
         <member name="P:aspirational_clover.Server.DTOs.LayerDTO.Shapes">
@@ -198,6 +152,11 @@
             of hydrating nested objects in the constructor, which can lead to performance issues and circular dependencies.
             </summary>
             <param name="layer"></param>
+        </member>
+        <member name="M:aspirational_clover.Server.DTOs.LayerDTO.#ctor">
+            <summary>
+            Default constructor
+            </summary>
         </member>
         <member name="T:aspirational_clover.Server.DTOs.ShapeDTO">
             <summary>
