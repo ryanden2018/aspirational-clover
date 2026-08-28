@@ -117,7 +117,7 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         var getBody2 = await getRes2.Content.ReadAsStringAsync();
         using var getDoc2 = JsonDocument.Parse(getBody2);
 
-        Assert.Equal(getDoc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetInt32(),
+        Assert.Equal(getDoc2.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetInt32(),
             updateRotationAngle);
 
         // DELETE
