@@ -7,11 +7,11 @@ import { AppDocument } from "../types";
   providedIn: "root"
 })
 export class DocumentService {
-  private apiDocumentUrl = "/document";
+  private _apiDocumentUrl = "/document";
 
   constructor(private http: HttpClient) { }
 
   getDocuments(): Observable<AppDocument[]> {
-    return this.http.get<AppDocument[]>(this.apiDocumentUrl);
+    return this.http.get<AppDocument[]>(this._apiDocumentUrl);
   }
 }

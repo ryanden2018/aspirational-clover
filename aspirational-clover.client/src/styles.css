@@ -1,1 +1,52 @@
 /* You can add global styles to this file, and also import other style files */
+
+button.styled-button {
+  border: none;
+  padding: 12px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button.styled-button:hover {
+}
+
+button.styled-button:active {
+}
+
+button.styled-button:focus {
+}
+
+button.styled-button-light {
+    background-color: #000000;
+    border-color: #000000;
+    color: #000000;
+}
+
+button.styled-button-light:hover {
+}
+
+button.styled-button-light:active {
+}
+
+button.styled-button-light:focus {
+}
+
+button.styled-button-dark {
+  background-color: #000000;
+  border-color: #000000;
+  color: #000000;
+}
+
+button.styled-button-dark:hover {
+}
+
+button.styled-button-dark:active {
+}
+
+button.styled-button-dark:focus {
+}
