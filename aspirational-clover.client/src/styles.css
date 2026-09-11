@@ -2,51 +2,73 @@
 
 button.styled-button {
   border: none;
-  padding: 12px 24px;
+  padding: 5px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin: 2px;
   cursor: pointer;
   border-radius: 4px;
 }
 
 button.styled-button:hover {
+  border: 1px solid;
 }
 
 button.styled-button:active {
+  border: 1px solid;
 }
 
 button.styled-button:focus {
+  border: 1px solid;
+  outline: 1px solid lightblue;
 }
 
 button.styled-button-light {
-    background-color: #000000;
-    border-color: #000000;
-    color: #000000;
+  background-color: #e6e6e6;
+  border-color: #999999;
+  color: #333333;
 }
 
 button.styled-button-light:hover {
+  background-color: #cccccc;
+  border-color: #999999;
+  color: #333333;
 }
 
 button.styled-button-light:active {
+  background-color: #b3b3b3;
+  border-color: #999999;
+  color: #333333;
 }
 
 button.styled-button-light:focus {
+  background-color: #cccccc;
+  border-color: #999999;
+  color: #333333;
 }
 
 button.styled-button-dark {
-  background-color: #000000;
-  border-color: #000000;
-  color: #000000;
+  background-color: #191919;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
 }
 
 button.styled-button-dark:hover {
+  background-color: #333333;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
 }
 
 button.styled-button-dark:active {
+  background-color: #4d4d4d;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
 }
 
 button.styled-button-dark:focus {
+  background-color: #333333;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
 }
