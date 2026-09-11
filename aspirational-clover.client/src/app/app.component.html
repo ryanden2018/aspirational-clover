@@ -3,11 +3,10 @@
 <p>This component demonstrates fetching data from the server.</p>
 
 <ng-template #noData>
-  <p *ngIf="documents === null"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
-  <p *ngIf="documents !== null && documents.length === 0"><em>No forecasts returned from the server.</em></p>
-  </ng-template>
+  <p *ngIf="documents().length === 0"><em>No forecasts returned from the server.</em></p>
+</ng-template>
 
-<table *ngIf="documents && documents.length > 0; else noData">
+<table *ngIf="documents().length > 0">
     <thead>
         <tr>
             <th>Id</th>
@@ -17,7 +16,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let document of documents">
+        <tr *ngFor="let document of documents()">
             <td>{{ document.id }}</td>
             <td>{{ document.documentSlug }}</td>
             <td>{{ document.createdAt }}</td>
@@ -26,8 +25,8 @@
     </tbody>
 </table>
 
-<div *ngIf="documents && documents.length > 0; else noData">
-  <table *ngFor="let document of documents">
+<div *ngIf="documents().length > 0">
+  <table *ngFor="let document of documents()">
     <thead>
       <tr>
         <th>Id</th>

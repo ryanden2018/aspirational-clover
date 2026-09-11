@@ -14,19 +14,20 @@ import { AppDocument } from "../types";
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  // null = not loaded yet, [] = loaded but empty
-  public documents: AppDocument[] | null = null;
+  public documents = signal<AppDocument[]>([]);
 
   constructor(private documentService: DocumentService) {}
 
   ngOnInit() {
     this.documentService.getDocuments().subscribe({
-      next: (docs) => this.documents = docs,
+      next: (docs) => {
+        this.documents.set(docs);
+      },
       error: (err) => {
         console.error('Error fetching documents:', err);
-        this.documents = [];
+        this.documents.set([]);
       }
-    })
+    });
   }
 
   protected readonly title = signal('aspirational-clover.client');
