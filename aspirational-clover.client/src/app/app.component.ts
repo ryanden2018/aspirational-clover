@@ -10,16 +10,16 @@ import { AppDocument } from "../types";
   imports: [
     //RouterOutlet,
     CommonModule],
-  styleUrls: ['./app.css'],
+  styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
   public documents = signal<AppDocument[]>([]);
 
-  constructor(private documentService: DocumentService) {}
+  constructor(private _documentService: DocumentService) {}
 
   ngOnInit() {
-    this.documentService.getDocuments().subscribe({
+    this._documentService.getDocuments().subscribe({
       next: (docs) => {
         this.documents.set(docs);
       },

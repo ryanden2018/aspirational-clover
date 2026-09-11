@@ -45,4 +45,4 @@ describe('AppComponent', () => {
 
     expect(component.documents).toEqual(mockForecasts);
   });
-};
+});
