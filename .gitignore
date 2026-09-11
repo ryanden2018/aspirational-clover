@@ -2,5 +2,4 @@
 Debug/
 debug/
 obj/
-**/wwwroot/*.html
-**/wwwroot/*.js
+wwwroot/
