@@ -1,16 +1,19 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+//  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { App } from './app';
+import { AppComponent } from './app.component';
 
-describe('App', () => {
-  let component: App;
-  let fixture: ComponentFixture<App>;
+describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [App],
-      imports: [HttpClientTestingModule]
+      declarations: [AppComponent],
+      // imports: [HttpClientTestingModule]
     }).compileComponents();
   });
 
@@ -40,6 +43,6 @@ describe('App', () => {
     expect(req.request.method).toEqual('GET');
     req.flush(mockForecasts);
 
-    expect(component.forecasts).toEqual(mockForecasts);
+    expect(component.documents).toEqual(mockForecasts);
   });
 };
