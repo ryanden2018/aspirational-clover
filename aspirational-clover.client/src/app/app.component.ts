@@ -4,13 +4,16 @@ import { CommonModule } from '@angular/common';
 
 import { DocumentService } from './document.service';
 import { AppDocument } from "../types";
+import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     //RouterOutlet,
-    CommonModule],
+    CommonModule,
+    ToolBarComponent
+  ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
 })
