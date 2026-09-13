@@ -16,6 +16,13 @@ export class ToolBarComponent {
   resources = viewChild<ResourcesComponent>(ResourcesComponent);
   saveIcon = computed(() => this.resources()?.saveIcon?.());
   newWindowIcon = computed(() => this.resources()?.newWindowIcon?.());
+  undoIcon = computed(() => this.resources()?.undoIcon?.());
+  redoIcon = computed(() => this.resources()?.redoIcon?.());
+  contentCopyIcon = computed(() => this.resources()?.contentCopyIcon?.());
+  contentPasteIcon = computed(() => this.resources()?.contentPasteIcon?.());
+  rectangleIcon = computed(() => this.resources()?.rectangleIcon?.());
+  circleIcon = computed(() => this.resources()?.circleIcon?.());
+  addNotesIcon = computed(() => this.resources()?.addNotesIcon?.());
 
   constructor(private _themeService: ThemeService) {}
 }
