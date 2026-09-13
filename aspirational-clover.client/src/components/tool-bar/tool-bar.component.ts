@@ -9,7 +9,7 @@ import { ResourcesComponent } from "../resources/resources.component";
   standalone: true,
   styleUrls: ['./tool-bar.component.css'],
   templateUrl: './tool-bar.component.html',
-  imports: [NgTemplateOutlet]
+  imports: [NgTemplateOutlet, ResourcesComponent]
 })
 export class ToolBarComponent {
   buttonClassName = computed(() => this._themeService.classNames().button);
