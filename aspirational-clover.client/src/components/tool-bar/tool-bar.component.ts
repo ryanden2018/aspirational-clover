@@ -13,7 +13,9 @@ import { ResourcesComponent } from "../resources/resources.component";
 })
 export class ToolBarComponent {
   buttonClassName = computed(() => this._themeService.classNames().button);
-  templateSource = viewChild(ResourcesComponent);
+  resources = viewChild<ResourcesComponent>(ResourcesComponent);
+  saveIcon = computed(() => this.resources()?.saveIcon?.());
+  newWindowIcon = computed(() => this.resources()?.newWindowIcon?.());
 
-  constructor(private _themeService: ThemeService) { }
+  constructor(private _themeService: ThemeService) {}
 }
