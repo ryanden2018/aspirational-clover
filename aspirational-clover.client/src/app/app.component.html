@@ -2,6 +2,10 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
+<div style="border:solid;border-width:2px;border-color:green;display:flex;width:fit-content;height:fit-content">
+  <app-tool-bar></app-tool-bar>
+</div>
+
 <ng-template #noData>
   <p *ngIf="documents().length === 0"><em>No forecasts returned from the server.</em></p>
 </ng-template>

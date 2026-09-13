@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 button.styled-button {
-  border: none;
+  border: 1px solid;
+  border-color: transparent;
   padding: 5px;
   text-align: center;
   text-decoration: none;
@@ -12,22 +13,12 @@ button.styled-button {
   border-radius: 4px;
 }
 
-button.styled-button:hover {
-  border: 1px solid;
-}
-
-button.styled-button:active {
-  border: 1px solid;
-}
-
 button.styled-button:focus {
-  border: 1px solid;
   outline: 1px solid lightblue;
 }
 
 button.styled-button-light {
   background-color: #e6e6e6;
-  border-color: #999999;
   color: #333333;
 }
 
@@ -51,7 +42,6 @@ button.styled-button-light:focus {
 
 button.styled-button-dark {
   background-color: #191919;
-  border-color: #4d4d4d;
   color: #e6e6e6;
 }
 
