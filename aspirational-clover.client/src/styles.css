@@ -3,14 +3,15 @@
 button.styled-button {
   border: 1px solid;
   border-color: transparent;
-  padding: 5px;
-  text-align: center;
+  padding: 0px;
   text-decoration: none;
-  display: inline-block;
+  display: flex;
   font-size: 16px;
-  margin: 2px;
+  margin: 0px;
   cursor: pointer;
   border-radius: 4px;
+  align-items: center;
+  justify-content: center;
 }
 
 button.styled-button:focus {
@@ -19,6 +20,12 @@ button.styled-button:focus {
 
 button.styled-button-light {
   background-color: #e6e6e6;
+  color: #333333;
+}
+
+button.styled-button-light:focus {
+  background-color: #cccccc;
+  border-color: #999999;
   color: #333333;
 }
 
@@ -34,14 +41,14 @@ button.styled-button-light:active {
   color: #333333;
 }
 
-button.styled-button-light:focus {
-  background-color: #cccccc;
-  border-color: #999999;
-  color: #333333;
-}
-
 button.styled-button-dark {
   background-color: #191919;
+  color: #e6e6e6;
+}
+
+button.styled-button-dark:focus {
+  background-color: #333333;
+  border-color: #4d4d4d;
   color: #e6e6e6;
 }
 
@@ -53,12 +60,6 @@ button.styled-button-dark:hover {
 
 button.styled-button-dark:active {
   background-color: #4d4d4d;
-  border-color: #4d4d4d;
-  color: #e6e6e6;
-}
-
-button.styled-button-dark:focus {
-  background-color: #333333;
   border-color: #4d4d4d;
   color: #e6e6e6;
 }
