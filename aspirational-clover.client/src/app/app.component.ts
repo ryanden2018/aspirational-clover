@@ -1,10 +1,12 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, viewChild } from '@angular/core';
 //import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { DocumentService } from './document.service';
 import { AppDocument } from "../types";
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
+import { ResourcesComponent } from "../components/resources/resources.component";
+import { ResourcesService } from "./resources.service";
 
 @Component({
   selector: 'app-root',
@@ -12,15 +14,21 @@ import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
   imports: [
     //RouterOutlet,
     CommonModule,
-    ToolBarComponent
+    ToolBarComponent,
+    ResourcesComponent
   ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
   public documents = signal<AppDocument[]>([]);
+  private _resources = viewChild<ResourcesComponent>(ResourcesComponent);
 
-  constructor(private _documentService: DocumentService) {}
+  constructor(private _documentService: DocumentService, private _resourcesService: ResourcesService) {
+    // Subscribe icons etc so we only need to import the template once.
+    // DO NOT place this line in ngOnInit(), it will throw a runtime eror (NG0203).
+    this._resourcesService.subscribeResources(this._resources);
+  }
 
   ngOnInit() {
     this._documentService.getDocuments().subscribe({
