@@ -16,5 +16,6 @@ export class ThemeService {
 
   classNames = computed(() => ({
     "button": `styled-button ${this._mode() === "light" ? "styled-button-light" : "styled-button-dark"}`,
+    "toolBar": `app-tool-bar ${this._mode() === "light" ? "app-tool-bar-light" : "app-tool-bar-dark"}`,
   }));
 }

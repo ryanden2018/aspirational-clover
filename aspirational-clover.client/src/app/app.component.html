@@ -1,12 +1,12 @@
 <app-resources></app-resources>
 
-
-
-<div style="border:solid;border-width:2px;border-color:green;display:flex;width:fit-content;height:fit-content;padding:4px;column-gap:4px">
-  <app-tool-bar></app-tool-bar>
+<div [class]="appToolBarClassName()">
+  <div class="app-tool-bar-inner">
+    <app-tool-bar></app-tool-bar>
+  </div>
 </div>
 
-<div style="flex:1;overflow-y:scroll;height:100vh;display:flex;flex-direction:column;align-items:center">
+<div class="app-body">
   <h1 id="tableLabel">Documents</h1>
 
   <p>This component demonstrates fetching data from the server.</p>
