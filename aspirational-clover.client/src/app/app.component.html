@@ -1,55 +1,60 @@
 <app-resources></app-resources>
 
-<h1 id="tableLabel">Documents</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
 <div style="border:solid;border-width:2px;border-color:green;display:flex;width:fit-content;height:fit-content;padding:4px;column-gap:4px">
   <app-tool-bar></app-tool-bar>
 </div>
 
-<ng-template #noData>
-  <p *ngIf="documents().length === 0"><em>No forecasts returned from the server.</em></p>
-</ng-template>
+<div style="flex:1;overflow-y:scroll;height:100vh;display:flex;flex-direction:column;align-items:center">
+  <h1 id="tableLabel">Documents</h1>
 
-<table *ngIf="documents().length > 0">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>DocumentSlug</th>
-            <th>CreatedAt</th>
-            <th>LastUpdatedAt</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let document of documents()">
-            <td>{{ document.id }}</td>
-            <td>{{ document.documentSlug }}</td>
-            <td>{{ document.createdAt }}</td>
-            <td>{{ document.lastUpdatedAt }}</td>
-        </tr>
-    </tbody>
-</table>
+  <p>This component demonstrates fetching data from the server.</p>
 
-<div *ngIf="documents().length > 0">
-  <table *ngFor="let document of documents()">
+
+  <ng-template #noData>
+    <p *ngIf="documents().length === 0"><em>No forecasts returned from the server.</em></p>
+  </ng-template>
+
+  <table *ngIf="documents().length > 0">
     <thead>
       <tr>
         <th>Id</th>
-        <th>DocumentId</th>
-        <th>Name</th>
-        <th>Hidden</th>
-        <th>Z-Index</th>
+        <th>DocumentSlug</th>
+        <th>CreatedAt</th>
+        <th>LastUpdatedAt</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let layer of document.layers">
-        <td>{{ layer.id }}</td>
-        <td>{{ layer.documentId }}</td>
-        <td>{{ layer.name }}</td>
-        <td>{{ layer.hidden }}</td>
-        <td>{{ layer.zIndex }}</td>
+      <tr *ngFor="let document of documents()">
+        <td>{{ document.id }}</td>
+        <td>{{ document.documentSlug }}</td>
+        <td>{{ document.createdAt }}</td>
+        <td>{{ document.lastUpdatedAt }}</td>
       </tr>
     </tbody>
   </table>
+
+  <div *ngIf="documents().length > 0">
+    <table *ngFor="let document of documents()">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>DocumentId</th>
+          <th>Name</th>
+          <th>Hidden</th>
+          <th>Z-Index</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let layer of document.layers">
+          <td>{{ layer.id }}</td>
+          <td>{{ layer.documentId }}</td>
+          <td>{{ layer.name }}</td>
+          <td>{{ layer.hidden }}</td>
+          <td>{{ layer.zIndex }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

@@ -1,7 +1,6 @@
-﻿:host {
-    max-width: 1280px;
-    padding: 2rem;
-    text-align: center;
+:host {
+    display: flex;
+    flex-direction: row;
 }
 
 th, td {
