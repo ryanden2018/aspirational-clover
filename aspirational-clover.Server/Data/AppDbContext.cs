@@ -38,5 +38,10 @@ public class AppDbContext : DbContext
     /// Gets the DbSet for TextBox entities, allowing CRUD operations on the TextBoxes table in the database.
     /// </summary>
     public DbSet<TextBox> TextBoxes => Set<TextBox>();
+
+    /// <summary>
+    /// Gets the DbSet for Polyline entities, allowing CRUD opreations on the Polylines table in the database.
+    /// </summary>
+    public DbSet<Polyline> Polylines => Set<Polyline>();
 }
 

@@ -16,6 +16,11 @@ public class Document
     public string? DocumentSlug { get; set; }
 
     /// <summary>
+    /// Gets or sets the friendly name of the document (unlike the slug, this need not be globally unique).
+    /// </summary>
+    public string? Name { get; set; }
+
+    /// <summary>
     /// Gets or sets the timestamp indicating when the document was created. This property is set by the server during the initial 
     /// creation of the document and is immutable by the client.
     /// </summary>

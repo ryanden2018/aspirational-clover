@@ -93,6 +93,11 @@
             Gets the DbSet for TextBox entities, allowing CRUD operations on the TextBoxes table in the database.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Data.AppDbContext.Polylines">
+            <summary>
+            Gets the DbSet for Polyline entities, allowing CRUD opreations on the Polylines table in the database.
+            </summary>
+        </member>
         <member name="T:aspirational_clover.Server.DTOs.DocumentContainerDTO">
             <summary>
             Represents a container for a collection of DocumentDTO objects,
@@ -183,6 +188,11 @@
             Gets or sets the TextBox shape data. If this property is non-null, it indicates that the shape represented by this DTO is a TextBox.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.Polyline">
+            <summary>
+            Gets or sets the Polyline shape data. If this property is non-null, it indicates that the shape represented by this DTO is a Polyline.
+            </summary>
+        </member>
         <member name="P:aspirational_clover.Server.DTOs.ShapeDTO.LayerId">
             <summary>
             Gets or sets the ID of the layer to which the shape belongs. This property is a convenience field that allows for easy 
@@ -190,7 +200,7 @@
             shape property (Circle, Rectangle, TextBox, ...) and should match the LayerId of that shape.
             </summary>
         </member>
-        <member name="M:aspirational_clover.Server.DTOs.ShapeDTO.#ctor(aspirational_clover.Server.Models.Circle,aspirational_clover.Server.Models.Rectangle,aspirational_clover.Server.Models.TextBox)">
+        <member name="M:aspirational_clover.Server.DTOs.ShapeDTO.#ctor(aspirational_clover.Server.Models.Circle,aspirational_clover.Server.Models.Rectangle,aspirational_clover.Server.Models.TextBox,aspirational_clover.Server.Models.Polyline)">
             <summary>
             Initializes a new instance of the ShapeDTO class with the specified shape data. The constructor accepts optional parameters
             for Circle, Rectangle, and TextBox shapes (but only one shape should be non-null). It sets the corresponding shape property 
@@ -199,6 +209,7 @@
             <param name="circle"></param>
             <param name="rectangle"></param>
             <param name="textBox"></param>
+            <param name="polyline"></param>
         </member>
         <member name="T:aspirational_clover.Server.Extensions.DocumentContainerDTOExtensions">
             <summary>
@@ -465,6 +476,11 @@
             Gets or sets the slug for the document, which is a URL-friendly string used to identify the document in a human-readable format.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Models.Document.Name">
+            <summary>
+            Gets or sets the friendly name of the document (unlike the slug, this need not be globally unique).
+            </summary>
+        </member>
         <member name="P:aspirational_clover.Server.Models.Document.CreatedAt">
             <summary>
             Gets or sets the timestamp indicating when the document was created. This property is set by the server during the initial 
@@ -507,6 +523,45 @@
         <member name="P:aspirational_clover.Server.Models.Layer.ZIndex">
             <summary>
             The z-index of this layer. Higher z-index takes priority over lower z-index.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Models.Polyline">
+            <summary>
+            Represents a rectangle shape with properties for fill, layer, and transformation.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.Id">
+            <summary>
+            Gets or sets the unique identifier for the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.LayerId">
+            <summary>
+            Gets or sets the ID of the layer to which this rectangle belongs.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.FillColorFrom">
+            <summary>
+            Gets or sets the starting color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.FillColorTo">
+            <summary>
+            Gets or sets the ending color of the fill, represented as a string (e.g., hex code or color name).
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.FillAngle">
+            <summary>
+            Gets or sets the angle of the fill, in degrees.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.Coords">
+            <summary>
+            Gets or sets the coordinates as a JSON string, eg:
+               Coords == "{'coords': [{'x':3,'y':4}, {'x':1,'y':2.25}, {'x':19,'y':25}]"
+            It is closed precisely if the last array element is identical to the first (the client handles snapping).
+            There is no logical bound to the length of the coordinate array. However, it is stored in the
+            DB as a simple JSON string as above.
             </summary>
         </member>
         <member name="T:aspirational_clover.Server.Models.Rectangle">

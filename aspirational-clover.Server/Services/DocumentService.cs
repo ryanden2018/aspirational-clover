@@ -33,12 +33,14 @@ public class DocumentService : IDocumentService
     private async Task<IEnumerable<ShapeDTO>> getShapes(List<int>? layerIDs)
     {
         var circles = (await _db.Circles.Where(c => layerIDs == null || layerIDs.Contains(c.LayerId)).ToListAsync())
-                .Select(c => new ShapeDTO(c, null, null));
+                .Select(c => new ShapeDTO(c, null, null, null));
         var rectangles = (await _db.Rectangles.Where(r => layerIDs == null || layerIDs.Contains(r.LayerId)).ToListAsync())
-                .Select(r => new ShapeDTO(null, r, null));
+                .Select(r => new ShapeDTO(null, r, null, null));
         var textBoxes = (await _db.TextBoxes.Where(t => layerIDs == null || layerIDs.Contains(t.LayerId)).ToListAsync())
-                .Select(t => new ShapeDTO(null, null, t));
-        return circles.Concat(rectangles).Concat(textBoxes);
+                .Select(t => new ShapeDTO(null, null, t, null));
+        var polylines = (await _db.Polylines.Where(p => layerIDs == null || layerIDs.Contains(p.LayerId)).ToListAsync())
+                .Select(p => new ShapeDTO(null, null, null, p));
+        return circles.Concat(rectangles).Concat(textBoxes).Concat(polylines);
     }
 
     private void CreateShapeFromDTO(int layerId, ShapeDTO shapeDTO)
@@ -47,6 +49,7 @@ public class DocumentService : IDocumentService
         CreateShape(layerId, shapeDTO.Circle, c => _db.Circles.Add(c));
         CreateShape(layerId, shapeDTO.Rectangle, r => _db.Rectangles.Add(r));
         CreateShape(layerId, shapeDTO.TextBox, t => _db.TextBoxes.Add(t));
+        CreateShape(layerId, shapeDTO.Polyline, p => _db.Polylines.Add(p));
     }
 
     private void DeleteShapes(List<ShapeDTO> shapes)
@@ -54,6 +57,7 @@ public class DocumentService : IDocumentService
         _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => new Circle { Id = s.Circle?.Id ?? 0 }));
         _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => new Rectangle { Id = s.Rectangle?.Id ?? 0 }));
         _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => new TextBox { Id = s.TextBox?.Id ?? 0 }));
+        _db.Polylines.RemoveRange(shapes.Where(s => s?.Polyline != null).Select(s => new Polyline { Id = s.TextBox?.Id ?? 0 }));
     }
 
     private void UpdateLayerIds(int layerId, List<ShapeDTO>? shapes)
@@ -73,6 +77,10 @@ public class DocumentService : IDocumentService
             if (shapeDTO.TextBox != null)
             {
                 shapeDTO.TextBox.LayerId = layerId;
+            }
+            if (shapeDTO.Polyline != null)
+            {
+                shapeDTO.Polyline.LayerId = layerId;
             }
         }
     }
@@ -96,6 +104,11 @@ public class DocumentService : IDocumentService
             .Except(shapesToRemove.Select(s => s.TextBox?.Id ?? 0))
             .Where(id => id != 0).ToList();
 
+        var polylineDifferenceIds = originalShapes
+            .Select(s => s.Polyline?.Id ?? 0)
+            .Except(shapesToRemove.Select(s => s.Polyline?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
         return originalShapes.Where(s =>
         {
             if (s.Circle != null && s.Circle.Id != 0)
@@ -113,6 +126,11 @@ public class DocumentService : IDocumentService
                 return textBoxDifferenceIds.Contains(s.TextBox.Id);
             }
 
+            if (s.Polyline != null && s.Polyline.Id != 0)
+            {
+                return polylineDifferenceIds.Contains(s.Polyline.Id);
+            }
+
             return false;
         }).ToList();
     }
@@ -121,36 +139,46 @@ public class DocumentService : IDocumentService
     {
         if (shapes == null || other == null) return new List<ShapeDTO>();
 
-        var circleDifferenceIds = shapes
+        var circleIntersectionIds = shapes
             .Select(s => s.Circle?.Id ?? 0)
             .Intersect(other.Select(s => s.Circle?.Id ?? 0))
             .Where(id => id != 0).ToList();
 
-        var rectangleDifferenceIds = shapes
+        var rectangleIntersectionIds = shapes
             .Select(s => s.Rectangle?.Id ?? 0)
             .Intersect(other.Select(s => s.Rectangle?.Id ?? 0))
             .Where(id => id != 0).ToList();
 
-        var textBoxDifferenceIds = shapes
+        var textBoxIntersectionIds = shapes
             .Select(s => s.TextBox?.Id ?? 0)
             .Intersect(other.Select(s => s.TextBox?.Id ?? 0))
+            .Where(id => id != 0).ToList();
+
+        var polylineIntersectionIds = shapes
+            .Select(s => s.Polyline?.Id ?? 0)
+            .Intersect(other.Select(s => s.Polyline?.Id ?? 0))
             .Where(id => id != 0).ToList();
 
         return shapes.Where(s =>
         {
             if (s.Circle != null && s.Circle.Id != 0)
             {
-                return circleDifferenceIds.Contains(s.Circle.Id);
+                return circleIntersectionIds.Contains(s.Circle.Id);
             }
 
             if (s.Rectangle != null && s.Rectangle.Id != 0)
             {
-                return rectangleDifferenceIds.Contains(s.Rectangle.Id);
+                return rectangleIntersectionIds.Contains(s.Rectangle.Id);
             }
 
             if (s.TextBox != null && s.TextBox.Id != 0)
             {
-                return textBoxDifferenceIds.Contains(s.TextBox.Id);
+                return textBoxIntersectionIds.Contains(s.TextBox.Id);
+            }
+
+            if (s.Polyline != null && s.Polyline.Id != 0)
+            {
+                return polylineIntersectionIds.Contains(s.Polyline.Id);
             }
 
             return false;
@@ -170,6 +198,9 @@ public class DocumentService : IDocumentService
 
         var textBoxUpdateMap = updateSource.Where(s => s?.TextBox != null && s.TextBox.Id != 0).ToDictionary(
             s => s?.TextBox?.Id ?? 0, s => s.TextBox);
+
+        var polylineUpdateMap = updateSource.Where(s => s?.Polyline != null && s.Polyline.Id != 0).ToDictionary(
+            s => s?.Polyline?.Id ?? 0, s => s.Polyline);
 
         foreach (var shape in shapesToUpdate)
         {
@@ -216,6 +247,16 @@ public class DocumentService : IDocumentService
                 if (update != null)
                 {
                     shape.TextBox.Content = update.Content;
+                }
+            } else if (shape?.Polyline != null && shape.Polyline.Id != 0)
+            {
+                var update = polylineUpdateMap.GetValueOrDefault(shape.Polyline.Id);
+                if (update != null)
+                {
+                    shape.Polyline.FillColorFrom = update.FillColorFrom;
+                    shape.Polyline.FillColorTo = update.FillColorTo;
+                    shape.Polyline.FillAngle = update.FillAngle;
+                    shape.Polyline.Coords = update.Coords;
                 }
             }
         }
@@ -321,6 +362,7 @@ public class DocumentService : IDocumentService
         _db.Documents.Add(document);
         var documentId = document.Id;
         documentDTO.Id = documentId;
+        documentDTO.Name = document.Name;
         documentDTO.CreatedAt = document.CreatedAt;
         documentDTO.LastUpdatedAt = document.LastUpdatedAt;
         var layers = documentDTO.Layers ?? new List<LayerDTO>();

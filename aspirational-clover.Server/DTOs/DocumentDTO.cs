@@ -27,6 +27,7 @@ public class DocumentDTO : Document
     {
         Id = document.Id;
         DocumentSlug = document.DocumentSlug;
+        Name = document.Name;
         CreatedAt = document.CreatedAt;
         LastUpdatedAt = document.LastUpdatedAt;
         Layers = new List<LayerDTO>(); // Initialize as an empty list (populate using the extension methods)
