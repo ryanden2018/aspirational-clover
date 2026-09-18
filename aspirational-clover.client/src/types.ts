@@ -16,7 +16,7 @@ export interface AppDocument {
 
 export interface AnchorSignal {
   id: string;
-  signalType: "show" | "hide" | "move";
+  signalType: "show" | "hide";
   anchorType: "tooltip" | "popover";
   x: number;
   y: number;
