@@ -16,6 +16,7 @@ export class ToolBarComponent {
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
   saveIcon = computed(() => this._resourcesService.resources()?.saveIcon?.());
+  saveAsIcon = computed(() => this._resourcesService.resources()?.saveAsIcon?.());
   undoIcon = computed(() => this._resourcesService.resources()?.undoIcon?.());
   redoIcon = computed(() => this._resourcesService.resources()?.redoIcon?.());
   contentCopyIcon = computed(() => this._resourcesService.resources()?.contentCopyIcon?.());
