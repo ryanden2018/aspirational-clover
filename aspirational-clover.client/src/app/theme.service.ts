@@ -15,7 +15,9 @@ export class ThemeService {
   }
 
   classNames = computed(() => ({
+    "appBody": `app-body ${this._mode() === "light" ? "app-body-light" : "app-body-dark"}`,
     "button": `styled-button ${this._mode() === "light" ? "styled-button-light" : "styled-button-dark"}`,
     "toolBar": `app-tool-bar ${this._mode() === "light" ? "app-tool-bar-light" : "app-tool-bar-dark"}`,
+    "toolTip": `tool-tip ${this._mode() === "light" ? "tool-tip-light" : "tool-tip-dark"}`,
   }));
 }

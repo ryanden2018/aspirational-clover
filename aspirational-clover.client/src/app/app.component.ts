@@ -29,6 +29,8 @@ export class AppComponent implements OnInit {
 
   appToolBarClassName = computed(() => this._themeService.classNames().toolBar);
 
+  appBodyClassName = computed(() => this._themeService.classNames().appBody);
+
   constructor(private _documentService: DocumentService, private _resourcesService: ResourcesService, private _themeService: ThemeService) {
     // Subscribe icons etc so we only need to import the template once.
     // DO NOT place this line in ngOnInit(), it will throw a runtime eror (NG0203).

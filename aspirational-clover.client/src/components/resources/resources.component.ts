@@ -15,5 +15,8 @@ export class ResourcesComponent {
   contentPasteIcon = viewChild<TemplateRef<unknown>>("contentPasteIcon");
   rectangleIcon = viewChild<TemplateRef<unknown>>("rectangleIcon");
   circleIcon = viewChild<TemplateRef<unknown>>("circleIcon");
+  polylineIcon = viewChild<TemplateRef<unknown>>("polylineIcon");
   addNotesIcon = viewChild<TemplateRef<unknown>>("addNotesIcon");
+  toggleOffIcon = viewChild<TemplateRef<unknown>>("toggleOffIcon");
+  toggleOnIcon = viewChild<TemplateRef<unknown>>("toggleOnIcon");
 }

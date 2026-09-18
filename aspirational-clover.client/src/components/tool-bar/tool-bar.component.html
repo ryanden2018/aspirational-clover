@@ -27,6 +27,12 @@
 <app-tool-tip-button id="toolbar-circle-icon" toolTipContent="Circle" positioning="right-center">
   <ng-container *ngTemplateOutlet="circleIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
+<app-tool-tip-button id="toolbar-polyline-icon" toolTipContent="Polyline" positioning="right-center">
+  <ng-container *ngTemplateOutlet="polylineIcon(); context: { width: '28px', height: '28px' }"></ng-container>
+</app-tool-tip-button>
 <app-tool-tip-button id="toolbar-text-box-icon" toolTipContent="Text Box" positioning="right-center">
   <ng-container *ngTemplateOutlet="addNotesIcon(); context: { width: '28px', height: '28px' }"></ng-container>
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-toggle-icon" (click)="toggleDarkMode()" toolTipContent="Toggle Dark Mode" positioning="right-center">
+  <ng-container *ngTemplateOutlet="toggleDarkModeIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>

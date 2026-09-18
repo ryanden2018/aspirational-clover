@@ -12,7 +12,7 @@ import { ToolTipSignal } from "../../types";
 export class ToolTipButtonComponent {
   id = input<string>('');
   toolTipContent = input<string>('');
-  onClick = input<() => void>(() => {});
+  click = input<(() => void) | void>(() => {});
   positioning = input<'bottom-left' | 'right-center'>('bottom-left');
 
   buttonClassName = computed(() => this._themeService.classNames().button);
@@ -41,7 +41,7 @@ export class ToolTipButtonComponent {
       case 'bottom-left':
         return rect.left;
       case 'right-center':
-        return rect.right + 5;
+        return rect.right + 10;
       default:
         return rect.right;
     }
@@ -50,7 +50,7 @@ export class ToolTipButtonComponent {
   getY(rect: DOMRect): number {
     switch (this.positioning()) {
       case 'bottom-left':
-        return rect.bottom + 5;
+        return rect.bottom + 10;
       case 'right-center':
         return rect.top + rect.height / 2;
       default:

@@ -12,6 +12,8 @@ import { AnchorService } from "../../app/anchor.service";
 export class AnchoredToolTipComponent {
   anchoredToolTipDiv = viewChild<ElementRef>("anchoredToolTipDiv");
 
+  className = computed(() => this._themeService.classNames().toolTip);
+
   dimensions = signal({ width: 0, height: 0 });
 
   isVisible = computed(() =>
@@ -58,8 +60,6 @@ export class AnchoredToolTipComponent {
         return;
       }
       const rect = this.anchoredToolTipDiv()?.nativeElement?.getBoundingClientRect();
-
-      console.log("rect", rect);
       const width = rect?.width;
       const height = rect?.height;
       if (width === undefined || height === undefined) {

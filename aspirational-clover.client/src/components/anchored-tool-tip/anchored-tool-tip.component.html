@@ -1,3 +1,3 @@
-<div #anchoredToolTipDiv [class.invisible]="!isVisible()" [class.anchoredToolTip]="true" [style.left]="left() + 'px'" [style.top]="top() + 'px'">
+<div #anchoredToolTipDiv [class]="className()" [class.invisible]="!isVisible()" [class.anchoredToolTip]="true" [style.left]="left() + 'px'" [style.top]="top() + 'px'">
   {{ content() }}
 </div>

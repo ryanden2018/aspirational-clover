@@ -9,14 +9,17 @@ div.app-tool-bar {
   height: 100vh;
   padding: 0px;
   overflow: hidden;
+  border-right: solid 1px;
 }
 
 div.app-tool-bar-light {
   background-color: #f2f2f2;
+  border-color: #d2d2d2;
 }
 
 div.app-tool-bar-dark {
   background-color: #1a1a1a;
+  border-color: #1f1f1f;
 }
 
 div.app-tool-bar-inner {
@@ -29,11 +32,41 @@ div.app-tool-bar-inner {
 
 div.app-body {
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+div.app-body-dark {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+div.app-body-light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+div.tool-tip {
+  border: 1px solid;
+  border-radius: 4px;
+  font-size: 14px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+div.tool-tip-light {
+  background-color: #e6e6e6;
+  color: #333333;
+}
+
+div.tool-tip-dark {
+  background-color: #191919;
+  color: #e6e6e6;
 }
 
 button.styled-button {
