@@ -31,6 +31,7 @@ public static class DocumentContainerDTOExtensions
                     {
                         Id = doc.Id,
                         DocumentSlug = doc.DocumentSlug,
+                        Name = doc.Name,
                         CreatedAt = doc.CreatedAt,
                         LastUpdatedAt = doc.LastUpdatedAt,
                     })

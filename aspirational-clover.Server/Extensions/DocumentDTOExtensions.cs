@@ -20,6 +20,7 @@ public static class DocumentDTOExtensions
         {
             Id = documentDTO.Id,
             DocumentSlug = documentDTO.DocumentSlug,
+            Name = documentDTO.Name,
             CreatedAt = documentDTO.CreatedAt,
             LastUpdatedAt = documentDTO.LastUpdatedAt
         };

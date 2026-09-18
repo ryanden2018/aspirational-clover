@@ -28,6 +28,11 @@ public class ShapeDTO
     public TextBox? TextBox { get; set; }
 
     /// <summary>
+    /// Gets or sets the Polyline shape data. If this property is non-null, it indicates that the shape represented by this DTO is a Polyline.
+    /// </summary>
+    public Polyline? Polyline { get; set; }
+
+    /// <summary>
     /// Gets or sets the ID of the layer to which the shape belongs. This property is a convenience field that allows for easy 
     /// access to the layer information without needing to access the individual shape properties. It is set based on the non-null 
     /// shape property (Circle, Rectangle, TextBox, ...) and should match the LayerId of that shape.
@@ -43,11 +48,13 @@ public class ShapeDTO
     /// <param name="circle"></param>
     /// <param name="rectangle"></param>
     /// <param name="textBox"></param>
-    public ShapeDTO(Circle? circle = null, Rectangle? rectangle = null, TextBox? textBox = null)
+    /// <param name="polyline"></param>
+    public ShapeDTO(Circle? circle = null, Rectangle? rectangle = null, TextBox? textBox = null, Polyline? polyline = null)
     {
         Circle = circle;
         Rectangle = rectangle;
         TextBox = textBox;
-        LayerId = circle?.LayerId ?? rectangle?.LayerId ?? textBox?.LayerId ?? 0;
+        Polyline = polyline;
+        LayerId = circle?.LayerId ?? rectangle?.LayerId ?? textBox?.LayerId ?? polyline?.LayerId ?? 0;
     }
 }

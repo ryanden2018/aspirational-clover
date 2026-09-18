@@ -84,6 +84,7 @@ public static class WebApplicationExtensions
         var documents = Enumerable.Range(0, slugs.Length).Select(index => new Document
         {
             DocumentSlug = slugs[index],
+            Name = "document-name",
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow
         }).ToList();
