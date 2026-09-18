@@ -1,4 +1,4 @@
-import { Component, signal, viewChild, afterNextRender, ElementRef, computed } from "@angular/core";
+import { Component, signal, viewChild, afterRenderEffect, ElementRef, computed } from "@angular/core";
 
 import { ThemeService } from "../../app/theme.service";
 import { AnchorService } from "../../app/anchor.service";
@@ -42,24 +42,26 @@ export class AnchoredToolTipComponent {
       case "top":
         return this._anchorService.tooltip()?.y ?? 0;
       case "center":
-        return this._anchorService.tooltip()?.y ?? 0 - (this.dimensions().height / 2);
+        return (this._anchorService.tooltip()?.y ?? 0) - (this.dimensions().height / 2);
       case "bottom":
-        return this._anchorService.tooltip()?.y ?? 0 - this.dimensions().height;
+        return (this._anchorService.tooltip()?.y ?? 0) - this.dimensions().height;
       default:
         return this._anchorService.tooltip()?.y ?? 0;
     }
   });
 
   constructor(private _themeService: ThemeService, private _anchorService: AnchorService) {
-    afterNextRender(() => {
+    afterRenderEffect(() => {
       const tooltip = this._anchorService.tooltip();
       if (tooltip?.signalType !== "show") {
         this.dimensions.set({ width: 0, height: 0 });
         return;
       }
-      const element = this.anchoredToolTipDiv()?.nativeElement;
-      const width = element?.offsetWidth;
-      const height = element?.offsetHeight;
+      const rect = this.anchoredToolTipDiv()?.nativeElement?.getBoundingClientRect();
+
+      console.log("rect", rect);
+      const width = rect?.width;
+      const height = rect?.height;
       if (width === undefined || height === undefined) {
         return;
       }
