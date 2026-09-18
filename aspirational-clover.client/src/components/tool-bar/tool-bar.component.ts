@@ -1,20 +1,18 @@
 import { Component, computed } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
-import { ThemeService } from "../../app/theme.service";
 import { ResourcesService } from "../../app/resources.service";
+import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
   selector: 'app-tool-bar',
   standalone: true,
   styleUrls: ['./tool-bar.component.css'],
   templateUrl: './tool-bar.component.html',
-  imports: [NgTemplateOutlet]
+  imports: [NgTemplateOutlet, ToolTipButtonComponent]
 })
 export class ToolBarComponent {
-  buttonClassName = computed(() => this._themeService.classNames().button);
-
-  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService) { }
+  constructor(private _resourcesService: ResourcesService) { }
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
   saveIcon = computed(() => this._resourcesService.resources()?.saveIcon?.());

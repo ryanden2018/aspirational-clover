@@ -1,29 +1,29 @@
 
 
-<button [class]="buttonClassName()">
+<app-tool-tip-button id="toolbar-new-window-icon" toolTipContent="New Window" positioning="right-center">
   <ng-container *ngTemplateOutlet="newWindowIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center">
   <ng-container *ngTemplateOutlet="saveIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo" positioning="right-center">
   <ng-container *ngTemplateOutlet="undoIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo" positioning="right-center">
   <ng-container *ngTemplateOutlet="redoIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy" positioning="right-center">
   <ng-container *ngTemplateOutlet="contentCopyIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste" positioning="right-center">
   <ng-container *ngTemplateOutlet="contentPasteIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-rectangle-icon" toolTipContent="Rectangle" positioning="right-center">
   <ng-container *ngTemplateOutlet="rectangleIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-circle-icon" toolTipContent="Circle" positioning="right-center">
   <ng-container *ngTemplateOutlet="circleIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
-<button [class]="buttonClassName()">
+</app-tool-tip-button>
+<app-tool-tip-button id="toolbar-text-box-icon" toolTipContent="Text Box" positioning="right-center">
   <ng-container *ngTemplateOutlet="addNotesIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</button>
+</app-tool-tip-button>
