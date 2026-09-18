@@ -26,7 +26,7 @@ public class DocumentService : IDocumentService
     // METHODS THAT NEED TO BE UPDATED WHEN ADDING A SHAPE TYPE
 
     /// <summary>
-    /// Get shapes, either by a list of layers or globally.
+    /// Get shapes, either by a list of layers or globally (the shapes are tracked by EF).
     /// </summary>
     /// <param name="layerIDs"></param>
     /// <returns></returns>
@@ -54,10 +54,10 @@ public class DocumentService : IDocumentService
 
     private void DeleteShapes(List<ShapeDTO> shapes)
     {
-        _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => new Circle { Id = s.Circle?.Id ?? 0 }));
-        _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => new Rectangle { Id = s.Rectangle?.Id ?? 0 }));
-        _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => new TextBox { Id = s.TextBox?.Id ?? 0 }));
-        _db.Polylines.RemoveRange(shapes.Where(s => s?.Polyline != null).Select(s => new Polyline { Id = s.TextBox?.Id ?? 0 }));
+        _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => s?.Circle ?? new Circle { Id = 0 }));
+        _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => s?.Rectangle ?? new Rectangle { Id = 0 }));
+        _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => s?.TextBox ?? new TextBox { Id = 0 }));
+        _db.Polylines.RemoveRange(shapes.Where(s => s?.Polyline != null).Select(s => s?.Polyline ?? new Polyline { Id = 0 }));
     }
 
     private void UpdateLayerIds(int layerId, List<ShapeDTO>? shapes)
@@ -459,14 +459,6 @@ public class DocumentService : IDocumentService
         return documentDTO;
     }
 
-
-    private async void DeleteLayersAndShapes(List<int> layerIds)
-    {
-        _db.Layers.RemoveRange(layerIds.Select(l => new Layer { Id = l }));
-        var shapes = await getShapes(layerIds);
-        DeleteShapes(shapes.ToList());
-    }
-
     /// <summary>
     /// Deletes a document by its ID, along with its associated layers and shapes.
     /// </summary>
@@ -480,7 +472,10 @@ public class DocumentService : IDocumentService
         if (existing == null) return false;
 
         var layers = await _db.Layers.Where(l => l.DocumentId == id).ToListAsync();
-        DeleteLayersAndShapes(layers.Select(l => l.Id).ToList());
+        var layerIds = layers.Select(l => l.Id).ToList();
+        _db.Layers.RemoveRange(layers);
+        var shapes = await getShapes(layerIds);
+        DeleteShapes(shapes.ToList());
         _db.Documents.Remove(existing);
 
         return true;
