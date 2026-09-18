@@ -2,6 +2,7 @@ import { Component, computed } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
 import { ResourcesService } from "../../app/resources.service";
+import { ThemeService } from "../../app/theme.service";
 import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
@@ -12,7 +13,13 @@ import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.compo
   imports: [NgTemplateOutlet, ToolTipButtonComponent]
 })
 export class ToolBarComponent {
-  constructor(private _resourcesService: ResourcesService) { }
+  isDarkMode = computed(() => this._themeService.mode() === "dark");
+
+  toggleDarkMode() {
+    this._themeService.toggleMode();
+  }
+
+  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService) { }
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
   saveIcon = computed(() => this._resourcesService.resources()?.saveIcon?.());
@@ -23,5 +30,9 @@ export class ToolBarComponent {
   contentPasteIcon = computed(() => this._resourcesService.resources()?.contentPasteIcon?.());
   rectangleIcon = computed(() => this._resourcesService.resources()?.rectangleIcon?.());
   circleIcon = computed(() => this._resourcesService.resources()?.circleIcon?.());
+  polylineIcon = computed(() => this._resourcesService.resources()?.polylineIcon?.());
   addNotesIcon = computed(() => this._resourcesService.resources()?.addNotesIcon?.());
+  toggleOffIcon = computed(() => this._resourcesService.resources()?.toggleOffIcon?.());
+  toggleOnIcon = computed(() => this._resourcesService.resources()?.toggleOnIcon?.());
+  toggleDarkModeIcon = computed(() => this.isDarkMode() ? this.toggleOnIcon() : this.toggleOffIcon());
 }
