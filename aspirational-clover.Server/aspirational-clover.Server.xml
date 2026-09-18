@@ -686,7 +686,7 @@
         </member>
         <member name="M:aspirational_clover.Server.Services.DocumentService.getShapes(System.Collections.Generic.List{System.Int32})">
             <summary>
-            Get shapes, either by a list of layers or globally.
+            Get shapes, either by a list of layers or globally (the shapes are tracked by EF).
             </summary>
             <param name="layerIDs"></param>
             <returns></returns>
