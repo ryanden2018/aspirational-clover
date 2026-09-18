@@ -6,6 +6,7 @@ import { DocumentService } from './document.service';
 import { AppDocument } from "../types";
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 import { ResourcesComponent } from "../components/resources/resources.component";
+import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
 import { ResourcesService } from "./resources.service";
 import { ThemeService } from "./theme.service";
 
@@ -16,7 +17,8 @@ import { ThemeService } from "./theme.service";
     //RouterOutlet,
     CommonModule,
     ToolBarComponent,
-    ResourcesComponent
+    ResourcesComponent,
+    AnchoredToolTipComponent,
   ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',

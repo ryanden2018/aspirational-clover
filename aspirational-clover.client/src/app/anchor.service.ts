@@ -1,5 +1,5 @@
 import { Injectable, signal } from "@angular/core";
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter } from "rxjs";
 
 import { AnchorSignal, ToolTipSignal } from "../types";
@@ -14,7 +14,7 @@ export class AnchorService {
     this._anchor.set(signal);
   }
 
-  tooltip$ = toObservable(this._anchor.asReadonly())
+  tooltip = toSignal(toObservable(this._anchor.asReadonly())
     .pipe(
       filter((signal): signal is ToolTipSignal =>
         signal !== undefined &&
@@ -23,10 +23,10 @@ export class AnchorService {
         typeof signal?.payload === "object" &&
         "content" in signal.payload &&
         typeof signal?.payload?.content === "string")
-  );
+  ));
 
-  popover$ = toObservable(this._anchor.asReadonly())
+  popover = toSignal(toObservable(this._anchor.asReadonly())
     .pipe(
       filter((signal): signal is AnchorSignal => signal !== undefined && signal.anchorType === "popover")
-  );
+  ));
 }

@@ -1,4 +1,4 @@
-import { Component, input, computed, viewChild } from "@angular/core";
+import { Component, input, computed, viewChild, ElementRef } from "@angular/core";
 
 import { ThemeService } from "../../app/theme.service";
 import { AnchorService } from "../../app/anchor.service";
@@ -17,7 +17,7 @@ export class ToolTipButtonComponent {
 
   buttonClassName = computed(() => this._themeService.classNames().button);
 
-  button = viewChild<HTMLButtonElement>('targetButton');
+  button = viewChild<ElementRef<HTMLButtonElement>>('targetButton');
 
   constructor(private _themeService: ThemeService, private _anchorService: AnchorService) { }
 
@@ -58,10 +58,10 @@ export class ToolTipButtonComponent {
     }
   }
 
-  onMouseOver() {
+  onMouseEnter() {
     try {
       const baseAnchor = this.getBaseAnchor();
-      const rect = this.button()?.getBoundingClientRect();
+      const rect = this.button()?.nativeElement?.getBoundingClientRect?.();
       if (!rect) throw new Error("Button element not found for tooltip positioning.");
       const x = this.getX(rect);
       const y = this.getY(rect);
@@ -76,7 +76,7 @@ export class ToolTipButtonComponent {
     }
   }
 
-  onMouseOut() {
+  onMouseLeave() {
     const baseAnchor = this.getBaseAnchor();
     this._anchorService.pushAnchor({ ...baseAnchor, signalType: "hide" });
   }

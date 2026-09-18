@@ -1,0 +1,12 @@
+:host {
+  display: contents;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+.anchoredToolTip {
+  position: absolute;
+  z-index: 1000;
+}
