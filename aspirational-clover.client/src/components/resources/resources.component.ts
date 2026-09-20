@@ -7,6 +7,7 @@ import { Component, TemplateRef, viewChild } from '@angular/core';
 })
 export class ResourcesComponent {
   newWindowIcon = viewChild<TemplateRef<unknown>>("newWindowIcon");
+  fileOpenIcon = viewChild<TemplateRef<unknown>>("fileOpenIcon");
   saveIcon = viewChild<TemplateRef<unknown>>("saveIcon");
   saveAsIcon = viewChild<TemplateRef<unknown>>("saveAsIcon");
   undoIcon = viewChild<TemplateRef<unknown>>("undoIcon");

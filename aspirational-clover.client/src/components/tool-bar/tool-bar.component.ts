@@ -22,6 +22,7 @@ export class ToolBarComponent {
   constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService) { }
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
+  fileOpenIcon = computed(() => this._resourcesService.resources()?.fileOpenIcon?.());
   saveIcon = computed(() => this._resourcesService.resources()?.saveIcon?.());
   saveAsIcon = computed(() => this._resourcesService.resources()?.saveAsIcon?.());
   undoIcon = computed(() => this._resourcesService.resources()?.undoIcon?.());
