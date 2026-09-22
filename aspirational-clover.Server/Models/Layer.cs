@@ -12,6 +12,11 @@ public class Layer
     public int Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the client UUID of this entity (managed by the frontend).
+    /// </summary>
+    public string? ClientUuid { get; set; }
+
+    /// <summary>
     /// The ID of the document to which this layer belongs.
     /// </summary>
     public int DocumentId { get; set; }

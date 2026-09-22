@@ -11,6 +11,11 @@ public class Document
     public int Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the client UUID of this entity (managed by the frontend).
+    /// </summary>
+    public string? ClientUuid { get; set; }
+
+    /// <summary>
     /// Gets or sets the slug for the document, which is a URL-friendly string used to identify the document in a human-readable format.
     /// </summary>
     public string? DocumentSlug { get; set; }

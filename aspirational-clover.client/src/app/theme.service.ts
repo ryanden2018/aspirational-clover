@@ -18,6 +18,7 @@ export class ThemeService {
     "appBody": `app-body ${this._mode() === "light" ? "app-body-light" : "app-body-dark"}`,
     "button": `styled-button ${this._mode() === "light" ? "styled-button-light" : "styled-button-dark"}`,
     "toolBar": `app-tool-bar ${this._mode() === "light" ? "app-tool-bar-light" : "app-tool-bar-dark"}`,
+    "tabBar": `app-tab-bar ${this._mode() === "light" ? "app-tab-bar-light" : "app-tab-bar-dark"}`,
     "toolTip": `tool-tip ${this._mode() === "light" ? "tool-tip-light" : "tool-tip-dark"}`,
   }));
 }

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { DocumentService } from './document.service';
 import { AppDocument } from "../data/model";
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
+import { TabBarComponent } from '../components/tab-bar/tab-bar.component';
 import { ResourcesComponent } from "../components/resources/resources.component";
 import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
 import { ResourcesService } from "./resources.service";
@@ -17,6 +18,7 @@ import { ThemeService } from "./theme.service";
     //RouterOutlet,
     CommonModule,
     ToolBarComponent,
+    TabBarComponent,
     ResourcesComponent,
     AnchoredToolTipComponent,
   ],
@@ -28,7 +30,7 @@ export class AppComponent implements OnInit {
   private _resources = viewChild<ResourcesComponent>(ResourcesComponent);
 
   appToolBarClassName = computed(() => this._themeService.classNames().toolBar);
-
+  appTabBarClassName = computed(() => this._themeService.classNames().tabBar);
   appBodyClassName = computed(() => this._themeService.classNames().appBody);
 
   constructor(private _documentService: DocumentService, private _resourcesService: ResourcesService, private _themeService: ThemeService) {
