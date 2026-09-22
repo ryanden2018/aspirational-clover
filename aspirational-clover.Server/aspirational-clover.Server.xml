@@ -481,6 +481,11 @@
             Gets or sets the unique identifier for the document.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Models.Document.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
+            </summary>
+        </member>
         <member name="P:aspirational_clover.Server.Models.Document.DocumentSlug">
             <summary>
             Gets or sets the slug for the document, which is a URL-friendly string used to identify the document in a human-readable format.
@@ -513,6 +518,11 @@
         <member name="P:aspirational_clover.Server.Models.Layer.Id">
             <summary>
             The unique ID of this layer.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Layer.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
             </summary>
         </member>
         <member name="P:aspirational_clover.Server.Models.Layer.DocumentId">

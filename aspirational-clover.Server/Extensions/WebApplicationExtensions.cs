@@ -18,6 +18,7 @@ public static class WebApplicationExtensions
         return new Circle
         {
             LayerId = layerId,
+            ClientUuid = Guid.NewGuid().ToString(),
             FillColorFrom = _colors[Random.Shared.Next(_colors.Length)],
             FillColorTo = _colors[Random.Shared.Next(_colors.Length)],
             FillAngle = Random.Shared.Next(0, 360),
@@ -37,6 +38,7 @@ public static class WebApplicationExtensions
         return new Rectangle
         {
             LayerId = layerId,
+            ClientUuid = Guid.NewGuid().ToString(),
             FillColorFrom = _colors[Random.Shared.Next(_colors.Length)],
             FillColorTo = _colors[Random.Shared.Next(_colors.Length)],
             FillAngle = Random.Shared.Next(0, 360),
@@ -84,7 +86,8 @@ public static class WebApplicationExtensions
         var documents = Enumerable.Range(0, slugs.Length).Select(index => new Document
         {
             DocumentSlug = slugs[index],
-            Name = "document-name",
+            ClientUuid = Guid.NewGuid().ToString(),
+            Name = "document-name-" + index.ToString(),
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow
         }).ToList();
@@ -96,6 +99,7 @@ public static class WebApplicationExtensions
             new Layer
             {
                 DocumentId = document.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
                 Name = "layer-1",
                 Hidden = false,
                 ZIndex = 0
@@ -103,6 +107,7 @@ public static class WebApplicationExtensions
             new Layer
             {
                 DocumentId = document.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
                 Name = "layer-2",
                 Hidden = false,
                 ZIndex = 2
@@ -110,6 +115,7 @@ public static class WebApplicationExtensions
             new Layer
             {
                 DocumentId = document.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
                 Name = "layer-3",
                 Hidden = true,
                 ZIndex = 1
@@ -141,11 +147,13 @@ public static class WebApplicationExtensions
             new TextBox
             {
                 LayerId = layer.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
                 Content = "{text: \"content-1\"}",
             },
             new TextBox
             {
                 LayerId = layer.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
                 Content = "{text: \"content-2\"}",
             }
         }).Aggregate(new List<TextBox>(), (acc, val) => acc.Concat(val).ToList());
