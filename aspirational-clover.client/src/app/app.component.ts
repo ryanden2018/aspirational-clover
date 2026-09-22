@@ -3,7 +3,7 @@ import { Component, OnInit, signal, viewChild, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DocumentService } from './document.service';
-import { AppDocument } from "../types";
+import { AppDocument } from "../data/model";
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 import { ResourcesComponent } from "../components/resources/resources.component";
 import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
