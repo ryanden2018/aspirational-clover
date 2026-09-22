@@ -172,10 +172,17 @@ div.app-tab-bar-tab {
   border-right: solid 1px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+  cursor: pointer;
 }
 
 div.app-tab-bar-tab-active-light {
-  background-color: #e6e6e6;
+  background-color: #ffffff;
+  border-color: #999999;
+  color: #333333;
+}
+
+div.app-tab-bar-tab-active-light:hover {
+  background-color: #cccccc;
   border-color: #999999;
   color: #333333;
 }
@@ -186,14 +193,32 @@ div.app-tab-bar-tab-active-dark {
   color: #e6e6e6;
 }
 
+div.app-tab-bar-tab-active-dark:hover {
+  background-color: #333333;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
+}
+
 div.app-tab-bar-tab-inactive-light {
-  background-color: #b3b3b3;
+  background-color: #e6e6e6;
+  border-color: #999999;
+  color: #333333;
+}
+
+div.app-tab-bar-tab-inactive-light:hover {
+  background-color: #cccccc;
   border-color: #999999;
   color: #333333;
 }
 
 div.app-tab-bar-tab-inactive-dark {
   background-color: #191919;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
+}
+
+div.app-tab-bar-tab-inactive-dark:hover {
+  background-color: #333333;
   border-color: #4d4d4d;
   color: #e6e6e6;
 }
