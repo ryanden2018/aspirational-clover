@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 
 import { AppDocument } from "../../data/model";
+import { ThemeService } from "../../app/theme.service";
 
 @Component({
   selector: 'app-tab-bar',
@@ -10,5 +11,10 @@ import { AppDocument } from "../../data/model";
 })
 export class TabBarComponent {
   documents = input<AppDocument[]>([]);
+  activeDocumentClientUuid = input<string>("");
 
+  tabBarTabActiveClassName = computed(() => this._themeService.classNames().tabBarTabActive);
+  tabBarTabInactiveClassName = computed(() => this._themeService.classNames().tabBarTabInactive);
+
+  constructor(private _themeService: ThemeService) {}
 }

@@ -19,6 +19,8 @@ export class ThemeService {
     "button": `styled-button ${this._mode() === "light" ? "styled-button-light" : "styled-button-dark"}`,
     "toolBar": `app-tool-bar ${this._mode() === "light" ? "app-tool-bar-light" : "app-tool-bar-dark"}`,
     "tabBar": `app-tab-bar ${this._mode() === "light" ? "app-tab-bar-light" : "app-tab-bar-dark"}`,
+    "tabBarTabActive": `app-tab-bar-tab ${this._mode() === "light" ? "app-tab-bar-tab-active-light" : "app-tab-bar-tab-active-dark"}`,
+    "tabBarTabInactive": `app-tab-bar-tab ${this._mode() === "light" ? "app-tab-bar-tab-inactive-light" : "app-tab-bar-tab-inactive-dark"}`,
     "toolTip": `tool-tip ${this._mode() === "light" ? "tool-tip-light" : "tool-tip-dark"}`,
   }));
 }

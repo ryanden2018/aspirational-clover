@@ -363,6 +363,7 @@ public class DocumentService : IDocumentService
         var documentId = document.Id;
         documentDTO.Id = documentId;
         documentDTO.Name = document.Name;
+        documentDTO.ClientUuid = document.ClientUuid;
         documentDTO.CreatedAt = document.CreatedAt;
         documentDTO.LastUpdatedAt = document.LastUpdatedAt;
         var layers = documentDTO.Layers ?? new List<LayerDTO>();
@@ -439,6 +440,7 @@ public class DocumentService : IDocumentService
             var layer = await _db.Layers.Where(l => l.Id == layerId).FirstOrDefaultAsync();
             if (docLayer == null || layer == null) return;
             layer.Name = docLayer.Name;
+            layer.ClientUuid = docLayer.ClientUuid;
             layer.Hidden = docLayer.Hidden;
             layer.ZIndex = docLayer.ZIndex;
             UpdateLayerIds(layer.Id, docLayer.Shapes); // update the layer IDs of the associated shapes

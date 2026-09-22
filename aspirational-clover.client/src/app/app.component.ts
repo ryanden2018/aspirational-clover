@@ -27,6 +27,10 @@ import { ThemeService } from "./theme.service";
 })
 export class AppComponent implements OnInit {
   public documents = signal<AppDocument[]>([]);
+
+  // TODO: the active clientUuid should be determined via URL routing
+  activeDocumentClientUuid = computed(() => this.documents()[0]?.clientUuid ?? "");
+
   private _resources = viewChild<ResourcesComponent>(ResourcesComponent);
 
   appToolBarClassName = computed(() => this._themeService.classNames().toolBar);

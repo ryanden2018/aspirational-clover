@@ -165,3 +165,35 @@ button.styled-button-dark:active {
   border-color: #4d4d4d;
   color: #e6e6e6;
 }
+
+div.app-tab-bar-tab {
+  border-top: solid 1px;
+  border-left: solid 1px;
+  border-right: solid 1px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+div.app-tab-bar-tab-active-light {
+  background-color: #e6e6e6;
+  border-color: #999999;
+  color: #333333;
+}
+
+div.app-tab-bar-tab-active-dark {
+  background-color: #4d4d4d;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
+}
+
+div.app-tab-bar-tab-inactive-light {
+  background-color: #b3b3b3;
+  border-color: #999999;
+  color: #333333;
+}
+
+div.app-tab-bar-tab-inactive-dark {
+  background-color: #191919;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
+}
