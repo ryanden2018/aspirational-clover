@@ -27,6 +27,7 @@ public class DocumentDTO : Document
     {
         Id = document.Id;
         DocumentSlug = document.DocumentSlug;
+        ClientUuid = document.ClientUuid;
         Name = document.Name;
         CreatedAt = document.CreatedAt;
         LastUpdatedAt = document.LastUpdatedAt;

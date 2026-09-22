@@ -25,6 +25,7 @@ public class LayerDTO : Layer
     {
         Id = layer.Id;
         DocumentId = layer.DocumentId;
+        ClientUuid = layer.ClientUuid;
         Name = layer.Name;
         Hidden = layer.Hidden;
         ZIndex = layer.ZIndex;

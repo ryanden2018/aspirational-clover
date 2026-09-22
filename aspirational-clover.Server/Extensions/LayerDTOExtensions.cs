@@ -20,6 +20,7 @@ public static class LayerDTOExtensions
             {
                 Id = layerDTO.Id,
                 DocumentId = layerDTO.DocumentId,
+                ClientUuid = layerDTO.ClientUuid,
                 Name = layerDTO.Name,
                 Hidden = layerDTO.Hidden ?? false, // Default to false if null
                 ZIndex = layerDTO.ZIndex ?? 0 // Default to 0 if null
@@ -41,6 +42,7 @@ public static class LayerDTOExtensions
         {
             Id = layerDTO.Id,
             DocumentId = layerDTO.DocumentId,
+            ClientUuid = layerDTO.ClientUuid,
             Name = layerDTO.Name,
             Hidden = layerDTO.Hidden ?? false, // Default to false if null
             ZIndex = layerDTO.ZIndex ?? 0 // Default to 0 if null
