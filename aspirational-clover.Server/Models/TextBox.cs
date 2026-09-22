@@ -13,6 +13,11 @@ public class TextBox : ILayerable
     public int Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the client UUID of this entity (managed by the frontend).
+    /// </summary>
+    public string? ClientUuid { get; set; }
+
+    /// <summary>
     /// Gets or sets the ID of the layer to which this text box belongs.
     /// </summary>
     public int LayerId { get; set; }

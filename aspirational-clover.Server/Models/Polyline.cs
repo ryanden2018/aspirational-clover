@@ -15,6 +15,11 @@ public class Polyline : IFillable, ILayerable
     public int Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the client UUID of this entity (managed by the frontend).
+    /// </summary>
+    public string? ClientUuid { get; set; }
+
+    /// <summary>
     /// Gets or sets the ID of the layer to which this rectangle belongs.
     /// </summary>
     public int LayerId { get; set; }

@@ -356,6 +356,11 @@
             Gets or sets the ID of this entity.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Interfaces.ILayerable.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
+            </summary>
+        </member>
         <member name="P:aspirational_clover.Server.Interfaces.ILayerable.LayerId">
             <summary>
             Gets or sets the ID of the layer to which the object belongs.
@@ -399,6 +404,11 @@
         <member name="P:aspirational_clover.Server.Models.Circle.Id">
             <summary>
             Gets or sets the unique identifier for the circle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Circle.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
             </summary>
         </member>
         <member name="P:aspirational_clover.Server.Models.Circle.LayerId">
@@ -535,6 +545,11 @@
             Gets or sets the unique identifier for the rectangle.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Models.Polyline.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
+            </summary>
+        </member>
         <member name="P:aspirational_clover.Server.Models.Polyline.LayerId">
             <summary>
             Gets or sets the ID of the layer to which this rectangle belongs.
@@ -572,6 +587,11 @@
         <member name="P:aspirational_clover.Server.Models.Rectangle.Id">
             <summary>
             Gets or sets the unique identifier for the rectangle.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.Rectangle.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
             </summary>
         </member>
         <member name="P:aspirational_clover.Server.Models.Rectangle.LayerId">
@@ -647,6 +667,11 @@
         <member name="P:aspirational_clover.Server.Models.TextBox.Id">
             <summary>
             Gets or sets the unique ID for this text box.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.ClientUuid">
+            <summary>
+            Gets or sets the client UUID of this entity (managed by the frontend).
             </summary>
         </member>
         <member name="P:aspirational_clover.Server.Models.TextBox.LayerId">
