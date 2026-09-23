@@ -2,3 +2,12 @@
   flex: 1;
   overflow: hidden;
 }
+
+.transformed-elem {
+  transform-box: fill-box;
+}
+
+.graphics-panel-svg {
+  width: 100%;
+  height: 100%;
+}

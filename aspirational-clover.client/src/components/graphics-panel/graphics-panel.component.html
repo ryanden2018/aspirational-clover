@@ -1,22 +1,22 @@
-<svg viewBox="-20 -20 120 120" style="width:100%;height:100%">
+<svg viewBox="-20 -20 250 120" class="graphics-panel-svg">
   @for (layer of sortedLayers(); track layer.clientUuid) {
     @for (circle of getCircles(layer); track circle.clientUuid) {
       <defs>
-        <linearGradient [attr.id]="'lg-'+circle.clientUuid" [attr.gradientTransform]="'rotate('+circle.fillAngle+')'">
+        <linearGradient [attr.id]="getGradientId(circle)" [attr.gradientTransform]="getGradientTransform(circle)">
           <stop offset="0%" [attr.stop-color]="circle.fillColorFrom" />
           <stop offset="100%" [attr.stop-color]="circle.fillColorTo" />
         </linearGradient>
       </defs>
-      <circle [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="'url(#lg-'+circle.clientUuid+')'" stroke-width="0.3" />
+      <circle class="transformed-elem" [attr.transform-origin]="getTransformOrigin(circle)" [attr.transform]="getTransform(circle)" [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="getGradientFillAttr(circle)" stroke-width="0.3" />
     }
     @for (rectangle of getRectangles(layer); track rectangle.clientUuid) {
       <defs>
-        <linearGradient [attr.id]="'lg-'+rectangle.clientUuid" [attr.gradientTransform]="'rotate('+rectangle.fillAngle+')'">
+        <linearGradient [attr.id]="getGradientId(rectangle)" [attr.gradientTransform]="getGradientTransform(rectangle)">
           <stop offset="0%" [attr.stop-color]="rectangle.fillColorFrom" />
           <stop offset="100%" [attr.stop-color]="rectangle.fillColorTo" />
         </linearGradient>
       </defs>
-      <rect [attr.x]="rectangle.x" [attr.y]="rectangle.y" [attr.width]="rectangle.width" [attr.height]="rectangle.height" stroke="#000000" [attr.fill]="'url(#lg-'+rectangle.clientUuid+')'" stroke-width="0.3" />
+      <rect class="transformed-elem" [attr.transform-origin]="getTransformOrigin(rectangle)"  [attr.transform]="getTransform(rectangle)" [attr.x]="rectangle.x" [attr.y]="rectangle.y" [attr.width]="rectangle.width" [attr.height]="rectangle.height" stroke="#000000" [attr.fill]="getGradientFillAttr(rectangle)" stroke-width="0.3" />
     }
   }
 </svg>
