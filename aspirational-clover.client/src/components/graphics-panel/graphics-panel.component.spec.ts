@@ -1,0 +1,2 @@
+describe('GraphicsPanelComponent', function () {
+});
