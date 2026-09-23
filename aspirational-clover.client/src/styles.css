@@ -222,3 +222,7 @@ div.app-tab-bar-tab-inactive-dark:hover {
   border-color: #4d4d4d;
   color: #e6e6e6;
 }
+
+a.no-underline {
+  text-decoration: none;
+}
