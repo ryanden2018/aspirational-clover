@@ -8,6 +8,7 @@ import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 import { TabBarComponent } from '../components/tab-bar/tab-bar.component';
 import { ResourcesComponent } from "../components/resources/resources.component";
 import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
+import { GraphicsPanelComponent } from "../components/graphics-panel/graphics-panel.component";
 import { ResourcesService } from "./resources.service";
 import { ThemeService } from "./theme.service";
 
@@ -19,6 +20,7 @@ import { ThemeService } from "./theme.service";
     CommonModule,
     ToolBarComponent,
     TabBarComponent,
+    GraphicsPanelComponent,
     ResourcesComponent,
     AnchoredToolTipComponent,
   ],
@@ -26,7 +28,7 @@ import { ThemeService } from "./theme.service";
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  public documents = signal<AppDocument[]>([]);
+  documents = signal<AppDocument[]>([]);
 
   // TODO: the active clientUuid should be determined via URL routing
   activeDocumentClientUuid = computed(() => this.documents()[0]?.clientUuid ?? "");
@@ -36,6 +38,8 @@ export class AppComponent implements OnInit {
   appToolBarClassName = computed(() => this._themeService.classNames().toolBar);
   appTabBarClassName = computed(() => this._themeService.classNames().tabBar);
   appBodyClassName = computed(() => this._themeService.classNames().appBody);
+
+  activeDocument = computed(() => this.documents()?.find(d => d.clientUuid === this.activeDocumentClientUuid()) ?? null);
 
   constructor(private _documentService: DocumentService, private _resourcesService: ResourcesService, private _themeService: ThemeService) {
     // Subscribe icons etc so we only need to import the template once.

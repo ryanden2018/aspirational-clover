@@ -14,57 +14,6 @@
     </div>
   </div>
   <div [class]="appBodyClassName()">
-    <h1 id="tableLabel">Documents</h1>
-
-    <p>This component demonstrates fetching data from the server.</p>
-
-
-    <ng-template #noData>
-      <p *ngIf="documents().length === 0"><em>No forecasts returned from the server.</em></p>
-    </ng-template>
-
-    <table *ngIf="documents().length > 0">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>DocumentSlug</th>
-          <th>ClientUuid</th>
-          <th>CreatedAt</th>
-          <th>LastUpdatedAt</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let document of documents()">
-          <td>{{ document.id }}</td>
-          <td>{{ document.documentSlug }}</td>
-          <td>{{ document.clientUuid }}</td>
-          <td>{{ document.createdAt }}</td>
-          <td>{{ document.lastUpdatedAt }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div *ngIf="documents().length > 0">
-      <table *ngFor="let document of documents()">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>DocumentId</th>
-            <th>Name</th>
-            <th>Hidden</th>
-            <th>Z-Index</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let layer of document.layers">
-            <td>{{ layer.id }}</td>
-            <td>{{ layer.documentId }}</td>
-            <td>{{ layer.name }}</td>
-            <td>{{ layer.hidden }}</td>
-            <td>{{ layer.zIndex }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-graphics-panel [document]="activeDocument()"></app-graphics-panel>
   </div>
 </div>

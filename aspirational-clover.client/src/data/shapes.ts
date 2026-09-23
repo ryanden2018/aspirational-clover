@@ -1,5 +1,10 @@
 import { Fillable, Layerable, Transformable } from "./interfaces";
 
+export interface Coord {
+  x: number;
+  y: number;
+}
+
 export interface Rectangle extends Fillable, Layerable, Transformable {
   x: number;
   y: number;
