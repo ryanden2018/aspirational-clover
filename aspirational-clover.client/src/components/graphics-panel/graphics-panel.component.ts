@@ -1,6 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 
 import { AppDocument, Layer } from "../../data/model";
+import { Transformable, Layerable, Fillable } from "../../data/interfaces";
 import { isPolygon } from "../../util/isPolygon";
 
 @Component({
@@ -21,4 +22,11 @@ export class GraphicsPanelComponent {
   getTextBoxes = (layer: Layer) => layer?.shapes?.map(s => s?.textBox)?.filter(x => !!x) ?? [];
   getPolylines = (layer: Layer) => layer?.shapes?.map(s => s?.polyline)?.filter(x => !!x)?.filter(x => !isPolygon(x)) ?? [];
   getPolygons = (layer: Layer) => layer?.shapes?.map(s => s?.polyline)?.filter(x => !!x)?.filter(x => isPolygon(x)) ?? [];
+
+  getGradientId = (entity: Layerable) => `lg-${ entity?.clientUuid }`;
+  getGradientFillAttr = (entity: Layerable) => `url(#${ this.getGradientId(entity) })`;
+  getGradientTransform = (entity: Fillable) => `rotate(${ entity?.fillAngle })`;
+
+  getTransformOrigin = (entity: Transformable) => `${ entity?.rotationCenterOffsetX } ${ entity?.rotationCenterOffsetY }`;
+  getTransform = (entity: Transformable) => `rotate(${ entity?.rotationAngle }) skewX(${ entity?.skewX }) skewY(${ entity?.skewY })`
 }

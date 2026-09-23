@@ -28,8 +28,8 @@ public static class WebApplicationExtensions
             RotationAngle = Random.Shared.Next(0, 360),
             RotationCenterOffsetX = Random.Shared.Next(0, 4),
             RotationCenterOffsetY = Random.Shared.Next(0, 4),
-            SkewX = Random.Shared.Next(-90, 90),
-            SkewY = Random.Shared.Next(-90, 90)
+            SkewX = Random.Shared.Next(-50, 50),
+            SkewY = Random.Shared.Next(-50, 50)
         };
     }
 
@@ -49,8 +49,8 @@ public static class WebApplicationExtensions
             RotationAngle = Random.Shared.Next(0, 360),
             RotationCenterOffsetX = Random.Shared.Next(0, 4),
             RotationCenterOffsetY = Random.Shared.Next(0, 4),
-            SkewX = Random.Shared.Next(-90, 90),
-            SkewY = Random.Shared.Next(-90, 90)
+            SkewX = Random.Shared.Next(-50, 50),
+            SkewY = Random.Shared.Next(-50, 50)
         };
     }
 
@@ -128,6 +128,15 @@ public static class WebApplicationExtensions
         {
             MakeRandomCircle(layer.Id),
             MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
+            MakeRandomCircle(layer.Id),
             MakeRandomCircle(layer.Id)
         }).Aggregate(new List<Circle>(), (acc, val) => acc.Concat(val).ToList());
 
@@ -135,6 +144,15 @@ public static class WebApplicationExtensions
 
         var rectangles = layers.Select(layer => new[]
         {
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
+            MakeRandomRectangle(layer.Id),
             MakeRandomRectangle(layer.Id),
             MakeRandomRectangle(layer.Id),
             MakeRandomRectangle(layer.Id)
