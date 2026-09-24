@@ -33,3 +33,10 @@ export interface Shape {
   polyline: Polyline | null;
   layerId: number;
 }
+
+export interface ShapeUpdate {
+  circle?: Omit<Partial<Circle>, "id" | "clientUuid" | "layerId"> | null;
+  rectangle?: Omit<Partial<Rectangle>, "id" | "clientUuid" | "layerId"> | null;
+  textBox?: Omit<Partial<TextBox>, "id" | "clientUuid" | "layerId"> | null;
+  polyline?: Omit<Partial<Polyline>, "id" | "clientUuid" | "layerId"> | null;
+}
