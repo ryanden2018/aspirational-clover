@@ -10,6 +10,8 @@ export interface Layer {
   shapes: Shape[];
 }
 
+export type LayerUpdate = Pick<Layer, "name" | "hidden" | "zIndex">;
+
 export interface AppDocument {
   id: number;
   clientUuid: string;
@@ -19,3 +21,5 @@ export interface AppDocument {
   lastUpdatedAt: string;
   layers: Layer[];
 }
+
+export type DocumentUpdate = Pick<Layer, "name">;
