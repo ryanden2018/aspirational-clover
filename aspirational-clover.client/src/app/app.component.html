@@ -10,10 +10,10 @@
 <div class="app-panel">
   <div [class]="appTabBarClassName()">
     <div class="app-tab-bar-inner">
-      <app-tab-bar [documents]="documents()" [activeDocumentClientUuid]="activeDocumentClientUuid()"></app-tab-bar>
+      <app-tab-bar></app-tab-bar>
     </div>
   </div>
   <div [class]="appBodyClassName()">
-    <app-graphics-panel [document]="activeDocument()"></app-graphics-panel>
+    <app-graphics-panel></app-graphics-panel>
   </div>
 </div>

@@ -7,7 +7,7 @@
           <stop offset="100%" [attr.stop-color]="circle.fillColorTo" />
         </linearGradient>
       </defs>
-      <circle class="transformed-elem" [attr.transform-origin]="getTransformOrigin(circle)" [attr.transform]="getTransform(circle)" [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="getGradientFillAttr(circle)" stroke-width="0.3" />
+      <circle (click)="onCircleClick(circle)" class="transformed-elem" [attr.transform-origin]="getTransformOrigin(circle)" [attr.transform]="getTransform(circle)" [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="getGradientFillAttr(circle)" stroke-width="0.3" />
     }
     @for (rectangle of getRectangles(layer); track rectangle.clientUuid) {
       <defs>
@@ -16,7 +16,7 @@
           <stop offset="100%" [attr.stop-color]="rectangle.fillColorTo" />
         </linearGradient>
       </defs>
-      <rect class="transformed-elem" [attr.transform-origin]="getTransformOrigin(rectangle)"  [attr.transform]="getTransform(rectangle)" [attr.x]="rectangle.x" [attr.y]="rectangle.y" [attr.width]="rectangle.width" [attr.height]="rectangle.height" stroke="#000000" [attr.fill]="getGradientFillAttr(rectangle)" stroke-width="0.3" />
+      <rect (click)="onRectangleClick(rectangle)" class="transformed-elem" [attr.transform-origin]="getTransformOrigin(rectangle)"  [attr.transform]="getTransform(rectangle)" [attr.x]="rectangle.x" [attr.y]="rectangle.y" [attr.width]="rectangle.width" [attr.height]="rectangle.height" stroke="#000000" [attr.fill]="getGradientFillAttr(rectangle)" stroke-width="0.3" />
     }
   }
 </svg>

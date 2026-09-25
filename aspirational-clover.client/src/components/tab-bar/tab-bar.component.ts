@@ -1,8 +1,8 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { AppDocument } from "../../data/model";
 import { ThemeService } from "../../app/theme.service";
+import { DocumentService } from "../../app/document.service";
 import { getDocumentUrl } from "../../util/getDocumentUrl";
 
 @Component({
@@ -13,13 +13,12 @@ import { getDocumentUrl } from "../../util/getDocumentUrl";
   imports: [RouterLink]
 })
 export class TabBarComponent {
-  documents = input<AppDocument[]>([]);
-  activeDocumentClientUuid = input<string>("");
-
   tabBarTabActiveClassName = computed(() => this._themeService.classNames().tabBarTabActive);
   tabBarTabInactiveClassName = computed(() => this._themeService.classNames().tabBarTabInactive);
+  documents = computed(() => this._documentService.documents());
+  activeDocumentClientUuid = computed(() => this._documentService.activeDocumentClientUuid());
 
-  constructor(private _themeService: ThemeService) {}
+  constructor(private _themeService: ThemeService, private _documentService: DocumentService) {}
 
   getDocumentUrl = getDocumentUrl;
 }

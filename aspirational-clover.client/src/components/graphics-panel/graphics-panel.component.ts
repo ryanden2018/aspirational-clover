@@ -1,8 +1,10 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, computed } from '@angular/core';
 
-import { AppDocument, Layer } from "../../data/model";
+import { Layer } from "../../data/model";
+import { DocumentService } from "../../app/document.service";
 import { Transformable, Layerable, Fillable } from "../../data/interfaces";
 import { isPolygon } from "../../util/isPolygon";
+import { Circle, Rectangle } from "../../data/shapes";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -11,10 +13,12 @@ import { isPolygon } from "../../util/isPolygon";
   templateUrl: './graphics-panel.component.html',
 })
 export class GraphicsPanelComponent {
-  document = input<AppDocument | null>(null);
+  constructor(private _documentService: DocumentService) { }
+
+  activeDocument = computed(() => this._documentService.activeDocument());
 
   sortedLayers = computed(() =>
-    [...(this.document()?.layers?.filter(layer => !layer?.hidden) ?? [])]
+    [...(this.activeDocument()?.layers?.filter(layer => !layer?.hidden) ?? [])]
     .sort((a,b) => a?.zIndex - b?.zIndex));
 
   getCircles = (layer: Layer) => layer?.shapes?.map(s => s?.circle)?.filter(x => !!x) ?? [];
@@ -28,5 +32,9 @@ export class GraphicsPanelComponent {
   getGradientTransform = (entity: Fillable) => `rotate(${ entity?.fillAngle })`;
 
   getTransformOrigin = (entity: Transformable) => `${ entity?.rotationCenterOffsetX } ${ entity?.rotationCenterOffsetY }`;
-  getTransform = (entity: Transformable) => `rotate(${ entity?.rotationAngle }) skewX(${ entity?.skewX }) skewY(${ entity?.skewY })`
+  getTransform = (entity: Transformable) => `rotate(${ entity?.rotationAngle }) skewX(${ entity?.skewX }) skewY(${ entity?.skewY })`;
+
+  onCircleClick = (circle: Circle) => console.log("circle: " + circle.clientUuid);
+
+  onRectangleClick = (rectangle: Rectangle) => console.log("rectangle: " + rectangle.clientUuid);
 }
