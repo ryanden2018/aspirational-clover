@@ -1,5 +1,5 @@
 import { AppDocument } from "../data/model";
-import { Shape, ShapeUpdate, Circle, Rectangle, TextBox, Polyline } from "../data/shapes";
+import { Shape, Circle, Rectangle, TextBox, Polyline } from "../data/shapes";
 import { UpdateShapeCommand } from "../data/commands";
 import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
 import { getShallowDiff } from "../util/getShallowDiff";
@@ -10,7 +10,7 @@ export function applyShapeUpdate(document: AppDocument, update: UpdateShapeComma
   const patch = update?.payload?.[direction];
   if (!shapeClientUuid || !patch) return document;
   return {...document,
-    layers: document.layers.map(layer => ({...layer, shapes: layer.shapes.map(shape => {
+    layers: (document.layers ?? []).map(layer => ({...layer, shapes: (layer.shapes ?? []).map(shape => {
       if (getClientUuidFromShape(shape) !== shapeClientUuid) {
         return shape;
       }
