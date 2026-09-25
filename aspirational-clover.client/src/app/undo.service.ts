@@ -38,7 +38,7 @@ export class UndoService {
     }});
   }
 
-  private _applyCommand(command: Command, direction: "forward" | "reverse") {
+  applyCommand(command: Command, direction: "forward" | "reverse") {
     const currentDocument = this._documentService.activeDocument();
 
     if (!currentDocument) return;
@@ -67,7 +67,7 @@ export class UndoService {
     if (!currentState) return;
     const { undo, redo } = currentState;
     if (!undo) return;
-    this._applyCommand(undo, "reverse");
+    this.applyCommand(undo, "reverse");
     this.state.set({...this.state(), [documentClientUuid]: {
       undo: undo.next,
       redo: { ...undo, next: redo }
@@ -81,7 +81,7 @@ export class UndoService {
     if (!currentState) return;
     const { undo, redo } = currentState;
     if (!redo) return;
-    this._applyCommand(redo, "forward");
+    this.applyCommand(redo, "forward");
     this.state.set({...this.state(), [documentClientUuid]: {
       undo: { ...redo, next: undo },
       redo: redo.next,

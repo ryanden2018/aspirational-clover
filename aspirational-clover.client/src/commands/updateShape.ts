@@ -43,10 +43,10 @@ export function createShapeUpdateCommand(initial: Shape, target: Shape): UpdateS
       shapeClientUuid: initial?.circle?.clientUuid,
       payload: {
         forward: {
-          circle: getShallowDiff(initial, target) as Omit<Partial<Circle>, "layerId" | "id" | "clientUuid">,
+          circle: getShallowDiff(initial.circle, target.circle) as Omit<Partial<Circle>, "layerId" | "id" | "clientUuid">,
         },
         reverse: {
-          circle: getShallowDiff(target, initial) as Omit<Partial<Circle>, "layerId" | "id" | "clientUuid">,
+          circle: getShallowDiff(target.circle, initial.circle) as Omit<Partial<Circle>, "layerId" | "id" | "clientUuid">,
         }
       }
     }
@@ -58,10 +58,10 @@ export function createShapeUpdateCommand(initial: Shape, target: Shape): UpdateS
       shapeClientUuid: initial?.rectangle?.clientUuid,
       payload: {
         forward: {
-          rectangle: getShallowDiff(initial, target) as Omit<Partial<Rectangle>, "layerId" | "id" | "clientUuid">,
+          rectangle: getShallowDiff(initial.rectangle, target.rectangle) as Omit<Partial<Rectangle>, "layerId" | "id" | "clientUuid">,
         },
         reverse: {
-          rectangle: getShallowDiff(target, initial) as Omit<Partial<Rectangle>, "layerId" | "id" | "clientUuid">,
+          rectangle: getShallowDiff(target.rectangle, initial.rectangle) as Omit<Partial<Rectangle>, "layerId" | "id" | "clientUuid">,
         }
       }
     }
@@ -73,10 +73,10 @@ export function createShapeUpdateCommand(initial: Shape, target: Shape): UpdateS
       shapeClientUuid: initial?.textBox?.clientUuid,
       payload: {
         forward: {
-          textBox: getShallowDiff(initial, target) as Omit<Partial<TextBox>, "layerId" | "id" | "clientUuid">,
+          textBox: getShallowDiff(initial.textBox, target.textBox) as Omit<Partial<TextBox>, "layerId" | "id" | "clientUuid">,
         },
         reverse: {
-          textBox: getShallowDiff(target, initial) as Omit<Partial<TextBox>, "layerId" | "id" | "clientUuid">,
+          textBox: getShallowDiff(target.textBox, initial.textBox) as Omit<Partial<TextBox>, "layerId" | "id" | "clientUuid">,
         }
       }
     }
@@ -88,10 +88,10 @@ export function createShapeUpdateCommand(initial: Shape, target: Shape): UpdateS
       shapeClientUuid: initial?.polyline?.clientUuid,
       payload: {
         forward: {
-          polyline: getShallowDiff(initial, target) as Omit<Partial<Polyline>, "layerId" | "id" | "clientUuid">,
+          polyline: getShallowDiff(initial.polyline, target.polyline) as Omit<Partial<Polyline>, "layerId" | "id" | "clientUuid">,
         },
         reverse: {
-          polyline: getShallowDiff(target, initial) as Omit<Partial<Polyline>, "layerId" | "id" | "clientUuid">,
+          polyline: getShallowDiff(target.polyline, initial.polyline) as Omit<Partial<Polyline>, "layerId" | "id" | "clientUuid">,
         }
       }
     }
