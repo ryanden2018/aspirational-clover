@@ -60,4 +60,10 @@ export class DocumentService {
       }
     });
   }
+
+  updateDocumentInMemory(updatedDocument: AppDocument) {
+    this.documents.set(
+      this.documents().map(doc => (doc.clientUuid === updatedDocument.clientUuid) ? updatedDocument : doc)
+    );
+  }
 }

@@ -12,10 +12,10 @@
 <app-tool-tip-button id="toolbar-save-as-icon" toolTipContent="Save As" positioning="right-center">
   <ng-container *ngTemplateOutlet="saveAsIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo" positioning="right-center">
+<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo" positioning="right-center" (click)="onClickUndo()">
   <ng-container *ngTemplateOutlet="undoIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo" positioning="right-center">
+<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo" positioning="right-center" (click)="onClickRedo()">
   <ng-container *ngTemplateOutlet="redoIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
 <app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy" positioning="right-center">

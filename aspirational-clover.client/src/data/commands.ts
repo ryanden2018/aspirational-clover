@@ -39,4 +39,4 @@ export interface UpdateDocumentCommand {
 
 export type Command = UpdateShapeCommand | MoveShapeToLayerCommand | UpdateLayerCommand | UpdateDocumentCommand;
 
-export type LinkedCommand = Command & { next: Command | null };
+export type LinkedCommand = Command & { next: LinkedCommand | null };

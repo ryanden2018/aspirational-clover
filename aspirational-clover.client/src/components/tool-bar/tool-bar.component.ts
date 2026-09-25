@@ -3,6 +3,7 @@ import { NgTemplateOutlet } from '@angular/common';
 
 import { ResourcesService } from "../../app/resources.service";
 import { ThemeService } from "../../app/theme.service";
+import { UndoService } from "../../app/undo.service";
 import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
@@ -19,7 +20,7 @@ export class ToolBarComponent {
     this._themeService.toggleMode();
   }
 
-  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService) { }
+  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService, private _undoService: UndoService) { }
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
   fileOpenIcon = computed(() => this._resourcesService.resources()?.fileOpenIcon?.());
@@ -36,4 +37,8 @@ export class ToolBarComponent {
   toggleOffIcon = computed(() => this._resourcesService.resources()?.toggleOffIcon?.());
   toggleOnIcon = computed(() => this._resourcesService.resources()?.toggleOnIcon?.());
   toggleDarkModeIcon = computed(() => this.isDarkMode() ? this.toggleOnIcon() : this.toggleOffIcon());
+
+  onClickUndo = () => this._undoService.undo();
+
+  onClickRedo = () => this._undoService.redo();
 }
