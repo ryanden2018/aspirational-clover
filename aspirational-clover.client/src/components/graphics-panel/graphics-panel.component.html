@@ -7,7 +7,7 @@
           <stop offset="100%" [attr.stop-color]="circle.fillColorTo" />
         </linearGradient>
       </defs>
-      <circle (click)="onCircleClick(circle)" class="transformed-elem" [attr.transform-origin]="getTransformOrigin(circle)" [attr.transform]="getTransform(circle)" [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="getGradientFillAttr(circle)" stroke-width="0.3" />
+      <circle (mousedown)="onCircleMouseDown(circle)" (click)="onCircleClick(circle)" class="transformed-elem" [attr.transform-origin]="getTransformOrigin(circle)" [attr.transform]="getTransform(circle)" [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="getGradientFillAttr(circle)" stroke-width="0.3" />
     }
     @for (rectangle of getRectangles(layer); track rectangle.clientUuid) {
       <defs>
