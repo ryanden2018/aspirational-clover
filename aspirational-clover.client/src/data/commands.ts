@@ -23,8 +23,8 @@ export interface UpdateLayerCommand {
   type: "updateLayer",
   layerClientUuid: string,
   payload: {
-    forward: LayerUpdate,
-    reverse: LayerUpdate,
+    forward: Partial<LayerUpdate>,
+    reverse: Partial<LayerUpdate>,
   }
 }
 
@@ -32,8 +32,8 @@ export interface UpdateDocumentCommand {
   type: "updateDocument",
   documentClientUuid: string,
   payload: {
-    forward: DocumentUpdate,
-    reverse: DocumentUpdate,
+    forward: Partial<DocumentUpdate>,
+    reverse: Partial<DocumentUpdate>,
   }
 }
 
