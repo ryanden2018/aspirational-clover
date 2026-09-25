@@ -14,8 +14,8 @@ export interface MoveShapeToLayerCommand {
   type: "moveShapeToLayer",
   shapeClientUuid: string,
   payload: {
-    forward: { layerClientUuid: number };
-    reverse: { layerClientUuid: number };
+    forward: { layerClientUuid: string };
+    reverse: { layerClientUuid: string };
   }
 }
 
