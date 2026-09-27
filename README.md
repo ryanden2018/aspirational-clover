@@ -18,12 +18,6 @@ the OpenAPI documentation in Scalar.
 security settings, for instance by using a sandbox; if you want to run in `http` mode  then it should be possible but I'm
 afraid you're on your own, because I only ever run this stack in `https`.) 
 
-## Test suite
-
-From the root of the solution, run:
-
-`dotnet test aspirational-clover.Tests`
-
 
 ## Adding Shape Types
 
