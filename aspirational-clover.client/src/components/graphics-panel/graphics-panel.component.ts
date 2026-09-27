@@ -42,8 +42,7 @@ export class GraphicsPanelComponent {
 
   onRectangleClick = (rectangle: Rectangle) => console.log("rectangle: " + rectangle.clientUuid);
 
-  onCircleMouseDown = (circle: Circle) => {
-    const initial: Shape = { layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null };
+  onShapeMouseDown = (initial: Shape, updater: (initial: Shape, update: { dx: number, dy: number }) => Shape) => {
     let cancelled: boolean = false; // TODO: 'esc' keyboard listener
     let lastCommand: UpdateShapeCommand | null = null;
     fromEvent(window.document as any, "mouseup", { capture: "true" } as any)
@@ -62,7 +61,7 @@ export class GraphicsPanelComponent {
         scan((acc, current) => ({ dx: acc.dx + current.dx, dy: acc.dy + current.dy }), { dx: 0, dy: 0 }),
         map(({ dx, dy }) => {
           const factor = 5; // TODO: adjust this based on zoom factor
-          const target: Shape = { ...initial, circle: { ...circle, centerX: circle.centerX + dx / factor, centerY: circle.centerY + dy / factor } };
+          const target: Shape = updater(initial, { dx: dx / factor, dy: dy / factor });
           return createShapeUpdateCommand(initial, target);
         }),
         filter(x => !!x),
@@ -72,5 +71,15 @@ export class GraphicsPanelComponent {
       .subscribe(command => {
         this._undoService.applyCommand(command, "forward");
       });
+  }
+
+  onCircleMouseDown = (circle: Circle) => {
+    this.onShapeMouseDown({ layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
+      (initial, update) => ({ ...initial, circle: { ...circle, centerX: circle.centerX + update.dx, centerY: circle.centerY + update.dy } }));
+  }
+
+  onRectangleMouseDown = (rectangle: Rectangle) => {
+    this.onShapeMouseDown({ layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
+      (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: rectangle.x + update.dx, y: rectangle.y + update.dy }}));
   }
 }
