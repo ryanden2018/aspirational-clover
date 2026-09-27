@@ -4,6 +4,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ResourcesService } from "../../app/resources.service";
 import { ThemeService } from "../../app/theme.service";
 import { UndoService } from "../../app/undo.service";
+import { ShapeToolsService } from "../../app/shape-tools.service";
 import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
@@ -20,7 +21,7 @@ export class ToolBarComponent {
     this._themeService.toggleMode();
   }
 
-  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService, private _undoService: UndoService) { }
+  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService, private _undoService: UndoService, private _shapeToolsService: ShapeToolsService) { }
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
   fileOpenIcon = computed(() => this._resourcesService.resources()?.fileOpenIcon?.());
@@ -41,4 +42,12 @@ export class ToolBarComponent {
   onClickUndo = () => this._undoService.undo();
 
   onClickRedo = () => this._undoService.redo();
+
+  onClickCircle = () => this._shapeToolsService.setMode("circle");
+
+  onClickRectangle = () => this._shapeToolsService.setMode("rectangle");
+
+  onClickPolyline = () => this._shapeToolsService.setMode("polyline");
+
+  onClickTextBox = () => this._shapeToolsService.setMode("textbox");
 }
