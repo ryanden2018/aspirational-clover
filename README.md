@@ -19,15 +19,8 @@ security settings, for instance by using a sandbox; if you want to run in `http`
 afraid you're on your own, because I only ever run this stack in `https`.) 
 
 
-## Adding Shape Types
-
-Shapes are model classes implementing `ILayerable`, as well as possibly `IFillable` and/or `ITransformable` or other interfaces. 
-New shapes should be added in the `aspirational-clover.Server/Models` folder, and the `ShapeDTO` (properties AND constructor, specifically
-the definition of the `LayerId` convenience property) must be updated to include
-the new shape type. We use this scheme instead of a simple enum so that different shape types can express different properties and behaviors
-(a shape should only implement the interfaces that are meaningful for that shape type). For example, a `Circle` has a `Radius` property, while a 
-`Rectangle` has `Width` and `Height` properties. Besides updating `ShapeDTO`, it is also necessary to update the `DocumentService` class to
-handle the new shape type; this includes the `getShapes` method, as well as the methods for creating, updating, and deleting documents.
 
 
 _The entire commit history of this README.md file is relevant for historical interest._
+
+
