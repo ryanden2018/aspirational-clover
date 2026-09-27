@@ -36,27 +36,6 @@
             <param name="slug">Document slug</param>
             <returns>DocumentDTO when found</returns>
         </member>
-        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Post(aspirational_clover.Server.DTOs.DocumentDTO)">
-            <summary>
-            Create a new document. The server will ignore any Id supplied by the client.
-            </summary>
-            <param name="model">Document to create</param>
-            <returns>Created DocumentDTO</returns>
-        </member>
-        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Put(System.Int32,aspirational_clover.Server.DTOs.DocumentDTO)">
-            <summary>
-            Update an existing document. Id in the route must match the payload.
-            </summary>
-            <param name="id">Document id</param>
-            <param name="model">Updated document payload</param>
-            <returns>Updated DocumentDTO</returns>
-        </member>
-        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Delete(System.Int32)">
-            <summary>
-            Delete a document by id.
-            </summary>
-            <param name="id">Document id</param>
-        </member>
         <member name="T:aspirational_clover.Server.Data.AppDbContext">
             <summary>
             Represents the application's database context, providing access to the database and managing entity sets for documents, layers, and shapes.
