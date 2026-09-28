@@ -1,5 +1,14 @@
-import { ShapeUpdate } from "./shapes";
+import { ShapeUpdate, Shape } from "./shapes";
 import { LayerUpdate, DocumentUpdate } from "./model";
+
+export interface AddShapeCommand {
+  type: "addShape",
+  layerClientUuid: string,
+  payload: {
+    forward: Shape,
+    reverse: null,
+  }
+}
 
 export interface UpdateShapeCommand {
   type: "updateShape",
@@ -37,6 +46,6 @@ export interface UpdateDocumentCommand {
   }
 }
 
-export type Command = UpdateShapeCommand | MoveShapeToLayerCommand | UpdateLayerCommand | UpdateDocumentCommand;
+export type Command = UpdateShapeCommand | MoveShapeToLayerCommand | UpdateLayerCommand | UpdateDocumentCommand | AddShapeCommand;
 
 export type LinkedCommand = Command & { next: LinkedCommand | null };

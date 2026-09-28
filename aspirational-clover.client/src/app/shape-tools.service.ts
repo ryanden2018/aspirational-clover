@@ -1,4 +1,5 @@
 import { Injectable, signal } from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
 
 @Injectable({
   providedIn: "root"
@@ -11,4 +12,6 @@ export class ShapeToolsService {
   }
 
   mode = this._mode.asReadonly();
+
+  modeAsObservable = toObservable(this.mode);
 }
