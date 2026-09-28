@@ -1,11 +1,11 @@
 
 
-<app-tool-tip-button id="toolbar-new-window-icon" toolTipContent="New" positioning="right-center">
+<app-tool-tip-button id="toolbar-new-window-icon" toolTipContent="New" positioning="right-center" (click)="onClickNew()">
   <ng-container *ngTemplateOutlet="newWindowIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-file-open-icon" toolTipContent="Open" positioning="right-center">
+<!--<app-tool-tip-button id="toolbar-file-open-icon" toolTipContent="Open" positioning="right-center">
   <ng-container *ngTemplateOutlet="fileOpenIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</app-tool-tip-button>
+</app-tool-tip-button>-->
 <!--<app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center">
   <ng-container *ngTemplateOutlet="saveIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>-->
@@ -18,10 +18,10 @@
 <app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo" positioning="right-center" (click)="onClickRedo()">
   <ng-container *ngTemplateOutlet="redoIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy" positioning="right-center">
+<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy" positioning="right-center" (click)="onClickCopy()">
   <ng-container *ngTemplateOutlet="contentCopyIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste" positioning="right-center">
+<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste" positioning="right-center" (click)="onClickPaste()">
   <ng-container *ngTemplateOutlet="contentPasteIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
 <app-tool-tip-button id="toolbar-rectangle-icon" toolTipContent="Rectangle" positioning="right-center" (click)="onClickRectangle()">
@@ -30,9 +30,9 @@
 <app-tool-tip-button id="toolbar-circle-icon" toolTipContent="Circle" positioning="right-center" (click)="onClickCircle()">
   <ng-container *ngTemplateOutlet="circleIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-polyline-icon" toolTipContent="Polyline" positioning="right-center" (click)="onClickPolyline()">
+<!--<app-tool-tip-button id="toolbar-polyline-icon" toolTipContent="Polyline" positioning="right-center" (click)="onClickPolyline()">
   <ng-container *ngTemplateOutlet="polylineIcon(); context: { width: '28px', height: '28px' }"></ng-container>
-</app-tool-tip-button>
+</app-tool-tip-button>-->
 <app-tool-tip-button id="toolbar-text-box-icon" toolTipContent="Text Box" positioning="right-center" (click)="onClickTextBox()">
   <ng-container *ngTemplateOutlet="addNotesIcon(); context: { width: '28px', height: '28px' }"></ng-container>
 </app-tool-tip-button>

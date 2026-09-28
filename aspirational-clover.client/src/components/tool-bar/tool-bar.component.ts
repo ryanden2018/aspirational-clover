@@ -4,7 +4,9 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ResourcesService } from "../../app/resources.service";
 import { ThemeService } from "../../app/theme.service";
 import { UndoService } from "../../app/undo.service";
+import { DocumentService } from "../../app/document.service";
 import { ShapeToolsService } from "../../app/shape-tools.service";
+import { SelectionService } from "../../app/selection.service";
 import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
@@ -21,7 +23,14 @@ export class ToolBarComponent {
     this._themeService.toggleMode();
   }
 
-  constructor(private _themeService: ThemeService, private _resourcesService: ResourcesService, private _undoService: UndoService, private _shapeToolsService: ShapeToolsService) { }
+  constructor(
+    private _themeService: ThemeService,
+    private _resourcesService: ResourcesService,
+    private _undoService: UndoService,
+    private _shapeToolsService: ShapeToolsService,
+    private _documentService: DocumentService,
+    private _selectionService: SelectionService,
+  ) { }
 
   newWindowIcon = computed(() => this._resourcesService.resources()?.newWindowIcon?.());
   fileOpenIcon = computed(() => this._resourcesService.resources()?.fileOpenIcon?.());
@@ -50,4 +59,10 @@ export class ToolBarComponent {
   onClickPolyline = () => this._shapeToolsService.setMode("polyline");
 
   onClickTextBox = () => this._shapeToolsService.setMode("textbox");
+
+  onClickNew = () => this._documentService.newDocument();
+
+  onClickCopy = () => this._selectionService.copySelectedShapeToClipboard();
+
+  onClickPaste = () => this._selectionService.pasteShapeFromClipboard();
 }

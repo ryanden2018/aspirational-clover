@@ -6,12 +6,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppDocument } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
+import { newUuidV4 } from "../util/uuid";
+import { getDocumentUrl } from "../util/getDocumentUrl";
 
 @Injectable({
   providedIn: "root"
 })
 export class DocumentService {
   documents = signal<AppDocument[]>([]);
+
+  private _newDocumentCount = signal<number>(1);
 
   private _apiDocumentUrl = "/document"; // TODO: should be /api/document and move to constants.ts
 
@@ -65,5 +69,28 @@ export class DocumentService {
     this.documents.set(
       this.documents().map(doc => (doc.clientUuid === updatedDocument.clientUuid) ? updatedDocument : doc)
     );
+  }
+
+  newDocument() {
+    const newDocument: AppDocument = {
+      id: 0,
+      clientUuid: newUuidV4(),
+      documentSlug: newUuidV4(),
+      name: `New Document ${this._newDocumentCount()}`,
+      createdAt: "",
+      lastUpdatedAt: "",
+      layers: [{
+        id: 0,
+        clientUuid: newUuidV4(),
+        documentId: 0,
+        name: "Layer 0",
+        hidden: false,
+        zIndex: 0,
+        shapes: []
+      }]
+    }
+    this.documents.set([...this.documents(), newDocument]);
+    this._newDocumentCount.set(this._newDocumentCount() + 1)
+    this._router.navigateByUrl(getDocumentUrl(newDocument));
   }
 }
