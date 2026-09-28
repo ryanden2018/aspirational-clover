@@ -1,4 +1,4 @@
-<svg viewBox="-20 -20 250 120" class="graphics-panel-svg" (mousedown)="onSvgMouseDown($event)">
+<svg viewBox="-20 -20 250 120" class="graphics-panel-svg" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()">
   @for (layer of sortedLayers(); track layer.clientUuid) {
     @for (circle of getCircles(layer); track circle.clientUuid) {
       <defs>
@@ -7,7 +7,19 @@
           <stop offset="100%" [attr.stop-color]="circle.fillColorTo" />
         </linearGradient>
       </defs>
-      <circle (mousedown)="onCircleMouseDown(circle)" (click)="onCircleClick(circle)" class="transformed-elem" [attr.transform-origin]="getTransformOrigin(circle)" [attr.transform]="getTransform(circle)" [attr.cx]="circle.centerX" [attr.cy]="circle.centerY" [attr.r]="circle.radius" stroke="#000000" [attr.fill]="getGradientFillAttr(circle)" stroke-width="0.3" />
+      <circle
+              (mousedown)="onCircleMouseDown(circle)"
+              (click)="onCircleClick($event, circle)"
+              class="transformed-elem"
+              [attr.transform-origin]="getTransformOrigin(circle)"
+              [attr.transform]="getTransform(circle)"
+              [attr.cx]="circle.centerX"
+              [attr.cy]="circle.centerY"
+              [attr.r]="circle.radius"
+              [attr.stroke]="selectionOutlineColor()"
+              [attr.fill]="getGradientFillAttr(circle)"
+              [attr.stroke-width]="selectedShapeClientUuid() === circle.clientUuid ? 0.2 : 0"
+      />
     }
     @for (rectangle of getRectangles(layer); track rectangle.clientUuid) {
       <defs>
@@ -16,7 +28,20 @@
           <stop offset="100%" [attr.stop-color]="rectangle.fillColorTo" />
         </linearGradient>
       </defs>
-      <rect (mousedown)="onRectangleMouseDown(rectangle)" (click)="onRectangleClick(rectangle)" class="transformed-elem" [attr.transform-origin]="getTransformOrigin(rectangle)"  [attr.transform]="getTransform(rectangle)" [attr.x]="rectangle.x" [attr.y]="rectangle.y" [attr.width]="rectangle.width" [attr.height]="rectangle.height" stroke="#000000" [attr.fill]="getGradientFillAttr(rectangle)" stroke-width="0.3" />
+      <rect
+            (mousedown)="onRectangleMouseDown(rectangle)"
+            (click)="onRectangleClick($event, rectangle)"
+            class="transformed-elem"
+            [attr.transform-origin]="getTransformOrigin(rectangle)"
+            [attr.transform]="getTransform(rectangle)"
+            [attr.x]="rectangle.x"
+            [attr.y]="rectangle.y"
+            [attr.width]="rectangle.width"
+            [attr.height]="rectangle.height"
+            [attr.stroke]="selectionOutlineColor()"
+            [attr.fill]="getGradientFillAttr(rectangle)"
+            [attr.stroke-width]="selectedShapeClientUuid() === rectangle.clientUuid ? 0.2 : 0"
+      />
     }
   }
 </svg>
