@@ -1,4 +1,4 @@
-import { Command, UpdateShapeCommand, MoveShapeToLayerCommand, UpdateLayerCommand, UpdateDocumentCommand } from "./commands";
+import { Command, UpdateShapeCommand, MoveShapeToLayerCommand, UpdateLayerCommand, UpdateDocumentCommand, AddShapeCommand } from "./commands";
 
 export const isUpdateShapeCommand: (command: Command) => command is UpdateShapeCommand = command => command?.type === "updateShape";
 
@@ -7,3 +7,5 @@ export const isMoveShapeToLayerCommand: (command: Command) => command is MoveSha
 export const isUpdateLayerCommand: (command: Command) => command is UpdateLayerCommand = command => command?.type === "updateLayer";
 
 export const isUpdateDocumentCommand: (command: Command) => command is UpdateDocumentCommand = command => command?.type === "updateDocument";
+
+export const isAddShapeCommand: (command: Command) => command is AddShapeCommand = command => command?.type === "addShape";

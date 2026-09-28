@@ -1,4 +1,4 @@
-<svg viewBox="-20 -20 250 120" class="graphics-panel-svg">
+<svg viewBox="-20 -20 250 120" class="graphics-panel-svg" (mousedown)="onSvgMouseDown($event)">
   @for (layer of sortedLayers(); track layer.clientUuid) {
     @for (circle of getCircles(layer); track circle.clientUuid) {
       <defs>
