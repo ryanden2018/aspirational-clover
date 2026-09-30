@@ -1,4 +1,4 @@
-<svg viewBox="-20 -20 250 120" class="graphics-panel-svg" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()">
+<svg viewBox="0 0 850 1100" class="graphics-panel-svg" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()">
   @for (layer of sortedLayers(); track layer.clientUuid) {
     @for (circle of getCircles(layer); track circle.clientUuid) {
       <defs>
@@ -18,7 +18,7 @@
               [attr.r]="circle.radius"
               [attr.stroke]="selectionOutlineColor()"
               [attr.fill]="getGradientFillAttr(circle)"
-              [attr.stroke-width]="selectedShapeClientUuid() === circle.clientUuid ? 0.2 : 0"
+              [attr.stroke-width]="selectedShapeClientUuid() === circle.clientUuid ? 2 : 0"
       />
     }
     @for (rectangle of getRectangles(layer); track rectangle.clientUuid) {
@@ -40,8 +40,21 @@
             [attr.height]="rectangle.height"
             [attr.stroke]="selectionOutlineColor()"
             [attr.fill]="getGradientFillAttr(rectangle)"
-            [attr.stroke-width]="selectedShapeClientUuid() === rectangle.clientUuid ? 0.2 : 0"
+            [attr.stroke-width]="selectedShapeClientUuid() === rectangle.clientUuid ? 2 : 0"
       />
+    }
+    @for (textBox of getTextBoxes(layer); track textBox.clientUuid) {
+      <text
+            (mousedown)="onTextBoxMouseDown(textBox)"
+            (click)="onTextBoxClick($event, textBox)"
+            [attr.x]="textBox.x"
+            [attr.y]="textBox.y"
+            [attr.font-size]="textBox.fontSize"
+            [attr.fill]="textBoxColor()"
+            [attr.stroke]="selectionOutlineColor()"
+            [attr.stroke-width]="selectedShapeClientUuid() === textBox.clientUuid ? 1 : 0"
+            style="cursor:default;user-select:none"
+      >{{ getTextBoxText(textBox) }}</text>
     }
   }
 </svg>

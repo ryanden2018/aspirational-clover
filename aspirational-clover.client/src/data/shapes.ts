@@ -24,6 +24,11 @@ export interface Polyline extends Fillable, Layerable {
 
 export interface TextBox extends Layerable {
   content: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fontSize: number;
 }
 
 export interface Shape {

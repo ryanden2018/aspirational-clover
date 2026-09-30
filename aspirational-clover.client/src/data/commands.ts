@@ -10,6 +10,15 @@ export interface AddShapeCommand {
   }
 }
 
+export interface DeleteShapeCommand {
+  type: "deleteShape",
+  layerClientUuid: string,
+  payload: {
+    forward: null,
+    reverse: Shape,
+  }
+}
+
 export interface UpdateShapeCommand {
   type: "updateShape",
   shapeClientUuid: string,
@@ -46,6 +55,11 @@ export interface UpdateDocumentCommand {
   }
 }
 
-export type Command = UpdateShapeCommand | MoveShapeToLayerCommand | UpdateLayerCommand | UpdateDocumentCommand | AddShapeCommand;
+export type Command = UpdateShapeCommand
+  | MoveShapeToLayerCommand
+  | UpdateLayerCommand
+  | UpdateDocumentCommand
+  | AddShapeCommand
+  | DeleteShapeCommand;
 
 export type LinkedCommand = Command & { next: LinkedCommand | null };

@@ -8,12 +8,29 @@ import { AppDocument } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
+import { defaultSlugs } from "../constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class DocumentService {
-  documents = signal<AppDocument[]>([]);
+  documents = signal<AppDocument[]>(defaultSlugs.map(documentSlug => ({
+    id: 0,
+    clientUuid: newUuidV4(),
+    documentSlug,
+    name: documentSlug,
+    createdAt: "",
+    lastUpdatedAt: "",
+    layers: [{
+      id: 0,
+      clientUuid: newUuidV4(),
+      documentId: 0,
+      name: "layer-0",
+      hidden: false,
+      zIndex: 0,
+      shapes: [],
+    }],
+  })));
 
   private _newDocumentCount = signal<number>(1);
 
@@ -92,5 +109,13 @@ export class DocumentService {
     this.documents.set([...this.documents(), newDocument]);
     this._newDocumentCount.set(this._newDocumentCount() + 1)
     this._router.navigateByUrl(getDocumentUrl(newDocument));
+  }
+
+  closeDocument(clientUuid: string) {
+    const isActiveDocument = (this.activeDocument()?.clientUuid === clientUuid);
+    this.documents.set(this.documents().filter(document => document.clientUuid !== clientUuid));
+    if (isActiveDocument) {
+      this._router.navigateByUrl(getDocumentUrl(this.documents()[0]));
+    }
   }
 }

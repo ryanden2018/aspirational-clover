@@ -14,6 +14,7 @@ export class ToolTipButtonComponent {
   toolTipContent = input<string>('');
   click = input<(() => void) | void>(() => {});
   positioning = input<'bottom-left' | 'right-center'>('bottom-left');
+  timeout = input<number>(0);
 
   buttonClassName = computed(() => this._themeService.classNames().button);
 
@@ -51,8 +52,10 @@ export class ToolTipButtonComponent {
     switch (this.positioning()) {
       case 'bottom-left':
         return rect.bottom + 10;
+
       case 'right-center':
         return rect.top + rect.height / 2;
+
       default:
         return rect.top + rect.height / 2;
     }
@@ -71,6 +74,13 @@ export class ToolTipButtonComponent {
         x,
         y,
       });
+
+      const maybeTimeout = this.timeout();
+      if (typeof maybeTimeout === "number" && maybeTimeout > 0) {
+        setTimeout(() => {
+          this._anchorService.pushAnchor({ ...baseAnchor, signalType: "hide" });
+        }, maybeTimeout);
+      }
     } catch (e) {
       console.log("Error occurred while pushing anchor:", e);
     }

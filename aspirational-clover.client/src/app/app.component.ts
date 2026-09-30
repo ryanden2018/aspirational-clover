@@ -2,7 +2,6 @@ import { Component, OnInit, signal, viewChild, computed, inject } from '@angular
 //import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { AppDocument } from "../data/model";
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 import { TabBarComponent } from '../components/tab-bar/tab-bar.component';
 import { ResourcesComponent } from "../components/resources/resources.component";
@@ -10,8 +9,8 @@ import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchor
 import { GraphicsPanelComponent } from "../components/graphics-panel/graphics-panel.component";
 import { DocumentService } from './document.service';
 import { ResourcesService } from "./resources.service";
+import { HotkeysService } from "./hotkeys.service";
 import { ThemeService } from "./theme.service";
-import { getDocumentSlugFromUrl } from '../util/getDocumentSlugFromUrl';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +34,12 @@ export class AppComponent implements OnInit {
   appTabBarClassName = computed(() => this._themeService.classNames().tabBar);
   appBodyClassName = computed(() => this._themeService.classNames().appBody);
 
-  constructor(private _documentService: DocumentService, private _resourcesService: ResourcesService, private _themeService: ThemeService) {
+  constructor(
+    private _documentService: DocumentService,
+    private _resourcesService: ResourcesService,
+    private _themeService: ThemeService,
+    private _hotkeysService: HotkeysService,
+  ) {
     // Subscribe icons etc so we only need to import the template once.
     // DO NOT place this line in ngOnInit(), it will throw a runtime eror (NG0203).
     this._resourcesService.subscribeResources(this._resources);
@@ -43,6 +47,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this._documentService.retrieveDocumentsOnce();
+    this._hotkeysService.connectDeleteKeydown();
   }
 
   protected readonly title = signal('aspirational-clover.client');

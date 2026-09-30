@@ -22,9 +22,9 @@ public static class WebApplicationExtensions
             FillColorFrom = _colors[Random.Shared.Next(_colors.Length)],
             FillColorTo = _colors[Random.Shared.Next(_colors.Length)],
             FillAngle = Random.Shared.Next(0, 360),
-            CenterX = Random.Shared.Next(0, 100),
-            CenterY = Random.Shared.Next(0, 100),
-            Radius = Random.Shared.Next(1, 10),
+            CenterX = Random.Shared.Next(0, 850),
+            CenterY = Random.Shared.Next(0, 1100),
+            Radius = Random.Shared.Next(50, 200),
             RotationAngle = Random.Shared.Next(0, 360),
             RotationCenterOffsetX = Random.Shared.Next(0, 4),
             RotationCenterOffsetY = Random.Shared.Next(0, 4),
@@ -42,10 +42,10 @@ public static class WebApplicationExtensions
             FillColorFrom = _colors[Random.Shared.Next(_colors.Length)],
             FillColorTo = _colors[Random.Shared.Next(_colors.Length)],
             FillAngle = Random.Shared.Next(0, 360),
-            X = Random.Shared.Next(0, 100),
-            Y = Random.Shared.Next(0, 100),
-            Width = Random.Shared.Next(1, 10),
-            Height = Random.Shared.Next(1, 10),
+            X = Random.Shared.Next(0, 850),
+            Y = Random.Shared.Next(0, 1100),
+            Width = Random.Shared.Next(50, 200),
+            Height = Random.Shared.Next(50, 200),
             RotationAngle = Random.Shared.Next(0, 360),
             RotationCenterOffsetX = Random.Shared.Next(0, 4),
             RotationCenterOffsetY = Random.Shared.Next(0, 4),
@@ -80,14 +80,14 @@ public static class WebApplicationExtensions
 
         var slugs = new[]
         {
-            "scores-doc", "remarks-doc", "books-doc", "markup-doc", "computer-doc"
+            "home", "about", "contact",
         };
 
         var documents = Enumerable.Range(0, slugs.Length).Select(index => new Document
         {
             DocumentSlug = slugs[index],
             ClientUuid = Guid.NewGuid().ToString(),
-            Name = "document-name-" + index.ToString(),
+            Name = slugs[index],
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow
         }).ToList();
@@ -160,19 +160,25 @@ public static class WebApplicationExtensions
 
         db.Rectangles.AddRange(rectangles);
 
-        var textBoxes = layers.Select(layer => new[]
+        var textBoxes = layers.Where(layer => layer.Id == layers[0].Id).Select(layer => new[]
         {
             new TextBox
             {
                 LayerId = layer.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Content = "{text: \"content-1\"}",
+                Content = "{\"text\": \"content-1\"}",
+                X = 200,
+                Y = 200,
+                FontSize = 24,
             },
             new TextBox
             {
                 LayerId = layer.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Content = "{text: \"content-2\"}",
+                Content = "{\"text\": \"content-2\"}",
+                X = 500,
+                Y = 500,
+                FontSize = 24,
             }
         }).Aggregate(new List<TextBox>(), (acc, val) => acc.Concat(val).ToList());
 

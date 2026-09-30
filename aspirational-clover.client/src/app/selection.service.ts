@@ -8,6 +8,7 @@ import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
 import { newUuidV4 } from "../util/uuid";
 import { Shape } from "../data/shapes";
 import { createAddShapeCommand } from "../commands/addShape";
+import { createDeleteShapeCommand } from "../commands/deleteShape";
 
 @Injectable({
   providedIn: "root"
@@ -50,6 +51,10 @@ export class SelectionService {
       return { ...shape, rectangle: { ...shape.rectangle, clientUuid: newUuidV4(), x: shape.rectangle.x + delta, y: shape.rectangle.y + delta }};
     }
 
+    if (shape?.textBox) {
+      return { ...shape, textBox: { ...shape.textBox, clientUuid: newUuidV4(), x: shape.textBox.x + delta, y: shape.textBox.y + delta }};
+    }
+
     return null;
   }
 
@@ -75,5 +80,18 @@ export class SelectionService {
     } catch (e) {
       console.log("error pasting: ", e);
     }
+  }
+
+  deleteSelectedShape() {
+    const shape = this.selectedShape();
+    if (!shape) return;
+    const shapeClientUuid = getClientUuidFromShape(shape);
+    const layer = this._documentService.activeDocument()?.layers?.find(layer => Boolean(layer?.shapes?.find(otherShape => getClientUuidFromShape(otherShape) === shapeClientUuid)));
+    if (!layer) return;
+    const deleteShapeCommand = createDeleteShapeCommand(layer.clientUuid, shape);
+    if (!deleteShapeCommand) return;
+    this._undoService.applyCommand(deleteShapeCommand, "forward");
+    this._undoService.pushCommand(deleteShapeCommand);
+    this.setSelectedShapeClientUuid(null);
   }
 }

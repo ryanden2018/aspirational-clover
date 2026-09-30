@@ -9,12 +9,13 @@ import { ThemeService } from "../../app/theme.service";
 import { ShapeToolsService } from "../../app/shape-tools.service";
 import { Transformable, Layerable, Fillable } from "../../data/interfaces";
 import { isPolygon } from "../../util/isPolygon";
-import { Circle, Rectangle, Shape } from "../../data/shapes";
+import { Circle, Rectangle, Shape, TextBox } from "../../data/shapes";
 import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { UpdateShapeCommand } from "../../data/commands";
 import { newUuidV4 } from "../../util/uuid"; 
 import { createAddShapeCommand } from '../../commands/addShape';
 import { getClientUuidFromShape } from '../../util/getClientUuidFromShape';
+import { parseTextBoxContent } from "../../util/textUtils";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -37,6 +38,8 @@ export class GraphicsPanelComponent {
 
   selectionOutlineColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
 
+  textBoxColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
+
   sortedLayers = computed(() =>
     [...(this.activeDocument()?.layers?.filter(layer => !layer?.hidden) ?? [])]
     .sort((a,b) => a?.zIndex - b?.zIndex));
@@ -54,6 +57,8 @@ export class GraphicsPanelComponent {
   getTransformOrigin = (entity: Transformable) => `${ entity?.rotationCenterOffsetX } ${ entity?.rotationCenterOffsetY }`;
   getTransform = (entity: Transformable) => `rotate(${ entity?.rotationAngle }) skewX(${ entity?.skewX }) skewY(${ entity?.skewY })`;
 
+  getTextBoxText = (textBox: TextBox) => parseTextBoxContent(textBox);
+
   onCircleClick = (event: MouseEvent, circle: Circle) => {
     event.stopPropagation();
     this._selectionService.setSelectedShapeClientUuid(circle.clientUuid);
@@ -64,20 +69,23 @@ export class GraphicsPanelComponent {
     this._selectionService.setSelectedShapeClientUuid(rectangle.clientUuid);
   }
 
+  onTextBoxClick = (event: MouseEvent, textBox: TextBox) => {
+    event.stopPropagation();
+    this._selectionService.setSelectedShapeClientUuid(textBox.clientUuid);
+  }
+
   onSvgClick = () => {
     this._selectionService.setSelectedShapeClientUuid(null);
   }
 
-  getInitialShape(event: MouseEvent): Shape | null {
-    const mode = this._shapeToolsService.mode();
-
+  getInitialShape(event: MouseEvent, mode: "rectangle" | "circle" | "polyline" | "textbox"): Shape | null {
     // TODO: use current layer instead of default layer
     const layerId = this._documentService.activeDocument()?.layers?.[0]?.id;
 
     if (layerId === undefined) return null;
 
     const backgroundColor = "#666";
-    const factor = 7; // TODO: use zoom factor
+    const factor = 1; // TODO: use zoom factor
     const offsetX = -20;
     const offsetY = -30;
     switch (mode) {
@@ -116,6 +124,18 @@ export class GraphicsPanelComponent {
           skewX: 0,
           skewY: 0,
         } };
+      case 'textbox':
+        return { layerId, circle: null, rectangle: null, polyline: null, textBox: {
+          x: event.clientX / factor + offsetX,
+          y: event.clientY / factor + offsetY,
+          width: 0,
+          height: 0,
+          id: 0,
+          clientUuid: newUuidV4(),
+          layerId,
+          content: "{\"text\":\"Click to enter text\"}",
+          fontSize: 10,
+        } };
       default:
         return null;
     }
@@ -130,13 +150,20 @@ export class GraphicsPanelComponent {
        return { ...shape, rectangle: { ...shape.rectangle, width: dx, height: dy, clientUuid: shapeClientUuid ?? shape.rectangle.clientUuid }};
      }
 
+     if (shape.textBox) {
+       return { ...shape, textBox: { ...shape.textBox, x: shape.textBox.x + dx, y: shape.textBox.y + dy, clientUuid: shapeClientUuid ?? shape.textBox.clientUuid }};
+     }
+
      return null;
   }
 
   onSvgMouseDown = (event: MouseEvent) => {
-    if (this._shapeToolsService.mode() === null) return;
+    const mode = this._shapeToolsService.mode();
+    if (mode === null) return;
+    const isClickOnlyEvent = this._shapeToolsService.mode() === "textbox" || this._shapeToolsService.mode() === "polyline";
+    this._shapeToolsService.setMode(null);
 
-    const initial: Shape | null = this.getInitialShape(event);
+    const initial: Shape | null = this.getInitialShape(event, mode);
 
     if (!initial) return;
 
@@ -147,8 +174,14 @@ export class GraphicsPanelComponent {
     if (!defaultLayerClientUuid) return;
 
     const addShapeCommand = createAddShapeCommand(defaultLayerClientUuid, initial);
+
     if (!addShapeCommand) return;
     this._undoService.applyCommand(addShapeCommand, "forward");
+
+    if (isClickOnlyEvent) {
+      this._undoService.pushCommand(addShapeCommand); // if we need to track mouse movements, push comes LATER
+      return;
+    }
 
     let cancelled: boolean = false;
     let lastCommand: UpdateShapeCommand | null = null;
@@ -168,14 +201,13 @@ export class GraphicsPanelComponent {
             this._undoService.pushCommand(newCommand);
           }
         }
-        this._shapeToolsService.setMode(null); // allow shape move events again
       });
     fromEvent(window.document as any, "mousemove", { capture: "true" } as any)
       .pipe(
         map((ev) => ({ dx: (ev as MouseEvent)?.movementX ?? 0, dy: (ev as MouseEvent)?.movementY ?? 0})),
         scan((acc, current) => ({ dx: acc.dx + current.dx, dy: acc.dy + current.dy }), { dx: 0, dy: 0 }),
         map(({ dx, dy }) => {
-          const factor = 7; // TODO: adjust this based on zoom factor
+          const factor = 1; // TODO: adjust this based on zoom factor
           const target: Shape = this.updateShapeForShapesTool(initial, dx / factor, dy / factor) ?? initial;
           return { command: createShapeUpdateCommand(initial, target), dx: dx / factor, dy: dy / factor };
         }),
@@ -218,7 +250,7 @@ export class GraphicsPanelComponent {
         map(([ev]) => ({ dx: (ev as MouseEvent)?.movementX ?? 0, dy: (ev as MouseEvent)?.movementY ?? 0})),
         scan((acc, current) => ({ dx: acc.dx + current.dx, dy: acc.dy + current.dy }), { dx: 0, dy: 0 }),
         map(({ dx, dy }) => {
-          const factor = 7; // TODO: adjust this based on zoom factor
+          const factor = 1; // TODO: adjust this based on zoom factor
           const target: Shape = updater(initial, { dx: dx / factor, dy: dy / factor });
           return createShapeUpdateCommand(initial, target);
         }),
@@ -239,5 +271,10 @@ export class GraphicsPanelComponent {
   onRectangleMouseDown = (rectangle: Rectangle) => {
     this.onShapeMouseDown({ layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
       (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: rectangle.x + update.dx, y: rectangle.y + update.dy }}));
+  }
+
+  onTextBoxMouseDown = (textBox: TextBox) => {
+    this.onShapeMouseDown({ layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
+      (initial, update) => ({ ...initial, textBox: { ...textBox, x: textBox.x + update.dx, y: textBox.y + update.dy }}));
   }
 }
