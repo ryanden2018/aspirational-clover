@@ -180,7 +180,8 @@ div.app-tab-bar-tab {
   padding-right: 12px;
   padding-top: 4px;
   padding-bottom: 4px;
-
+  align-items: center;
+  gap: 4px;
 }
 
 div.app-tab-bar-tab-active-light {

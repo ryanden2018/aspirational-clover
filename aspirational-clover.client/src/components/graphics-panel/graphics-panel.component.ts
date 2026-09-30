@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, OnInit } from '@angular/core';
 import { filter, fromEvent, map, scan, takeUntil, first, tap, withLatestFrom } from 'rxjs';
 
 import { Layer } from "../../data/model";
@@ -23,7 +23,7 @@ import { parseTextBoxContent } from "../../util/textUtils";
   styleUrls: ['./graphics-panel.component.css'],
   templateUrl: './graphics-panel.component.html',
 })
-export class GraphicsPanelComponent {
+export class GraphicsPanelComponent implements OnInit {
   constructor(
     private _documentService: DocumentService,
     private _undoService: UndoService,
@@ -32,6 +32,13 @@ export class GraphicsPanelComponent {
     private _themeService: ThemeService
   ) { }
 
+  ngOnInit() {
+    this._themeService.modeAsObservable.subscribe(mode => {
+      const backgroundColor = (mode === "light") ? "var(--light-background)" : "var(--dark-background)";
+      (document.querySelector("app-graphics-panel") as HTMLDivElement)?.style?.setProperty("background-color", backgroundColor);
+    });
+  }
+
   activeDocument = computed(() => this._documentService.activeDocument());
 
   selectedShapeClientUuid = computed(() => this._selectionService.selectedShapeClientUuid());
@@ -39,6 +46,8 @@ export class GraphicsPanelComponent {
   selectionOutlineColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
 
   textBoxColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
+
+  graphicsPanelSvgClassName = computed(() => this._themeService.classNames().graphicsPanelSvg);
 
   sortedLayers = computed(() =>
     [...(this.activeDocument()?.layers?.filter(layer => !layer?.hidden) ?? [])]
