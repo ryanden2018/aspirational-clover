@@ -29,7 +29,7 @@ export class GraphicsPanelComponent implements OnInit {
     private _undoService: UndoService,
     private _shapeToolsService: ShapeToolsService,
     private _selectionService: SelectionService,
-    private _themeService: ThemeService
+    private _themeService: ThemeService,
   ) { }
 
   ngOnInit() {
@@ -94,14 +94,11 @@ export class GraphicsPanelComponent implements OnInit {
     if (layerId === undefined) return null;
 
     const backgroundColor = "#666";
-    const factor = 1; // TODO: use zoom factor
-    const offsetX = -20;
-    const offsetY = -30;
     switch (mode) {
       case 'rectangle':
         return { layerId, circle: null, textBox: null, polyline: null, rectangle: {
-          x: event.clientX / factor + offsetX,
-          y: event.clientY / factor + offsetY,
+          x: event.offsetX,
+          y: event.offsetY,
           width: 0,
           height: 0,
           fillColorFrom: backgroundColor,
@@ -118,8 +115,8 @@ export class GraphicsPanelComponent implements OnInit {
         } };
       case 'circle':
         return { layerId, rectangle: null, textBox: null, polyline: null, circle: {
-          centerX: event.clientX / factor + offsetX,
-          centerY: event.clientY / factor + offsetY,
+          centerX: event.offsetX,
+          centerY: event.offsetY,
           radius: 0,
           fillColorFrom: backgroundColor,
           fillColorTo: backgroundColor,
@@ -135,15 +132,15 @@ export class GraphicsPanelComponent implements OnInit {
         } };
       case 'textbox':
         return { layerId, circle: null, rectangle: null, polyline: null, textBox: {
-          x: event.clientX / factor + offsetX,
-          y: event.clientY / factor + offsetY,
+          x: event.offsetX,
+          y: event.offsetY,
           width: 0,
           height: 0,
           id: 0,
           clientUuid: newUuidV4(),
           layerId,
           content: "{\"text\":\"Click to enter text\"}",
-          fontSize: 10,
+          fontSize: 24,
         } };
       default:
         return null;
@@ -167,6 +164,7 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   onSvgMouseDown = (event: MouseEvent) => {
+    if (!event.target) return;
     const mode = this._shapeToolsService.mode();
     if (mode === null) return;
     const isClickOnlyEvent = this._shapeToolsService.mode() === "textbox" || this._shapeToolsService.mode() === "polyline";
@@ -175,6 +173,9 @@ export class GraphicsPanelComponent implements OnInit {
     const initial: Shape | null = this.getInitialShape(event, mode);
 
     if (!initial) return;
+
+    const offsetX = event.offsetX;
+    const offsetY = event.offsetY;
 
     // TODO: use active layer instead of default layer
     const defaultLayer = this._documentService.activeDocument()?.layers[0];
@@ -199,7 +200,7 @@ export class GraphicsPanelComponent implements OnInit {
     fromEvent(window.document as any, "mouseup", { capture: "true" as any })
       .pipe(first())
       .subscribe(() => {
-       if (!lastCommand) return;
+        if (!lastCommand) return;
         if (cancelled) {
           this._undoService.applyCommand(lastCommand, "reverse");
           this._undoService.applyCommand(addShapeCommand, "reverse");
@@ -209,16 +210,28 @@ export class GraphicsPanelComponent implements OnInit {
             const newCommand = { ...addShapeCommand, payload: { reverse: null, forward: newShape }};
             this._undoService.pushCommand(newCommand);
           }
+          const shapeClientUuid = getClientUuidFromShape(addShapeCommand.payload.forward);
+          if (shapeClientUuid) {
+            // the svg click handler will automatically deselect so we need to wait an interval before reselecting
+            setTimeout(() => {
+              this._selectionService.setSelectedShapeClientUuid(shapeClientUuid);
+            }, 10);
+          }
         }
       });
-    fromEvent(window.document as any, "mousemove", { capture: "true" } as any)
+    fromEvent(event.target, "mousemove", { capture: "true" } as any)
       .pipe(
-        map((ev) => ({ dx: (ev as MouseEvent)?.movementX ?? 0, dy: (ev as MouseEvent)?.movementY ?? 0})),
-        scan((acc, current) => ({ dx: acc.dx + current.dx, dy: acc.dy + current.dy }), { dx: 0, dy: 0 }),
+        map((ev) => {
+          const myOffsetX = (ev as MouseEvent)?.offsetX;
+          const myOffsetY = (ev as MouseEvent)?.offsetY;
+          if (typeof myOffsetX === "number" && myOffsetX > 0 && typeof myOffsetY === "number" && myOffsetY > 0) {
+            return { dx: myOffsetX - offsetX, dy: myOffsetY - offsetY };
+          }
+          return { dx: 0, dy: 0 };
+        }),
         map(({ dx, dy }) => {
-          const factor = 1; // TODO: adjust this based on zoom factor
-          const target: Shape = this.updateShapeForShapesTool(initial, dx / factor, dy / factor) ?? initial;
-          return { command: createShapeUpdateCommand(initial, target), dx: dx / factor, dy: dy / factor };
+          const target: Shape = this.updateShapeForShapesTool(initial, dx, dy) ?? initial;
+          return { command: createShapeUpdateCommand(initial, target), dx, dy };
         }),
         filter(x => !!x?.command),
         tap(x => {
@@ -235,7 +248,10 @@ export class GraphicsPanelComponent implements OnInit {
       });
   }
 
-  onShapeMouseDown = (initial: Shape, updater: (initial: Shape, update: { dx: number, dy: number }) => Shape) => {
+  onShapeMouseDown = (event: MouseEvent, initial: Shape, updater: (initial: Shape, update: { dx: number, dy: number }) => Shape) => {
+    if (!event.target) return;
+    const offsetX = event.offsetX;
+    const offsetY = event.offsetY;
     let cancelled: boolean = false; // TODO: 'esc' keyboard listener
     let lastCommand: UpdateShapeCommand | null = null;
     fromEvent(window.document as any, "mouseup", { capture: "true" } as any)
@@ -252,15 +268,20 @@ export class GraphicsPanelComponent implements OnInit {
           this._undoService.pushCommand(lastCommand);
         }
       });
-    fromEvent(window.document as any, "mousemove", { capture: "true" } as any)
+    fromEvent(event.target, "mousemove", { capture: "true" } as any)
       .pipe(
         withLatestFrom(this._shapeToolsService.modeAsObservable),
         filter(([_, value]) => value === null),
-        map(([ev]) => ({ dx: (ev as MouseEvent)?.movementX ?? 0, dy: (ev as MouseEvent)?.movementY ?? 0})),
-        scan((acc, current) => ({ dx: acc.dx + current.dx, dy: acc.dy + current.dy }), { dx: 0, dy: 0 }),
+        map(([ev]) => {
+          const myOffsetX = (ev as MouseEvent)?.offsetX;
+          const myOffsetY = (ev as MouseEvent)?.offsetY;
+          if (typeof myOffsetX === "number" && myOffsetX > 0 && typeof myOffsetY === "number" && myOffsetY > 0) {
+            return { dx: myOffsetX - offsetX, dy: myOffsetY - offsetY };
+          }
+          return { dx: 0, dy: 0 };
+        }),
         map(({ dx, dy }) => {
-          const factor = 1; // TODO: adjust this based on zoom factor
-          const target: Shape = updater(initial, { dx: dx / factor, dy: dy / factor });
+          const target: Shape = updater(initial, { dx, dy });
           return createShapeUpdateCommand(initial, target);
         }),
         filter(x => !!x),
@@ -272,18 +293,18 @@ export class GraphicsPanelComponent implements OnInit {
       });
   }
 
-  onCircleMouseDown = (circle: Circle) => {
-    this.onShapeMouseDown({ layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
+  onCircleMouseDown = (event: MouseEvent, circle: Circle) => {
+    this.onShapeMouseDown(event, { layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
       (initial, update) => ({ ...initial, circle: { ...circle, centerX: circle.centerX + update.dx, centerY: circle.centerY + update.dy } }));
   }
 
-  onRectangleMouseDown = (rectangle: Rectangle) => {
-    this.onShapeMouseDown({ layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
+  onRectangleMouseDown = (event: MouseEvent, rectangle: Rectangle) => {
+    this.onShapeMouseDown(event, { layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
       (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: rectangle.x + update.dx, y: rectangle.y + update.dy }}));
   }
 
-  onTextBoxMouseDown = (textBox: TextBox) => {
-    this.onShapeMouseDown({ layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
+  onTextBoxMouseDown = (event: MouseEvent, textBox: TextBox) => {
+    this.onShapeMouseDown(event, { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
       (initial, update) => ({ ...initial, textBox: { ...textBox, x: textBox.x + update.dx, y: textBox.y + update.dy }}));
   }
 }

@@ -8,7 +8,7 @@
         </linearGradient>
       </defs>
       <circle
-              (mousedown)="onCircleMouseDown(circle)"
+              (mousedown)="onCircleMouseDown($event, circle)"
               (click)="onCircleClick($event, circle)"
               class="transformed-elem"
               [attr.transform-origin]="getTransformOrigin(circle)"
@@ -29,7 +29,7 @@
         </linearGradient>
       </defs>
       <rect
-            (mousedown)="onRectangleMouseDown(rectangle)"
+            (mousedown)="onRectangleMouseDown($event, rectangle)"
             (click)="onRectangleClick($event, rectangle)"
             class="transformed-elem"
             [attr.transform-origin]="getTransformOrigin(rectangle)"
@@ -45,7 +45,7 @@
     }
     @for (textBox of getTextBoxes(layer); track textBox.clientUuid) {
       <text
-            (mousedown)="onTextBoxMouseDown(textBox)"
+            (mousedown)="onTextBoxMouseDown($event, textBox)"
             (click)="onTextBoxClick($event, textBox)"
             [attr.x]="textBox.x"
             [attr.y]="textBox.y"
