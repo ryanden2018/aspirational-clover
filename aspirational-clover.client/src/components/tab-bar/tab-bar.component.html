@@ -1,7 +1,12 @@
 @for (document of documents(); track document.clientUuid) {
   <a [routerLink]="getDocumentUrl(document)" class="no-underline">
-    <div [class]="document.clientUuid === activeDocumentClientUuid() ? tabBarTabActiveClassName() : tabBarTabInactiveClassName()">
+    <div [class]="document.clientUuid === activeDocumentClientUuid() ? tabBarTabActiveClassName() : tabBarTabInactiveClassName()" (click)="onTabClick()">
       {{ document.name }}
+      @if (showTabCloseButton(document)) {
+        <app-tool-tip-button [id]="'close-tab-' + document.documentSlug" [timeout]="1500" toolTipContent="Close" positioning="bottom-left" (mousedown)="onMouseDownClose($event, document)">
+          x
+        </app-tool-tip-button>
+      }
     </div>
   </a>
 }

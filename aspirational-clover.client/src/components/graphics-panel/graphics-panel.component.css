@@ -1,6 +1,12 @@
 :host {
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #e4e8ef;
 }
 
 .transformed-elem {
@@ -8,6 +14,10 @@
 }
 
 .graphics-panel-svg {
-  width: 100%;
-  height: 100%;
+  width: 850px;
+  height: 1100px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #666;
+  background-color: #ffffff;
 }

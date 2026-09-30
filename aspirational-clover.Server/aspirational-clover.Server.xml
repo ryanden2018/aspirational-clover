@@ -675,6 +675,21 @@
             by the client.
             </summary>
         </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.X">
+            <summary>
+            Gets or sets the X coordinate of the logical top-left point of the text box.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.Y">
+            <summary>
+            Gets or sets the Y coordinate of the logical top-left point of the text box.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Models.TextBox.FontSize">
+            <summary>
+            Gets or sets the font size of the text box.
+            </summary>
+        </member>
         <member name="T:aspirational_clover.Server.Program">
             <summary>
             Root Program class for the application.

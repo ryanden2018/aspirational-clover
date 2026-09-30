@@ -1,16 +1,20 @@
 import { Component, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { AppDocument } from "../../data/model";
 import { ThemeService } from "../../app/theme.service";
 import { DocumentService } from "../../app/document.service";
+import { SelectionService } from "../../app/selection.service";
 import { getDocumentUrl } from "../../util/getDocumentUrl";
+import { defaultSlugs } from "../../constants";
+import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
   selector: 'app-tab-bar',
   standalone: true,
   styleUrls: ['./tab-bar.component.css'],
   templateUrl: './tab-bar.component.html',
-  imports: [RouterLink]
+  imports: [RouterLink, ToolTipButtonComponent]
 })
 export class TabBarComponent {
   tabBarTabActiveClassName = computed(() => this._themeService.classNames().tabBarTabActive);
@@ -18,7 +22,24 @@ export class TabBarComponent {
   documents = computed(() => this._documentService.documents());
   activeDocumentClientUuid = computed(() => this._documentService.activeDocumentClientUuid());
 
-  constructor(private _themeService: ThemeService, private _documentService: DocumentService) {}
+  constructor(
+    private _themeService: ThemeService,
+    private _documentService: DocumentService,
+    private _selectionService: SelectionService,
+  ) {}
 
   getDocumentUrl = getDocumentUrl;
+
+  onTabClick() {
+    this._selectionService.setSelectedShapeClientUuid(null);
+  }
+
+  showTabCloseButton(document: AppDocument) {
+    return !defaultSlugs.includes(document.documentSlug);
+  }
+
+  onMouseDownClose(event: MouseEvent, document: AppDocument) {
+    event.stopPropagation();
+    this._documentService.closeDocument(document.clientUuid);
+  }
 }

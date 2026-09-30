@@ -28,5 +28,20 @@ public class TextBox : ILayerable
     /// by the client.
     /// </summary>
     public string? Content { get; set; }
+
+    /// <summary>
+    /// Gets or sets the X coordinate of the logical top-left point of the text box.
+    /// </summary>
+    public int X { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Y coordinate of the logical top-left point of the text box.
+    /// </summary>
+    public int Y { get; set; }
+
+    /// <summary>
+    /// Gets or sets the font size of the text box.
+    /// </summary>
+    public int FontSize { get; set; }
 }
 
