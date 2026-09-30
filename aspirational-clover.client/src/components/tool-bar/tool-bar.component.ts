@@ -47,6 +47,7 @@ export class ToolBarComponent {
   toggleOffIcon = computed(() => this._resourcesService.resources()?.toggleOffIcon?.());
   toggleOnIcon = computed(() => this._resourcesService.resources()?.toggleOnIcon?.());
   toggleDarkModeIcon = computed(() => this.isDarkMode() ? this.toggleOnIcon() : this.toggleOffIcon());
+  githubIcon = computed(() => this._resourcesService.resources()?.githubIcon?.());
 
   onClickUndo = () => this._undoService.undo();
 

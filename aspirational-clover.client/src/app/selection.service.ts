@@ -42,7 +42,7 @@ export class SelectionService {
   }
 
   processPastedShape(shape: Shape): Shape | null {
-    const delta = 3;
+    const delta = 20;
     if (shape?.circle) {
       return { ...shape, circle: { ...shape.circle, clientUuid: newUuidV4(), centerX: shape.circle.centerX + delta, centerY: shape.circle.centerY + delta }}
     }

@@ -48,6 +48,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this._documentService.retrieveDocumentsOnce();
     this._hotkeysService.connectDeleteKeydown();
+    this._hotkeysService.connectCtrlZKeydown();
+    this._hotkeysService.connectCtrlShiftZKeydown();
+    this._hotkeysService.connectCtrlCKeydown();
+    this._hotkeysService.connectCtrlVKeydown();
   }
 
   protected readonly title = signal('aspirational-clover.client');
