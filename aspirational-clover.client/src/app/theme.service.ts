@@ -1,4 +1,5 @@
 import { Injectable, signal, computed } from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
 
 @Injectable({
   providedIn: "root"
@@ -14,6 +15,8 @@ export class ThemeService {
     this._mode.set(mode);
   }
 
+  modeAsObservable = toObservable(this.mode);
+
   classNames = computed(() => ({
     "appBody": `app-body ${this._mode() === "light" ? "app-body-light" : "app-body-dark"}`,
     "button": `styled-button ${this._mode() === "light" ? "styled-button-light" : "styled-button-dark"}`,
@@ -22,5 +25,6 @@ export class ThemeService {
     "tabBarTabActive": `app-tab-bar-tab ${this._mode() === "light" ? "app-tab-bar-tab-active-light" : "app-tab-bar-tab-active-dark"}`,
     "tabBarTabInactive": `app-tab-bar-tab ${this._mode() === "light" ? "app-tab-bar-tab-inactive-light" : "app-tab-bar-tab-inactive-dark"}`,
     "toolTip": `tool-tip ${this._mode() === "light" ? "tool-tip-light" : "tool-tip-dark"}`,
+    "graphicsPanelSvg": `graphics-panel-svg ${this._mode() === "light" ? "graphics-panel-svg-light" : "graphics-panel-svg-dark"}`,
   }));
 }

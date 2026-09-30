@@ -20,4 +20,5 @@ export class ResourcesComponent {
   addNotesIcon = viewChild<TemplateRef<unknown>>("addNotesIcon");
   toggleOffIcon = viewChild<TemplateRef<unknown>>("toggleOffIcon");
   toggleOnIcon = viewChild<TemplateRef<unknown>>("toggleOnIcon");
+  closeIcon = viewChild<TemplateRef<unknown>>("closeIcon");
 }

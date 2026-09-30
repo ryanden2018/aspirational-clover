@@ -1,10 +1,12 @@
 import { Component, computed } from '@angular/core';
+import { NgTemplateOutlet } from "@angular/common";
 import { RouterLink } from '@angular/router';
 
 import { AppDocument } from "../../data/model";
 import { ThemeService } from "../../app/theme.service";
 import { DocumentService } from "../../app/document.service";
 import { SelectionService } from "../../app/selection.service";
+import { ResourcesService } from "../../app/resources.service";
 import { getDocumentUrl } from "../../util/getDocumentUrl";
 import { defaultSlugs } from "../../constants";
 import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
@@ -14,7 +16,7 @@ import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.compo
   standalone: true,
   styleUrls: ['./tab-bar.component.css'],
   templateUrl: './tab-bar.component.html',
-  imports: [RouterLink, ToolTipButtonComponent]
+  imports: [RouterLink, ToolTipButtonComponent, NgTemplateOutlet]
 })
 export class TabBarComponent {
   tabBarTabActiveClassName = computed(() => this._themeService.classNames().tabBarTabActive);
@@ -26,7 +28,10 @@ export class TabBarComponent {
     private _themeService: ThemeService,
     private _documentService: DocumentService,
     private _selectionService: SelectionService,
+    private _resourcesService: ResourcesService,
   ) {}
+
+  closeIcon = computed(() => this._resourcesService.resources()?.closeIcon?.());
 
   getDocumentUrl = getDocumentUrl;
 

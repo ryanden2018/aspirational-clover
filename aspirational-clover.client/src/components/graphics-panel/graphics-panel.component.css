@@ -1,4 +1,6 @@
 :host {
+  --light-background: #e4e8ef;
+  --dark-background: #002233;
   flex: 1;
   overflow: auto;
   width: 100%;
@@ -6,7 +8,7 @@
   justify-content: center;
   padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #e4e8ef;
+  background-color: var(--light-background);
 }
 
 .transformed-elem {
@@ -19,5 +21,12 @@
   border-width: 1px;
   border-style: solid;
   border-color: #666;
+}
+
+.graphics-panel-svg-light {
   background-color: #ffffff;
+}
+
+.graphics-panel-svg-dark {
+  background-color: #000000;
 }
