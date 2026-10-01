@@ -88,6 +88,12 @@ export class DocumentService {
     );
   }
 
+  setActiveDocumentName(name: string) {
+    this.documents.set(
+      this.documents().map(doc => (doc.clientUuid === this.activeDocument()?.clientUuid) ? ({ ...doc, name }) : doc)
+    );
+  }
+
   newDocument() {
     const newDocument: AppDocument = {
       id: 0,

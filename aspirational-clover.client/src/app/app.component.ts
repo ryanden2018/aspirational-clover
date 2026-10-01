@@ -3,6 +3,7 @@ import { Component, OnInit, signal, viewChild, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
+import { PropertyViewerComponent } from "../components/property-viewer/property-viewer.component";
 import { TabBarComponent } from '../components/tab-bar/tab-bar.component';
 import { ResourcesComponent } from "../components/resources/resources.component";
 import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
@@ -19,6 +20,7 @@ import { ThemeService } from "./theme.service";
     //RouterOutlet,
     CommonModule,
     ToolBarComponent,
+    PropertyViewerComponent,
     TabBarComponent,
     GraphicsPanelComponent,
     ResourcesComponent,
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit {
   private _resources = viewChild<ResourcesComponent>(ResourcesComponent);
 
   appToolBarClassName = computed(() => this._themeService.classNames().toolBar);
+  appPropertyViewerClassName = computed(() => this._themeService.classNames().propertyViewer);
   appTabBarClassName = computed(() => this._themeService.classNames().tabBar);
   appBodyClassName = computed(() => this._themeService.classNames().appBody);
 

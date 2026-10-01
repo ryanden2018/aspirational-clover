@@ -1,60 +1,68 @@
-<svg viewBox="0 0 850 1100" [class]="graphicsPanelSvgClassName()" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()">
-  @for (layer of sortedLayers(); track layer.clientUuid) {
-    @for (circle of getCircles(layer); track circle.clientUuid) {
-      <defs>
-        <linearGradient [attr.id]="getGradientId(circle)" [attr.gradientTransform]="getGradientTransform(circle)">
-          <stop offset="0%" [attr.stop-color]="circle.fillColorFrom" />
-          <stop offset="100%" [attr.stop-color]="circle.fillColorTo" />
-        </linearGradient>
-      </defs>
-      <circle
-              (mousedown)="onCircleMouseDown($event, circle)"
-              (click)="onCircleClick($event, circle)"
-              class="transformed-elem"
-              [attr.transform-origin]="getTransformOrigin(circle)"
-              [attr.transform]="getTransform(circle)"
-              [attr.cx]="circle.centerX"
-              [attr.cy]="circle.centerY"
-              [attr.r]="circle.radius"
-              [attr.stroke]="selectionOutlineColor()"
-              [attr.fill]="getGradientFillAttr(circle)"
-              [attr.stroke-width]="selectedShapeClientUuid() === circle.clientUuid ? 2 : 0"
-      />
-    }
-    @for (rectangle of getRectangles(layer); track rectangle.clientUuid) {
-      <defs>
-        <linearGradient [attr.id]="getGradientId(rectangle)" [attr.gradientTransform]="getGradientTransform(rectangle)">
-          <stop offset="0%" [attr.stop-color]="rectangle.fillColorFrom" />
-          <stop offset="100%" [attr.stop-color]="rectangle.fillColorTo" />
-        </linearGradient>
-      </defs>
-      <rect
-            (mousedown)="onRectangleMouseDown($event, rectangle)"
-            (click)="onRectangleClick($event, rectangle)"
-            class="transformed-elem"
-            [attr.transform-origin]="getTransformOrigin(rectangle)"
-            [attr.transform]="getTransform(rectangle)"
-            [attr.x]="rectangle.x"
-            [attr.y]="rectangle.y"
-            [attr.width]="rectangle.width"
-            [attr.height]="rectangle.height"
-            [attr.stroke]="selectionOutlineColor()"
-            [attr.fill]="getGradientFillAttr(rectangle)"
-            [attr.stroke-width]="selectedShapeClientUuid() === rectangle.clientUuid ? 2 : 0"
-      />
-    }
-    @for (textBox of getTextBoxes(layer); track textBox.clientUuid) {
-      <text
-            (mousedown)="onTextBoxMouseDown($event, textBox)"
-            (click)="onTextBoxClick($event, textBox)"
-            [attr.x]="textBox.x"
-            [attr.y]="textBox.y"
-            [attr.font-size]="textBox.fontSize"
-            [attr.fill]="textBoxColor()"
-            [attr.stroke]="selectionOutlineColor()"
-            [attr.stroke-width]="selectedShapeClientUuid() === textBox.clientUuid ? 1 : 0"
-            style="cursor:default;user-select:none"
-      >{{ getTextBoxText(textBox) }}</text>
-    }
-  }
-</svg>
+<div class="graphics-panel-svg-container">
+  <div class="graphics-panel-svg-container-middle">
+    <div class="graphics-panel-svg-container-inner">
+      <svg viewBox="0 0 850 1100" [class]="graphicsPanelSvgClassName()" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()">
+        @for (layer of sortedLayers(); track layer.clientUuid) {
+          @for (shape of layer.shapes; track getClientUuidFromShape(shape)) {
+            @if (typeof shape.circle === "object" && shape.circle !== null) {
+              <defs>
+                <linearGradient [attr.id]="getGradientId(shape.circle)" [attr.gradientTransform]="getGradientTransform(shape.circle)">
+                  <stop offset="0%" [attr.stop-color]="shape.circle.fillColorFrom" />
+                  <stop offset="100%" [attr.stop-color]="shape.circle.fillColorTo" />
+                </linearGradient>
+              </defs>
+              <circle
+                      (mousedown)="onCircleMouseDown($event, shape.circle)"
+                      (click)="onCircleClick($event, shape.circle)"
+                      class="transformed-elem"
+                      [attr.transform-origin]="getTransformOrigin(shape.circle)"
+                      [attr.transform]="getTransform(shape.circle)"
+                      [attr.cx]="shape.circle.centerX"
+                      [attr.cy]="shape.circle.centerY"
+                      [attr.r]="shape.circle.radius"
+                      [attr.stroke]="selectionOutlineColor()"
+                      [attr.fill]="getGradientFillAttr(shape.circle)"
+                      [attr.stroke-width]="selectedShapeClientUuid() === shape.circle.clientUuid ? 2 : 0"
+              />
+            }
+            @if (typeof shape.rectangle === "object" && shape.rectangle !== null) {
+              <defs>
+                <linearGradient [attr.id]="getGradientId(shape.rectangle)" [attr.gradientTransform]="getGradientTransform(shape.rectangle)">
+                  <stop offset="0%" [attr.stop-color]="shape.rectangle.fillColorFrom" />
+                  <stop offset="100%" [attr.stop-color]="shape.rectangle.fillColorTo" />
+                </linearGradient>
+              </defs>
+              <rect
+                    (mousedown)="onRectangleMouseDown($event, shape.rectangle)"
+                    (click)="onRectangleClick($event, shape.rectangle)"
+                    class="transformed-elem"
+                    [attr.transform-origin]="getTransformOrigin(shape.rectangle)"
+                    [attr.transform]="getTransform(shape.rectangle)"
+                    [attr.x]="shape.rectangle.x"
+                    [attr.y]="shape.rectangle.y"
+                    [attr.width]="shape.rectangle.width"
+                    [attr.height]="shape.rectangle.height"
+                    [attr.stroke]="selectionOutlineColor()"
+                    [attr.fill]="getGradientFillAttr(shape.rectangle)"
+                    [attr.stroke-width]="selectedShapeClientUuid() === shape.rectangle.clientUuid ? 2 : 0"
+              />
+            }
+            @if (typeof shape.textBox === "object" && shape.textBox !== null) {
+              <text
+                    (mousedown)="onTextBoxMouseDown($event, shape.textBox)"
+                    (click)="onTextBoxClick($event, shape.textBox)"
+                    [attr.x]="shape.textBox.x"
+                    [attr.y]="shape.textBox.y"
+                    [attr.font-size]="shape.textBox.fontSize"
+                    [attr.fill]="textBoxColor()"
+                    [attr.stroke]="selectionOutlineColor()"
+                    [attr.stroke-width]="selectedShapeClientUuid() === shape.textBox.clientUuid ? 1 : 0"
+                    style="cursor:default;user-select:none"
+              >{{ getTextBoxText(shape.textBox) }}</text>
+            }
+          }
+        }
+      </svg>
+    </div>
+  </div>
+</div>

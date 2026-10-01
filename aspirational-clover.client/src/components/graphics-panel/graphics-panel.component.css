@@ -1,13 +1,10 @@
 :host {
   --light-background: #e4e8ef;
   --dark-background: #002233;
-  flex: 1;
+  position: relative;
   overflow: auto;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  height: 100%;
   background-color: var(--light-background);
 }
 
