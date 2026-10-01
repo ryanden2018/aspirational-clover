@@ -112,7 +112,6 @@ export class GraphicsPanelComponent implements OnInit {
 
     if (layerId === undefined) return null;
 
-    const backgroundColor = "#666";
     switch (mode) {
       case 'rectangle':
         return { layerId, circle: null, textBox: null, polyline: null, rectangle: {
@@ -120,8 +119,8 @@ export class GraphicsPanelComponent implements OnInit {
           y: event.offsetY,
           width: 0,
           height: 0,
-          fillColorFrom: backgroundColor,
-          fillColorTo: backgroundColor,
+          fillColorFrom: "#555555",
+          fillColorTo: "#777777",
           fillAngle: 0,
           id: 0,
           clientUuid: newUuidV4(),
@@ -137,8 +136,8 @@ export class GraphicsPanelComponent implements OnInit {
           centerX: event.offsetX,
           centerY: event.offsetY,
           radius: 0,
-          fillColorFrom: backgroundColor,
-          fillColorTo: backgroundColor,
+          fillColorFrom: "#555555",
+          fillColorTo: "#777777",
           fillAngle: 0,
           id: 0,
           clientUuid: newUuidV4(),
@@ -153,8 +152,6 @@ export class GraphicsPanelComponent implements OnInit {
         return { layerId, circle: null, rectangle: null, polyline: null, textBox: {
           x: event.offsetX,
           y: event.offsetY,
-          width: 0,
-          height: 0,
           id: 0,
           clientUuid: newUuidV4(),
           layerId,
