@@ -282,9 +282,14 @@ div.graphics-panel-svg-container {
 
 div.graphics-panel-svg-container-middle {
   display: flex;
-  /* justify-content: flex-start; when screen width is < 1024 */
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 1024px) {
+  div.graphics-panel-svg-container-middle {
+    justify-content: flex-start !important;
+  }
 }
 
 div.graphics-panel-svg-container-inner {
