@@ -292,6 +292,16 @@ div.graphics-panel-svg-container-middle {
   }
 }
 
+@media (max-width: 512px) {
+  div.app-property-viewer {
+    display: none;
+  }
+
+  div.app-tool-bar {
+    display: none;
+  }
+}
+
 div.graphics-panel-svg-container-inner {
   width: 850px;
   height: 1100px;
