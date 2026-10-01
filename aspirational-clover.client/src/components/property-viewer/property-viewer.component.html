@@ -1,0 +1,13 @@
+@if (!hasSelectedShape()) {
+  <div class="field-label">Document Name</div>
+  <div class="field-container">
+    <input class="input-field" name="documentname" type="text" [value]="activeDocumentName()" (change)="onChangeDocumentName($event)" />
+  </div>
+}
+
+@if (hasSelectedTextBox()) {
+  <div class="field-label">Contents</div>
+  <div class="field-container">
+    <input class="input-field" name="textboxcontent" type="text" [value]="textBoxContent()" (change)="onChangeTextBoxContent($event)" />
+  </div>
+}
