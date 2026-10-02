@@ -6,7 +6,6 @@ import { UndoService } from "../../app/undo.service";
 import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { parseTextBoxContent, updateTextBoxContent } from "../../util/textUtils";
 import { Shape } from "../../data/shapes";
-import { defaultSlugs } from "../../constants";
 
 @Component({
   selector: 'app-property-viewer',
@@ -21,8 +20,6 @@ export class PropertyViewerComponent {
     private _documentService: DocumentService,
     private _undoService: UndoService,
   ) {}
-
-  isDefaultSlug = computed(() => defaultSlugs.includes(this._documentService.activeDocument()?.documentSlug ?? ""));
 
   selectedShape = computed(() => this._selectionService.selectedShape());
 

@@ -63,11 +63,11 @@ public static class WebApplicationExtensions
         var env = app.Environment;
 
         // Only seed when running in Development by default. Allow override via configuration key "SeedTestData".
-        var enabled = configuration.GetValue<bool?>("SeedTestData") ?? true;
-        if (!env.IsDevelopment() || !enabled)
-        {
-            return;
-        }
+        // var enabled = configuration.GetValue<bool?>("SeedTestData") ?? true;
+        // if (!env.IsDevelopment() || !enabled)
+        // {
+        //    return;
+        // }
 
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
@@ -78,9 +78,73 @@ public static class WebApplicationExtensions
             return;
         }
 
+        var descDocument = new Document
+        {
+            DocumentSlug = "description",
+            ClientUuid = Guid.NewGuid().ToString(),
+            Name = "description",
+            CreatedAt = DateTime.UtcNow,
+            LastUpdatedAt = DateTime.UtcNow
+        };
+
+        db.Documents.Add(descDocument);
+
+        var descLayer = new Layer
+        {
+            DocumentId = descDocument.Id,
+            ClientUuid = Guid.NewGuid().ToString(),
+            Name = "layer-1",
+            Hidden = false,
+            ZIndex = 0
+        };
+
+        db.Layers.Add(descLayer);
+
+        db.TextBoxes.AddRange(
+            new[]
+            {
+                new TextBox
+                {
+                    LayerId = descLayer.Id,
+                    ClientUuid = Guid.NewGuid().ToString(),
+                    Content = "{\"text\": \"This is a sample document.\"}",
+                    X = 10,
+                    Y = 100,
+                    FontSize = 24,
+                },
+                new TextBox
+                {
+                    LayerId = descLayer.Id,
+                    ClientUuid = Guid.NewGuid().ToString(),
+                    Content = "{\"text\": \"You can edit this document or create your own.\"}",
+                    X = 10,
+                    Y = 200,
+                    FontSize = 24,
+                },
+                new TextBox
+                {
+                    LayerId = descLayer.Id,
+                    ClientUuid = Guid.NewGuid().ToString(),
+                    Content = "{\"text\": \"See above tabs for samples demonstrating the feature set.\"}",
+                    X = 10,
+                    Y = 300,
+                    FontSize = 24,
+                },
+                new TextBox
+                {
+                    LayerId = descLayer.Id,
+                    ClientUuid = Guid.NewGuid().ToString(),
+                    Content = "{\"text\": \"This application is best viewed on a laptop or desktop device.\"}",
+                    X = 10,
+                    Y = 400,
+                    FontSize = 24,
+                },
+            }
+        );
+
         var slugs = new[]
         {
-            "home", "about", "contact",
+            "sample-one", "sample-two"
         };
 
         var documents = Enumerable.Range(0, slugs.Length).Select(index => new Document
@@ -104,22 +168,6 @@ public static class WebApplicationExtensions
                 Hidden = false,
                 ZIndex = 0
             },
-            new Layer
-            {
-                DocumentId = document.Id,
-                ClientUuid = Guid.NewGuid().ToString(),
-                Name = "layer-2",
-                Hidden = false,
-                ZIndex = 2
-            },
-            new Layer
-            {
-                DocumentId = document.Id,
-                ClientUuid = Guid.NewGuid().ToString(),
-                Name = "layer-3",
-                Hidden = true,
-                ZIndex = 1
-            }
         }).Aggregate(new List<Layer>(), (acc, val) => acc.Concat(val).ToList());
 
         db.Layers.AddRange(layers);
@@ -160,13 +208,13 @@ public static class WebApplicationExtensions
 
         db.Rectangles.AddRange(rectangles);
 
-        var textBoxes = layers.Where(layer => layer.Id == layers[0].Id).Select(layer => new[]
+        var textBoxes = layers.Select(layer => new[]
         {
             new TextBox
             {
                 LayerId = layer.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Content = "{\"text\": \"content-1\"}",
+                Content = "{\"text\": \"text box A\"}",
                 X = 200,
                 Y = 200,
                 FontSize = 24,
@@ -175,7 +223,7 @@ public static class WebApplicationExtensions
             {
                 LayerId = layer.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Content = "{\"text\": \"content-2\"}",
+                Content = "{\"text\": \"text box B\"}",
                 X = 500,
                 Y = 500,
                 FontSize = 24,

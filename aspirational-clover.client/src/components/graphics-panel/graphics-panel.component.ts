@@ -14,7 +14,6 @@ import { newUuidV4 } from "../../util/uuid";
 import { createAddShapeCommand } from '../../commands/addShape';
 import { getClientUuidFromShape } from '../../util/getClientUuidFromShape';
 import { parseTextBoxContent } from "../../util/textUtils";
-import { defaultSlugs } from "../../constants";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -31,8 +30,6 @@ export class GraphicsPanelComponent implements OnInit {
     private _themeService: ThemeService,
   ) { }
 
-  isDefaultSlug = computed(() => defaultSlugs.includes(this._documentService.activeDocument()?.documentSlug ?? ""));
-
   ngOnInit() {
     this._themeService.modeAsObservable.subscribe(mode => {
       const backgroundColor = (mode === "light") ? "var(--light-background)" : "var(--dark-background)";
@@ -48,7 +45,11 @@ export class GraphicsPanelComponent implements OnInit {
 
   textBoxColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
 
-  graphicsPanelSvgClassName = computed(() => this._themeService.classNames().graphicsPanelSvg);
+  graphicsPanelSvgClassName = computed(() => this._themeService.classNames().graphicsPanelSvg + " " + (
+    this._shapeToolsService.mode() === null ? "" : "cursor-crosshair"
+  ));
+
+  isCreatingShape = computed(() => this._shapeToolsService.mode() !== null);
 
   sortedLayers = computed(() =>
     [...(this.activeDocument()?.layers?.filter(layer => !layer?.hidden) ?? [])]
@@ -76,8 +77,10 @@ export class GraphicsPanelComponent implements OnInit {
   getGradientId = (entity: Layerable) => `lg-${ entity?.clientUuid }`;
   getGradientFillAttr = (entity: Layerable) => `url(#${ this.getGradientId(entity) })`;
 
-  getFillX2 = (entity: Fillable) => `${ Math.cos(Math.PI * (entity?.fillAngle ?? 0) / 180) }`;
-  getFillY2 = (entity: Fillable) => `${ Math.sin(Math.PI * (entity?.fillAngle ?? 0) / 180) }`;
+  getFillX1 = (entity: Fillable) => `${ 0.5 - (Math.cos(Math.PI * (entity?.fillAngle ?? 0) / 180) / 2) }`;
+  getFillY1 = (entity: Fillable) => `${ 0.5 - (Math.sin(Math.PI * (entity?.fillAngle ?? 0) / 180) / 2) }`; 
+  getFillX2 = (entity: Fillable) => `${ 0.5 + (Math.cos(Math.PI * (entity?.fillAngle ?? 0) / 180) / 2) }`;
+  getFillY2 = (entity: Fillable) => `${ 0.5 + (Math.sin(Math.PI * (entity?.fillAngle ?? 0) / 180) / 2) }`;
 
   getTransformOriginCircle = (entity: Circle) => `${ entity?.radius + entity?.rotationCenterOffsetX }px ${ entity?.radius + entity?.rotationCenterOffsetY }px`;
   getTransformOriginRectangle = (entity: Rectangle) => `${ (entity?.width / 2) + entity?.rotationCenterOffsetX }px ${ (entity?.height / 2) + entity?.rotationCenterOffsetY }px`;
@@ -117,8 +120,8 @@ export class GraphicsPanelComponent implements OnInit {
           y: event.offsetY,
           width: 0,
           height: 0,
-          fillColorFrom: "#555555",
-          fillColorTo: "#777777",
+          fillColorFrom: "#333333",
+          fillColorTo: "#999999",
           fillAngle: 0,
           id: 0,
           clientUuid: newUuidV4(),
@@ -134,8 +137,8 @@ export class GraphicsPanelComponent implements OnInit {
           centerX: event.offsetX,
           centerY: event.offsetY,
           radius: 0,
-          fillColorFrom: "#555555",
-          fillColorTo: "#777777",
+          fillColorFrom: "#333333",
+          fillColorTo: "#999999",
           fillAngle: 0,
           id: 0,
           clientUuid: newUuidV4(),
@@ -178,7 +181,6 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   onSvgMouseDown = (event: MouseEvent) => {
-    if (this.isDefaultSlug()) return; // don't allow shapes to be added to default slugs
     if (!event.target) return;
     const mode = this._shapeToolsService.mode();
     if (mode === null) return;
@@ -264,12 +266,13 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   onShapeMouseDown = (event: MouseEvent, initial: Shape, updater: (initial: Shape, update: { dx: number, dy: number }) => Shape) => {
-    if (this.isDefaultSlug()) return; // don't allow shapes to be moved in default slugs
     if (!event.target) return;
+    if (this._shapeToolsService.mode() !== null) return; // don't allow moving shapes while creating new shapes
     const offsetX = event.offsetX;
     const offsetY = event.offsetY;
     let cancelled: boolean = false; // TODO: 'esc' keyboard listener
     let lastCommand: UpdateShapeCommand | null = null;
+    this._selectionService.setSelectedShapeClientUuid(getClientUuidFromShape(initial) ?? null);
     fromEvent(window.document as any, "mouseup", { capture: "true" } as any)
       .pipe(
         withLatestFrom(this._shapeToolsService.modeAsObservable),
