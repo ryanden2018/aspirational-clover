@@ -2,5 +2,5 @@
 Debug/
 debug/
 obj/
-wwwroot/openapi
-wwwroot/app
+openapi/
+approot/
