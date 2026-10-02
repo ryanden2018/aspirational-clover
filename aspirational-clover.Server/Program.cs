@@ -37,27 +37,28 @@ public class Program
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
-        if (env.IsDevelopment())
-        {
+        // For now we will only use the in memory database. Eventually we want to sub this out for PostgreSQL in production.
+        // if (env.IsDevelopment())
+        // {
             // Test implementation for local development
             builder.Services.AddDbContext<AppDbContext>(opts =>
                 opts.UseInMemoryDatabase("Aspire.Test.Db"));
-        }
-        else
-        {
-            var conn = configuration.GetConnectionString("DefaultConnection");
-            if (!string.IsNullOrWhiteSpace(conn))
-            {
-                builder.Services.AddDbContext<AppDbContext>(opts =>
-                    opts.UseNpgsql(conn));
-            }
-            else
-            {
-                // No connection string configured; fall back to InMemory to keep the app runnable.
-                builder.Services.AddDbContext<AppDbContext>(opts =>
-                    opts.UseInMemoryDatabase("Aspire.Fallback.Db"));
-            }
-        }
+        // }
+        // else
+        // {
+        //    var conn = configuration.GetConnectionString("DefaultConnection");
+        //    if (!string.IsNullOrWhiteSpace(conn))
+        //    {
+        //        builder.Services.AddDbContext<AppDbContext>(opts =>
+        //            opts.UseNpgsql(conn));
+        //    }
+        //    else
+        //    {
+        //        // No connection string configured; fall back to InMemory to keep the app runnable.
+        //        builder.Services.AddDbContext<AppDbContext>(opts =>
+        //            opts.UseInMemoryDatabase("Aspire.Fallback.Db"));
+        //    }
+        //}
 
         builder.Services.AddTransient<IDocumentService>(
             provider => new DocumentService(provider.GetRequiredService<AppDbContext>())
