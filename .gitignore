@@ -2,4 +2,9 @@
 Debug/
 debug/
 obj/
-wwwroot/
+wwwroot/openapi
+wwwroot/*.js
+wwwroot/*.png
+wwwroot/*.jpg
+wwwroot/*.css
+wwwroot/*.html
