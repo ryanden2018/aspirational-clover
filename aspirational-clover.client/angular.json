@@ -26,6 +26,8 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "baseHref": "/approot/",
+            "deployUrl": "/approot/",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
