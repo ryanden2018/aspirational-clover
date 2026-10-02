@@ -31,18 +31,14 @@
     <ProjectReference Include="..\aspirational-clover.ServiceDefaults\aspirational-clover.ServiceDefaults.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\openapi\ui\" />
-  </ItemGroup>
-
-  <!-- Copy client build output into server wwwroot/app so static assets are served at runtime from /app -->
+  <!-- Copy client build output into server wwwroot/approot so static assets are served at runtime from /approot -->
   <Target Name="CopyClientDistToWwwRoot" AfterTargets="Build" Condition="Exists('..\aspirational-clover.client\dist\aspirational-clover.client\browser')">
     <ItemGroup>
       <ClientDistFiles Include="..\aspirational-clover.client\dist\aspirational-clover.client\browser\**\*.*" />
     </ItemGroup>
     <Message Importance="high" Text="Copying client dist assets (count: %(ClientDistFiles.Identity)) to wwwroot..." />
-    <MakeDir Directories="$(ProjectDir)wwwroot\app" />
-    <Copy SourceFiles="@(ClientDistFiles)" DestinationFiles="@(ClientDistFiles->'$(ProjectDir)wwwroot\app\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <MakeDir Directories="$(ProjectDir)wwwroot\approot" />
+    <Copy SourceFiles="@(ClientDistFiles)" DestinationFiles="@(ClientDistFiles->'$(ProjectDir)wwwroot\approot\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
