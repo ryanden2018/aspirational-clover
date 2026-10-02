@@ -1,97 +1,97 @@
 @if (!hasSelectedShape()) {
 <div class="field-label">Document Name</div>
 <div class="field-container">
-  <input class="input-field" name="documentname" type="text" [value]="activeDocumentName()" (change)="onChangeDocumentName($event)" />
+  <input class="input-field" name="documentname" type="text" [value]="activeDocumentName()" (change)="onChangeDocumentName($event)" [disabled]="isDefaultSlug()" />
 </div>
 }
 
 @if (hasSelectedTextBox()) {
 <div class="field-label">Contents</div>
 <div class="field-container">
-  <input class="input-field" name="textboxcontent" type="text" [value]="textBoxContent()" (change)="onChangeTextBoxContent($event, selectedShape())" />
+  <input class="input-field" name="textboxcontent" type="text" [value]="textBoxContent()" (change)="onChangeTextBoxContent($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Font Size</div>
 <div class="field-container">
-  <input class="input-field" name="fontsize" type="number" [value]="selectedShape()?.textBox?.fontSize ?? 0" (change)="onChangeFontSize($event, selectedShape())" />
+  <input class="input-field" name="fontsize" type="number" [value]="selectedShape()?.textBox?.fontSize ?? 0" (change)="onChangeFontSize($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 }
 
 @if (hasSelectedRectangle()) {
 <div class="field-label">Width</div>
 <div class="field-container">
-  <input class="input-field" name="rectwidth" type="number" [value]="selectedShape()?.rectangle?.width ?? 0" (change)="onChangeRectangleWidth($event, selectedShape())" />
+  <input class="input-field" name="rectwidth" type="number" [value]="selectedShape()?.rectangle?.width ?? 0" (change)="onChangeRectangleWidth($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Height</div>
 <div class="field-container">
-  <input class="input-field" name="rectheight" type="number" [value]="selectedShape()?.rectangle?.height ?? 0" (change)="onChangeRectangleHeight($event, selectedShape())" />
+  <input class="input-field" name="rectheight" type="number" [value]="selectedShape()?.rectangle?.height ?? 0" (change)="onChangeRectangleHeight($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Fill Start</div>
 <div class="field-container">
-  <input class="input-field" name="rectfillstart" type="text" [value]="selectedShape()?.rectangle?.fillColorFrom ?? 0" (change)="onChangeRectangleFillColorFrom($event, selectedShape())" />
+  <input class="input-field" name="rectfillstart" type="text" [value]="selectedShape()?.rectangle?.fillColorFrom ?? 0" (change)="onChangeRectangleFillColorFrom($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Fill End</div>
 <div class="field-container">
-  <input class="input-field" name="rectfillend" type="text" [value]="selectedShape()?.rectangle?.fillColorTo ?? 0" (change)="onChangeRectangleFillColorTo($event, selectedShape())" />
+  <input class="input-field" name="rectfillend" type="text" [value]="selectedShape()?.rectangle?.fillColorTo ?? 0" (change)="onChangeRectangleFillColorTo($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Fill Angle</div>
 <div class="field-container">
-  <input class="input-field" name="rectfillangle" type="number" [value]="selectedShape()?.rectangle?.fillAngle ?? 0" (change)="onChangeRectangleFillAngle($event, selectedShape())" />
+  <input class="input-field" name="rectfillangle" type="number" [value]="selectedShape()?.rectangle?.fillAngle ?? 0" (change)="onChangeRectangleFillAngle($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Rotation Angle</div>
 <div class="field-container">
-  <input class="input-field" name="rectrotationangle" type="number" [value]="selectedShape()?.rectangle?.rotationAngle ?? 0" (change)="onChangeRectangleRotationAngle($event, selectedShape())" />
+  <input class="input-field" name="rectrotationangle" type="number" [value]="selectedShape()?.rectangle?.rotationAngle ?? 0" (change)="onChangeRectangleRotationAngle($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Skew X</div>
 <div class="field-container">
-  <input class="input-field" name="rectskewx" type="number" [value]="selectedShape()?.rectangle?.skewX ?? 0" (change)="onChangeRectangleSkewX($event, selectedShape())" />
+  <input class="input-field" name="rectskewx" type="number" [value]="selectedShape()?.rectangle?.skewX ?? 0" (change)="onChangeRectangleSkewX($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Skew Y</div>
 <div class="field-container">
-  <input class="input-field" name="rectskewy" type="number" [value]="selectedShape()?.rectangle?.skewY ?? 0" (change)="onChangeRectangleSkewY($event, selectedShape())" />
+  <input class="input-field" name="rectskewy" type="number" [value]="selectedShape()?.rectangle?.skewY ?? 0" (change)="onChangeRectangleSkewY($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 }
 
 @if (hasSelectedCircle()) {
 <div class="field-label">Radius</div>
 <div class="field-container">
-  <input class="input-field" name="circleradius" type="number" [value]="selectedShape()?.circle?.radius ?? 0" (change)="onChangeCircleRadius($event, selectedShape())" />
+  <input class="input-field" name="circleradius" type="number" [value]="selectedShape()?.circle?.radius ?? 0" (change)="onChangeCircleRadius($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Fill Start</div>
 <div class="field-container">
-  <input class="input-field" name="circlfillstart" type="text" [value]="selectedShape()?.circle?.fillColorFrom ?? 0" (change)="onChangeCircleFillColorFrom($event, selectedShape())" />
+  <input class="input-field" name="circlfillstart" type="text" [value]="selectedShape()?.circle?.fillColorFrom ?? 0" (change)="onChangeCircleFillColorFrom($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Fill End</div>
 <div class="field-container">
-  <input class="input-field" name="circlfillend" type="text" [value]="selectedShape()?.circle?.fillColorTo ?? 0" (change)="onChangeCircleFillColorTo($event, selectedShape())" />
+  <input class="input-field" name="circlfillend" type="text" [value]="selectedShape()?.circle?.fillColorTo ?? 0" (change)="onChangeCircleFillColorTo($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Fill Angle</div>
 <div class="field-container">
-  <input class="input-field" name="circlfillangle" type="number" [value]="selectedShape()?.circle?.fillAngle ?? 0" (change)="onChangeCircleFillAngle($event, selectedShape())" />
+  <input class="input-field" name="circlfillangle" type="number" [value]="selectedShape()?.circle?.fillAngle ?? 0" (change)="onChangeCircleFillAngle($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Rotation Angle</div>
 <div class="field-container">
-  <input class="input-field" name="circlrotationangle" type="number" [value]="selectedShape()?.circle?.rotationAngle ?? 0" (change)="onChangeCircleRotationAngle($event, selectedShape())" />
+  <input class="input-field" name="circlrotationangle" type="number" [value]="selectedShape()?.circle?.rotationAngle ?? 0" (change)="onChangeCircleRotationAngle($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Skew X</div>
 <div class="field-container">
-  <input class="input-field" name="circlskewx" type="number" [value]="selectedShape()?.circle?.skewX ?? 0" (change)="onChangeCircleSkewX($event, selectedShape())" />
+  <input class="input-field" name="circlskewx" type="number" [value]="selectedShape()?.circle?.skewX ?? 0" (change)="onChangeCircleSkewX($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 
 <div class="field-label">Skew Y</div>
 <div class="field-container">
-  <input class="input-field" name="circlskewy" type="number" [value]="selectedShape()?.circle?.skewY ?? 0" (change)="onChangeCircleSkewY($event, selectedShape())" />
+  <input class="input-field" name="circlskewy" type="number" [value]="selectedShape()?.circle?.skewY ?? 0" (change)="onChangeCircleSkewY($event, selectedShape())" [disabled]="isDefaultSlug()" />
 </div>
 }
