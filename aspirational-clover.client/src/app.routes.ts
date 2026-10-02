@@ -9,7 +9,7 @@ export const routes: Routes = [
     pathMatch: "full",
   },
   {
-    path: "home",
+    path: "app",
     loadComponent: () => import("./app/app.component").then(m => m.AppComponent),
   },
   {

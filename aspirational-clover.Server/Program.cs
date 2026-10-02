@@ -90,6 +90,10 @@ public class Program
 
         app.MapControllers();
 
+        app.MapFallbackToFile("app", "/app/index.html");
+
+        app.MapFallbackToFile("app/{*path:nonfile}", "/app/index.html");
+
         app.MapFallbackToFile("/index.html");
 
         app.Run();
