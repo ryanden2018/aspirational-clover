@@ -5,11 +5,11 @@ import { documentUrlPrefix } from "./constants";
 export const routes: Routes = [
   {
     path: "",
-    redirectTo: "home",
+    redirectTo: "approot",
     pathMatch: "full",
   },
   {
-    path: "app",
+    path: "approot",
     loadComponent: () => import("./app/app.component").then(m => m.AppComponent),
   },
   {
