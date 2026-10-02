@@ -3,8 +3,4 @@ Debug/
 debug/
 obj/
 wwwroot/openapi
-wwwroot/*.js
-wwwroot/*.png
-wwwroot/*.jpg
-wwwroot/*.css
-wwwroot/*.html
+wwwroot/app
