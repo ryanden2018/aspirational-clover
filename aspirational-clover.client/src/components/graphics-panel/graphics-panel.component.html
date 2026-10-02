@@ -6,7 +6,7 @@
           @for (shape of layer.shapes; track getClientUuidFromShape(shape)) {
             @if (typeof shape.circle === "object" && shape.circle !== null) {
               <defs>
-                <linearGradient [attr.id]="getGradientId(shape.circle)" [attr.gradientTransform]="getGradientTransform(shape.circle)">
+                <linearGradient [attr.id]="getGradientId(shape.circle)" x1="0" y1="0" [attr.x2]="getFillX2(shape.circle)" [attr.y2]="getFillY2(shape.circle)">
                   <stop offset="0%" [attr.stop-color]="shape.circle.fillColorFrom" />
                   <stop offset="100%" [attr.stop-color]="shape.circle.fillColorTo" />
                 </linearGradient>
@@ -15,7 +15,7 @@
                       (mousedown)="onCircleMouseDown($event, shape.circle)"
                       (click)="onCircleClick($event, shape.circle)"
                       class="transformed-elem"
-                      [attr.transform-origin]="getTransformOrigin(shape.circle)"
+                      [attr.transform-origin]="getTransformOriginCircle(shape.circle)"
                       [attr.transform]="getTransform(shape.circle)"
                       [attr.cx]="shape.circle.centerX"
                       [attr.cy]="shape.circle.centerY"
@@ -27,7 +27,7 @@
             }
             @if (typeof shape.rectangle === "object" && shape.rectangle !== null) {
               <defs>
-                <linearGradient [attr.id]="getGradientId(shape.rectangle)" [attr.gradientTransform]="getGradientTransform(shape.rectangle)">
+                <linearGradient [attr.id]="getGradientId(shape.rectangle)" x1="0" y1="0" [attr.x2]="getFillX2(shape.rectangle)" [attr.y2]="getFillY2(shape.rectangle)">
                   <stop offset="0%" [attr.stop-color]="shape.rectangle.fillColorFrom" />
                   <stop offset="100%" [attr.stop-color]="shape.rectangle.fillColorTo" />
                 </linearGradient>
@@ -36,7 +36,7 @@
                     (mousedown)="onRectangleMouseDown($event, shape.rectangle)"
                     (click)="onRectangleClick($event, shape.rectangle)"
                     class="transformed-elem"
-                    [attr.transform-origin]="getTransformOrigin(shape.rectangle)"
+                    [attr.transform-origin]="getTransformOriginRectangle(shape.rectangle)"
                     [attr.transform]="getTransform(shape.rectangle)"
                     [attr.x]="shape.rectangle.x"
                     [attr.y]="shape.rectangle.y"

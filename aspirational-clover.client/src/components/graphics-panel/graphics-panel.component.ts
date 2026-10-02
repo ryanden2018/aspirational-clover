@@ -75,9 +75,12 @@ export class GraphicsPanelComponent implements OnInit {
 
   getGradientId = (entity: Layerable) => `lg-${ entity?.clientUuid }`;
   getGradientFillAttr = (entity: Layerable) => `url(#${ this.getGradientId(entity) })`;
-  getGradientTransform = (entity: Fillable) => `rotate(${ entity?.fillAngle })`;
 
-  getTransformOrigin = (entity: Transformable) => `${ entity?.rotationCenterOffsetX } ${ entity?.rotationCenterOffsetY }`;
+  getFillX2 = (entity: Fillable) => `${ Math.cos(Math.PI * (entity?.fillAngle ?? 0) / 180) }`;
+  getFillY2 = (entity: Fillable) => `${ Math.sin(Math.PI * (entity?.fillAngle ?? 0) / 180) }`;
+
+  getTransformOriginCircle = (entity: Circle) => `${ entity?.radius + entity?.rotationCenterOffsetX }px ${ entity?.radius + entity?.rotationCenterOffsetY }px`;
+  getTransformOriginRectangle = (entity: Rectangle) => `${ (entity?.width / 2) + entity?.rotationCenterOffsetX }px ${ (entity?.height / 2) + entity?.rotationCenterOffsetY }px`;
   getTransform = (entity: Transformable) => `rotate(${ entity?.rotationAngle }) skewX(${ entity?.skewX }) skewY(${ entity?.skewY })`;
 
   getTextBoxText = (textBox: TextBox) => parseTextBoxContent(textBox);
