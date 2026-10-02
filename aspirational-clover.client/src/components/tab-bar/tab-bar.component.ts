@@ -8,7 +8,6 @@ import { DocumentService } from "../../app/document.service";
 import { SelectionService } from "../../app/selection.service";
 import { ResourcesService } from "../../app/resources.service";
 import { getDocumentUrl } from "../../util/getDocumentUrl";
-import { defaultSlugs } from "../../constants";
 import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
@@ -37,10 +36,6 @@ export class TabBarComponent {
 
   onTabClick() {
     this._selectionService.setSelectedShapeClientUuid(null);
-  }
-
-  showTabCloseButton(document: AppDocument) {
-    return !defaultSlugs.includes(document.documentSlug);
   }
 
   onMouseDownClose(event: MouseEvent, document: AppDocument) {

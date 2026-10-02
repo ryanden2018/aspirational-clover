@@ -27,3 +27,11 @@
 .graphics-panel-svg-dark {
   background-color: #000000;
 }
+
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
+.cursor-grab {
+  cursor: grab;
+}

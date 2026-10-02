@@ -1,2 +1,2 @@
 export const documentUrlPrefix = "/document";
-export const defaultSlugs = ["home", "sample"];
+export const defaultSlugs = ["description", "sample-one", "sample-two"];
