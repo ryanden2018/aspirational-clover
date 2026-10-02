@@ -1,14 +1,12 @@
 import { Component, computed, OnInit } from '@angular/core';
 import { filter, fromEvent, map, scan, takeUntil, first, tap, withLatestFrom } from 'rxjs';
 
-import { Layer } from "../../data/model";
 import { DocumentService } from "../../app/document.service";
 import { UndoService } from "../../app/undo.service";
 import { SelectionService } from "../../app/selection.service";
 import { ThemeService } from "../../app/theme.service";
 import { ShapeToolsService } from "../../app/shape-tools.service";
 import { Transformable, Layerable, Fillable } from "../../data/interfaces";
-import { isPolygon } from "../../util/isPolygon";
 import { Circle, Rectangle, Shape, TextBox } from "../../data/shapes";
 import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { UpdateShapeCommand } from "../../data/commands";
@@ -16,6 +14,7 @@ import { newUuidV4 } from "../../util/uuid";
 import { createAddShapeCommand } from '../../commands/addShape';
 import { getClientUuidFromShape } from '../../util/getClientUuidFromShape';
 import { parseTextBoxContent } from "../../util/textUtils";
+import { defaultSlugs } from "../../constants";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -31,6 +30,8 @@ export class GraphicsPanelComponent implements OnInit {
     private _selectionService: SelectionService,
     private _themeService: ThemeService,
   ) { }
+
+  isDefaultSlug = computed(() => defaultSlugs.includes(this._documentService.activeDocument()?.documentSlug ?? ""));
 
   ngOnInit() {
     this._themeService.modeAsObservable.subscribe(mode => {
@@ -71,12 +72,6 @@ export class GraphicsPanelComponent implements OnInit {
     })));
 
   getClientUuidFromShape = getClientUuidFromShape;
-
-  getCircles = (layer: Layer) => layer?.shapes?.map(s => s?.circle)?.filter(x => !!x) ?? [];
-  getRectangles = (layer: Layer) => layer?.shapes?.map(s => s?.rectangle)?.filter(x => !!x) ?? [];
-  getTextBoxes = (layer: Layer) => layer?.shapes?.map(s => s?.textBox)?.filter(x => !!x) ?? [];
-  getPolylines = (layer: Layer) => layer?.shapes?.map(s => s?.polyline)?.filter(x => !!x)?.filter(x => !isPolygon(x)) ?? [];
-  getPolygons = (layer: Layer) => layer?.shapes?.map(s => s?.polyline)?.filter(x => !!x)?.filter(x => isPolygon(x)) ?? [];
 
   getGradientId = (entity: Layerable) => `lg-${ entity?.clientUuid }`;
   getGradientFillAttr = (entity: Layerable) => `url(#${ this.getGradientId(entity) })`;
@@ -180,6 +175,7 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   onSvgMouseDown = (event: MouseEvent) => {
+    if (this.isDefaultSlug()) return; // don't allow shapes to be added to default slugs
     if (!event.target) return;
     const mode = this._shapeToolsService.mode();
     if (mode === null) return;
@@ -265,6 +261,7 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   onShapeMouseDown = (event: MouseEvent, initial: Shape, updater: (initial: Shape, update: { dx: number, dy: number }) => Shape) => {
+    if (this.isDefaultSlug()) return; // don't allow shapes to be moved in default slugs
     if (!event.target) return;
     const offsetX = event.offsetX;
     const offsetY = event.offsetY;
