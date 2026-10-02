@@ -4,7 +4,8 @@ import { SelectionService } from "../../app/selection.service";
 import { DocumentService } from "../../app/document.service";
 import { UndoService } from "../../app/undo.service";
 import { createShapeUpdateCommand } from "../../commands/updateShape";
-import { parseTextBoxContent } from "../../util/textUtils";
+import { parseTextBoxContent, updateTextBoxContent } from "../../util/textUtils";
+import { Shape } from "../../data/shapes";
 
 @Component({
   selector: 'app-property-viewer',
@@ -38,11 +39,11 @@ export class PropertyViewerComponent {
     this._documentService.setActiveDocumentName((event.target as any)?.value ?? "");
   }
 
-  onChangeTextBoxContent = (event: Event) => {
+  onChangeTextBoxContent = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
-    const shape = this.selectedShape();
-    if (shape?.textBox?.content) {
-      const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, content: JSON.stringify({ text: newValue }) }});
+    const updatedTextBox = updateTextBoxContent(shape?.textBox, newValue);
+    if (shape?.textBox && updatedTextBox) {
+      const command = createShapeUpdateCommand(shape, { ...shape, textBox: updatedTextBox });
       if (command) {
         this._undoService.applyCommand(command, "forward");
         this._undoService.pushCommand(command);
@@ -50,10 +51,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeFontSize = (event: Event) => {
+  onChangeFontSize = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.textBox?.fontSize) {
+    if (shape?.textBox) {
       const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, fontSize: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -62,10 +62,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleWidth = (event: Event) => {
+  onChangeRectangleWidth = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.width) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, width: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -74,10 +73,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleHeight = (event: Event) => {
+  onChangeRectangleHeight = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.height) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, height: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -86,10 +84,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleFillColorFrom = (event: Event) => {
+  onChangeRectangleFillColorFrom = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.fillColorFrom) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorFrom: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -98,10 +95,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleFillColorTo = (event: Event) => {
+  onChangeRectangleFillColorTo = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.fillColorTo) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorTo: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -110,10 +106,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleFillAngle = (event: Event) => {
+  onChangeRectangleFillAngle = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.fillAngle) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillAngle: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -122,10 +117,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleRotationAngle = (event: Event) => {
+  onChangeRectangleRotationAngle = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.rotationAngle) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, rotationAngle: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -134,10 +128,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleSkewX = (event: Event) => {
+  onChangeRectangleSkewX = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.skewX) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, skewX: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -146,10 +139,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeRectangleSkewY = (event: Event) => {
+  onChangeRectangleSkewY = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.rectangle?.skewY) {
+    if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, skewY: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -158,10 +150,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleRadius = (event: Event) => {
+  onChangeCircleRadius = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.circle?.radius) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, radius: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -170,10 +161,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleFillColorFrom = (event: Event) => {
+  onChangeCircleFillColorFrom = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
-    const shape = this.selectedShape();
-    if (shape?.circle?.fillColorFrom) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorFrom: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -182,10 +172,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleFillColorTo = (event: Event) => {
+  onChangeCircleFillColorTo = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
-    const shape = this.selectedShape();
-    if (shape?.circle?.fillColorTo) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorTo: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -194,10 +183,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleFillAngle = (event: Event) => {
+  onChangeCircleFillAngle = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.circle?.fillAngle) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillAngle: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -206,10 +194,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleRotationAngle = (event: Event) => {
+  onChangeCircleRotationAngle = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.circle?.rotationAngle) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, rotationAngle: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -218,10 +205,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleSkewX = (event: Event) => {
+  onChangeCircleSkewX = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.circle?.skewX) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewX: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
@@ -230,10 +216,9 @@ export class PropertyViewerComponent {
     }
   }
 
-  onChangeCircleSkewY = (event: Event) => {
+  onChangeCircleSkewY = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
-    const shape = this.selectedShape();
-    if (shape?.circle?.skewY) {
+    if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewY: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");

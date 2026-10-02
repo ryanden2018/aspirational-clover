@@ -12,3 +12,11 @@ export function parseTextBoxContent(textBox: TextBox | null | undefined): string
 
   return "";
 }
+
+export function updateTextBoxContent(textBox: TextBox | null | undefined, newText: string): TextBox | null | undefined {
+  if (!textBox) return textBox;
+  return {
+    ...textBox,
+    content: JSON.stringify({ text: newText }),
+  };
+}
