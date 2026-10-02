@@ -52,6 +52,7 @@ export class AppComponent implements OnInit {
     this._documentService.retrieveDocumentsOnce();
     this._hotkeysService.connectDeleteKeydown();
     this._hotkeysService.connectCtrlZKeydown();
+    this._hotkeysService.connectCtrlYKeydown();
     this._hotkeysService.connectCtrlShiftZKeydown();
     this._hotkeysService.connectCtrlCKeydown();
     this._hotkeysService.connectCtrlVKeydown();

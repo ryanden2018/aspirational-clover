@@ -9,7 +9,7 @@ namespace aspirational_clover.Server.Controllers;
 /// Controller for managing documents and their nested layers/shapes.
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Produces("application/json")]
 public class DocumentController : ControllerBase
 {
