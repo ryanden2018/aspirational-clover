@@ -116,7 +116,7 @@ public static class WebApplicationExtensions
                 {
                     LayerId = descLayer.Id,
                     ClientUuid = Guid.NewGuid().ToString(),
-                    Content = "{\"text\": \"You can edit this document or create your own.\"}",
+                    Content = "{\"text\": \"You can edit this document, or create your own.\"}",
                     X = 10,
                     Y = 200,
                     FontSize = 24,

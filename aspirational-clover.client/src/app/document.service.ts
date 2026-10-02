@@ -8,7 +8,7 @@ import { AppDocument } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
-import { defaultSlugs } from "../constants";
+import { defaultSlugs, apiDocumentUrl } from "../constants";
 
 @Injectable({
   providedIn: "root"
@@ -33,8 +33,6 @@ export class DocumentService {
   })));
 
   private _newDocumentCount = signal<number>(1);
-
-  private _apiDocumentUrl = "/document"; // TODO: should be /api/document and move to constants.ts
 
   currentUrl = signal<string>("");
 
@@ -64,7 +62,7 @@ export class DocumentService {
   }
 
   getDocuments(): Observable<AppDocument[]> {
-    return this.http.get<AppDocument[]>(this._apiDocumentUrl);
+    return this.http.get<AppDocument[]>(apiDocumentUrl);
   }
 
   retrieveDocumentsOnce() {

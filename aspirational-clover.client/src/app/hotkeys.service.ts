@@ -33,6 +33,14 @@ export class HotkeysService {
     });
   }
 
+  connectCtrlYKeydown() {
+    window.document.addEventListener("keydown", e => {
+      if (e.key.toLowerCase() === "y" && e.ctrlKey && !e.shiftKey && !e.metaKey) {
+        this._undoService.redo();
+      }
+    });
+  }
+
   connectCtrlCKeydown() {
     window.document.addEventListener("keydown", e => {
       if (e.key.toLowerCase() === "c" && e.ctrlKey && !e.shiftKey && !e.metaKey) {

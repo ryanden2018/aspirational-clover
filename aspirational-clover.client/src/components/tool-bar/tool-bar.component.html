@@ -12,16 +12,16 @@
 <!--<app-tool-tip-button id="toolbar-save-as-icon" toolTipContent="Save As" positioning="right-center">
   <ng-container *ngTemplateOutlet="saveAsIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
-<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo" positioning="right-center" (click)="onClickUndo()">
+<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo (Ctrl+Z)" positioning="right-center" (click)="onClickUndo()">
   <ng-container *ngTemplateOutlet="undoIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo" positioning="right-center" (click)="onClickRedo()">
+<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo (Ctrl+Y)" positioning="right-center" (click)="onClickRedo()">
   <ng-container *ngTemplateOutlet="redoIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy" positioning="right-center" (click)="onClickCopy()">
+<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy (Ctrl+C)" positioning="right-center" (click)="onClickCopy()">
   <ng-container *ngTemplateOutlet="contentCopyIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste" positioning="right-center" (click)="onClickPaste()">
+<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste (Ctrl+V)" positioning="right-center" (click)="onClickPaste()">
   <ng-container *ngTemplateOutlet="contentPasteIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
 <app-tool-tip-button id="toolbar-rectangle-icon" toolTipContent="Rectangle" positioning="right-center" (click)="onClickRectangle()">
