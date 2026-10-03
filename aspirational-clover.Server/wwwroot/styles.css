@@ -1,0 +1,39 @@
+﻿body {
+    background-color: #e1e2e3;
+    color: #2a2b2f;
+    font-family: sans-serif;
+}
+
+div.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+div.content {
+    display: flex;
+    flex-direction: column;
+    max-width: 640px;
+}
+
+a {
+    color: #2a2b2f;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+
+a:focus {
+    text-decoration: underline;
+}
