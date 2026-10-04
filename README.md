@@ -47,8 +47,7 @@ the new shape type. We use this scheme instead of a simple enum so that differen
 handle the new shape type; this includes the `getShapes` method, as well as the methods for creating, updating, and deleting documents.
 
 
-
-<small>_The entire commit history of this README.md file is relevant for historical interest._</small>
+_The entire commit history of this README.md file is relevant for historical interest._
 
 
 
