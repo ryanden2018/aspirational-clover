@@ -15,16 +15,19 @@ public class DocumentController : ControllerBase
 {
     private readonly Data.AppDbContext _db;
     private readonly IDocumentService _documentService;
+    private readonly ITokenService _tokenService;
 
     /// <summary>
     /// Initializes a new instance of the DocumentController class.
     /// </summary>
     /// <param name="db"></param>
     /// <param name="documentService"></param>
-    public DocumentController(Data.AppDbContext db, IDocumentService documentService)
+    /// <param name="tokenService"></param>
+    public DocumentController(Data.AppDbContext db, IDocumentService documentService, ITokenService tokenService)
     {
         _db = db;
         _documentService = documentService;
+        _tokenService = tokenService;
     }
 
     /// <summary>
@@ -53,6 +56,15 @@ public class DocumentController : ControllerBase
         return document;
     }
 
+    private async Task<bool> ValidateCsrfToken()
+    {
+        if (!Request.Headers.TryGetValue("X-CSRF-Token", out var token))
+        {
+            return false;
+        }
+        return await _tokenService.ValidateToken(token.ToString());
+    }
+
     /// <summary>
     /// Retrieve a single document by its slug.
     /// </summary>
@@ -79,6 +91,11 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<DocumentDTO>> Post([FromBody] DocumentDTO model)
     {
+        if (!await ValidateCsrfToken())
+        {
+            return BadRequest();
+        }
+
         // Ensure id is not set by client
         model.Id = 0;
 
@@ -117,6 +134,11 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(int id, [FromBody] DocumentDTO model)
     {
+        if (!await ValidateCsrfToken())
+        {
+            return BadRequest();
+        }
+
         if (id != model.Id) return BadRequest("ID mismatch");
         var updated = await _documentService.UpdateDocument(model);
         await _db.SaveChangesAsync();
@@ -132,6 +154,11 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
+        if (!await ValidateCsrfToken())
+        {
+            return BadRequest();
+        }
+
         var result = await _documentService.DeleteDocument(id);
         await _db.SaveChangesAsync();
         return NoContent();

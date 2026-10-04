@@ -9,12 +9,13 @@
             Controller for managing documents and their nested layers/shapes.
             </summary>
         </member>
-        <member name="M:aspirational_clover.Server.Controllers.DocumentController.#ctor(aspirational_clover.Server.Data.AppDbContext,aspirational_clover.Server.Interfaces.IDocumentService)">
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.#ctor(aspirational_clover.Server.Data.AppDbContext,aspirational_clover.Server.Interfaces.IDocumentService,aspirational_clover.Server.Interfaces.ITokenService)">
             <summary>
             Initializes a new instance of the DocumentController class.
             </summary>
             <param name="db"></param>
             <param name="documentService"></param>
+            <param name="tokenService"></param>
         </member>
         <member name="M:aspirational_clover.Server.Controllers.DocumentController.Get">
             <summary>
@@ -35,6 +36,44 @@
             </summary>
             <param name="slug">Document slug</param>
             <returns>DocumentDTO when found</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Post(aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Create a new document. The server will ignore any Id supplied by the client.
+            </summary>
+            <param name="model">Document to create</param>
+            <returns>Created DocumentDTO</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Put(System.Int32,aspirational_clover.Server.DTOs.DocumentDTO)">
+            <summary>
+            Update an existing document. Id in the route must match the payload.
+            </summary>
+            <param name="id">Document id</param>
+            <param name="model">Updated document payload</param>
+            <returns>Updated DocumentDTO</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Delete(System.Int32)">
+            <summary>
+            Delete a document by id.
+            </summary>
+            <param name="id">Document id</param>
+        </member>
+        <member name="T:aspirational_clover.Server.Controllers.TokenController">
+            <summary>
+            Controller for managing documents and their nested layers/shapes.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.TokenController.#ctor(aspirational_clover.Server.Interfaces.ITokenService)">
+            <summary>
+            Initializes a new instance of the TokenController class.
+            </summary>
+            <param name="tokenService"></param>
+        </member>
+        <member name="M:aspirational_clover.Server.Controllers.TokenController.GetToken">
+            <summary>
+            Returns a new token for the user.
+            </summary>
+            <returns>Generated token</returns>
         </member>
         <member name="T:aspirational_clover.Server.Data.AppDbContext">
             <summary>
@@ -344,6 +383,31 @@
             <summary>
             Gets or sets the ID of the layer to which the object belongs.
             </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Interfaces.ITokenService">
+            <summary>
+            Defines interface for a singleton Token service. This service is responsible for generating and validating tokens,
+            which are used as a safeguard against CSRF attacks (in conjunction with a strong CSP policy). The service should
+            be registered as a singleton because the service generates a unique in-memory cryptographic key at startup.
+            This is fine because tokens are invalidated after a short interval (say one minute), and the key is only used for
+            generating and validating tokens. The client app is responsible for requesting a token directly before initiating
+            any mutation requests (POST, PUT, DELETE), and then the token is sent back to the server in a custom header (e.g.,
+            X-CSRF-Token) for validation. Note that this safeguard can be easily bypassed if the client app is compromised or
+            by using Postman or curl, but in combination with CSP it does effectively prevent most in-browser CSRF-style attacks.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.ITokenService.GenerateToken">
+            <summary>
+            Generates a new cryptographically secure token.
+            </summary>
+            <returns>A new token string with one-minute expiry.</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Interfaces.ITokenService.ValidateToken(System.String)">
+            <summary>
+            Validates the provided token against the in-memory key.
+            </summary>
+            <param name="token">The token to validate.</param>
+            <returns>True if the token is valid and has not expired; otherwise, false.</returns>
         </member>
         <member name="T:aspirational_clover.Server.Interfaces.ITransformable">
             <summary>
@@ -760,6 +824,24 @@
             </summary>
             <param name="id"></param>
             <returns></returns>
+        </member>
+        <member name="T:aspirational_clover.Server.Services.TokenService">
+            <summary>
+            Service responsible for generating and validating cryptographically secure tokens.
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.TokenService.GenerateToken">
+            <summary>
+            Generates a new cryptographically secure token.
+            </summary>
+            <returns>A new token string with one-minute expiry.</returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Services.TokenService.ValidateToken(System.String)">
+            <summary>
+            Validates the provided token against the in-memory key.
+            </summary>
+            <param name="token">The token to validate.</param>
+            <returns>True if the token is valid and has not expired; otherwise, false.</returns>
         </member>
         <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
             <summary>

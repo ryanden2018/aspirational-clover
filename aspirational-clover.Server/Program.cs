@@ -64,6 +64,8 @@ public class Program
             provider => new DocumentService(provider.GetRequiredService<AppDbContext>())
         );
 
+        builder.Services.AddSingleton<ITokenService, TokenService>();
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
