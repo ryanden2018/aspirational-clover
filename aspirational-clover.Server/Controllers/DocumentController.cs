@@ -73,37 +73,37 @@ public class DocumentController : ControllerBase
     /// </summary>
     /// <param name="model">Document to create</param>
     /// <returns>Created DocumentDTO</returns>
-    //[HttpPost]
-    //[Consumes("application/json")]
-    //[ProducesResponseType(typeof(DocumentDTO), StatusCodes.Status201Created)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public async Task<ActionResult<DocumentDTO>> Post([FromBody] DocumentDTO model)
-    //{
-    //    // Ensure id is not set by client
-    //    model.Id = 0;
+    [HttpPost]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(DocumentDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<DocumentDTO>> Post([FromBody] DocumentDTO model)
+    {
+        // Ensure id is not set by client
+        model.Id = 0;
 
-    //    // Ensure slug is not set by the client
-    //    model.DocumentSlug = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+        // Ensure slug is not set by the client
+        model.DocumentSlug = Guid.NewGuid().ToString().Replace("-", "").ToLower();
 
-    //    if (model.Layers != null)
-    //    {
-    //        foreach (var layer in model.Layers)
-    //        {
-    //            layer.Id = 0; // Ensure layer ids are not set by client
-    //            if (layer.Shapes != null)
-    //            {
-    //                foreach (var shape in layer.Shapes)
-    //                {
-    //                    shape.DestructivelyRemoveShapeIds(); // Ensure shape IDs are not set by client (TODO: add a test for this at the controller level)
-    //                }
-    //            }
-    //        }
-    //    }
+        if (model.Layers != null)
+        {
+            foreach (var layer in model.Layers)
+            {
+                layer.Id = 0; // Ensure layer ids are not set by client
+                if (layer.Shapes != null)
+                {
+                    foreach (var shape in layer.Shapes)
+                    {
+                        shape.DestructivelyRemoveShapeIds(); // Ensure shape IDs are not set by client (TODO: add a test for this at the controller level)
+                    }
+                }
+            }
+        }
 
-    //    var created = await _documentService.CreateDocument(model);
-    //    await _db.SaveChangesAsync();
-    //    return CreatedAtAction(nameof(GetById), new { id = model.Id }, created);
-    //}
+        var created = await _documentService.CreateDocument(model);
+        await _db.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetById), new { id = model.Id }, created);
+    }
 
     /// <summary>
     /// Update an existing document. Id in the route must match the payload.
@@ -111,29 +111,29 @@ public class DocumentController : ControllerBase
     /// <param name="id">Document id</param>
     /// <param name="model">Updated document payload</param>
     /// <returns>Updated DocumentDTO</returns>
-    //[HttpPut("{id}")]
-    //[Consumes("application/json")]
-    //[ProducesResponseType(typeof(DocumentDTO), StatusCodes.Status200OK)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public async Task<IActionResult> Put(int id, [FromBody] DocumentDTO model)
-    //{
-    //    if (id != model.Id) return BadRequest("ID mismatch");
-    //    var updated = await _documentService.UpdateDocument(model);
-    //    await _db.SaveChangesAsync();
-    //    return NoContent();
-    //}
+    [HttpPut("{id}")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(DocumentDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Put(int id, [FromBody] DocumentDTO model)
+    {
+        if (id != model.Id) return BadRequest("ID mismatch");
+        var updated = await _documentService.UpdateDocument(model);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
 
     /// <summary>
     /// Delete a document by id.
     /// </summary>
     /// <param name="id">Document id</param>
-    //[HttpDelete("{id}")]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //[ProducesResponseType(StatusCodes.Status404NotFound)]
-    //public async Task<IActionResult> Delete(int id)
-    //{
-    //    var result = await _documentService.DeleteDocument(id);
-    //    await _db.SaveChangesAsync();
-    //    return NoContent();
-    //}
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var result = await _documentService.DeleteDocument(id);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
 }
