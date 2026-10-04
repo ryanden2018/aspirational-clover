@@ -18,9 +18,38 @@ the OpenAPI documentation in Scalar.
 security settings, for instance by using a sandbox; if you want to run in `http` mode  then it should be possible but I'm
 afraid you're on your own, because I only ever run this stack in `https`.) 
 
+## PostgreSQL
+
+For running locally, an in-memory database is used; however, in production mode, we use PostgreSQL. The dummy connection string is stored 
+in `appsettings.json` and can be overridden by environment variables. Note that since this application centers around the concept
+of a 'document', we might expect to use a NoSQL solution. However, the application is intended as an analogy to a standard SQL business
+application, such as a shopping cart; just as a shopping cart has items, a `Document` has `Layer`s. Moreover, just as an item can have
+parts, a `Layer` can have shapes (`Circle`s, `Rectangle`s, etc.). Thus the on-screen representation of a `Document` as a collection of `Layer`s
+containing shapes is analogous to a shopping cart containing items which are themselves composed of parts. This is relevant for instance
+if you wish to implement a customer service system whereby customers can request replacement parts for purchased items.
+
+
+## Test suite
+
+From the root of the solution, run:
+
+`dotnet test aspirational-clover.Tests`
+
+
+## Adding Shape Types
+
+Shapes are model classes implementing `ILayerable`, as well as possibly `IFillable` and/or `ITransformable` or other interfaces. 
+New shapes should be added in the `aspirational-clover.Server/Models` folder, and the `ShapeDTO` (properties AND constructor, specifically
+the definition of the `LayerId` convenience property) must be updated to include
+the new shape type. We use this scheme instead of a simple enum so that different shape types can express different properties and behaviors
+(a shape should only implement the interfaces that are meaningful for that shape type). For example, a `Circle` has a `Radius` property, while a 
+`Rectangle` has `Width` and `Height` properties. Besides updating `ShapeDTO`, it is also necessary to update the `DocumentService` class to
+handle the new shape type; this includes the `getShapes` method, as well as the methods for creating, updating, and deleting documents.
 
 
 
-_The entire commit history of this README.md file is relevant for historical interest._
+<small>_The entire commit history of this README.md file is relevant for historical interest._</small>
+
+
 
 
