@@ -53,24 +53,7 @@ export class GraphicsPanelComponent implements OnInit {
 
   sortedLayers = computed(() =>
     [...(this.activeDocument()?.layers?.filter(layer => !layer?.hidden) ?? [])]
-    .sort((a,b) => a?.zIndex - b?.zIndex)
-    .map(layer => ({
-      ...layer,
-      shapes: [...(layer.shapes ?? [])].map((shape, index) => ({shape, index})).sort((s1, s2) => {
-        // render the selected shape at the top of the layer (otherwise it could be obscured
-        // by other shapes in the same layer during move operation)
-        if (getClientUuidFromShape(s1.shape) === this._selectionService.selectedShapeClientUuid()) {
-          return 1;
-        }
-
-        if (getClientUuidFromShape(s2.shape) === this._selectionService.selectedShapeClientUuid()) {
-          return -1;
-        }
-
-        return s1.index - s2.index;
-      })
-      .map(({ shape }) => shape)
-    })));
+    .sort((a,b) => a?.zIndex - b?.zIndex));
 
   getClientUuidFromShape = getClientUuidFromShape;
 

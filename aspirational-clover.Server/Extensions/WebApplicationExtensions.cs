@@ -63,11 +63,11 @@ public static class WebApplicationExtensions
         var env = app.Environment;
 
         // Only seed when running in Development by default. Allow override via configuration key "SeedTestData".
-        // var enabled = configuration.GetValue<bool?>("SeedTestData") ?? true;
-        // if (!env.IsDevelopment() || !enabled)
-        // {
-        //    return;
-        // }
+        var enabled = configuration.GetValue<bool?>("SeedTestData") ?? true;
+        if (!env.IsDevelopment() || !enabled)
+        {
+           return;
+        }
 
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
@@ -168,6 +168,22 @@ public static class WebApplicationExtensions
                 Hidden = false,
                 ZIndex = 0
             },
+            new Layer
+            {
+                DocumentId = document.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
+                Name = "layer-2",
+                Hidden = false,
+                ZIndex = 1
+            },
+            new Layer
+            {
+                DocumentId = document.Id,
+                ClientUuid = Guid.NewGuid().ToString(),
+                Name = "layer-3",
+                Hidden = false,
+                ZIndex = 2
+            }
         }).Aggregate(new List<Layer>(), (acc, val) => acc.Concat(val).ToList());
 
         db.Layers.AddRange(layers);
@@ -180,12 +196,6 @@ public static class WebApplicationExtensions
             MakeRandomCircle(layer.Id),
             MakeRandomCircle(layer.Id),
             MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id)
         }).Aggregate(new List<Circle>(), (acc, val) => acc.Concat(val).ToList());
 
         db.Circles.AddRange(circles);
@@ -199,11 +209,6 @@ public static class WebApplicationExtensions
             MakeRandomRectangle(layer.Id),
             MakeRandomRectangle(layer.Id),
             MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id)
         }).Aggregate(new List<Rectangle>(), (acc, val) => acc.Concat(val).ToList());
 
         db.Rectangles.AddRange(rectangles);
@@ -214,18 +219,18 @@ public static class WebApplicationExtensions
             {
                 LayerId = layer.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Content = "{\"text\": \"text box A\"}",
+                Content = "{\"text\": \"text box\"}",
                 X = 200,
-                Y = 200,
+                Y = 200 + ((layer.ZIndex ?? 0) * 100),
                 FontSize = 24,
             },
             new TextBox
             {
                 LayerId = layer.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Content = "{\"text\": \"text box B\"}",
+                Content = "{\"text\": \"text box\"}",
                 X = 500,
-                Y = 500,
+                Y = 500 + ((layer.ZIndex ?? 0) * 100),
                 FontSize = 24,
             }
         }).Aggregate(new List<TextBox>(), (acc, val) => acc.Concat(val).ToList());
