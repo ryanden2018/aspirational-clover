@@ -3,6 +3,8 @@
 <div class="field-container">
   <input class="input-field" name="documentname" type="text" [value]="activeDocumentName()" (change)="onChangeDocumentName($event)" />
 </div>
+
+<app-layer-editor></app-layer-editor>
 }
 
 @if (hasSelectedTextBox()) {

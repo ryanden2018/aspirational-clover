@@ -1,0 +1,14 @@
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 15px;
+}
+
+div.button-container {
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+}
