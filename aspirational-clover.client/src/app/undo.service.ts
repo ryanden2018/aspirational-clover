@@ -2,13 +2,22 @@ import { Injectable, signal } from "@angular/core";
 
 import { LinkedCommand, Command } from "../data/commands";
 import { DocumentService } from "./document.service";
-import { isMoveShapeToLayerCommand, isUpdateDocumentCommand, isUpdateLayerCommand, isUpdateShapeCommand, isAddShapeCommand, isDeleteShapeCommand } from "../data/typeguards";
+import {
+  isMoveShapeToLayerCommand,
+  isUpdateDocumentCommand,
+  isUpdateLayerCommand,
+  isUpdateShapeCommand,
+  isAddShapeCommand,
+  isDeleteShapeCommand,
+  isReorderLayerCommand,
+} from "../data/typeguards";
 import { applyMoveShapeToLayer } from "../commands/moveShapeToLayer";
 import { applyUpdateDocument } from "../commands/updateDocument";
 import { applyUpdateLayer } from "../commands/updateLayer";
 import { applyShapeUpdate } from "../commands/updateShape";
 import { applyAddShapeCommand } from "../commands/addShape";
 import { applyDeleteShapeCommand } from "../commands/deleteShape";
+import { applyReorderLayerCommand } from "../commands/reorderLayer";
 
 interface UndoRedoState {
   undo: LinkedCommand | null;
@@ -67,6 +76,10 @@ export class UndoService {
 
     if (isDeleteShapeCommand(command)) {
       this._documentService.updateDocumentInMemory(applyDeleteShapeCommand(currentDocument, command, direction));
+    }
+
+    if (isReorderLayerCommand(command)) {
+      this._documentService.updateDocumentInMemory(applyReorderLayerCommand(currentDocument, command, direction));
     }
   }
 
