@@ -10,6 +10,8 @@ import {
   isAddShapeCommand,
   isDeleteShapeCommand,
   isReorderLayerCommand,
+  isAddLayerCommand,
+  isDeleteLayerCommand,
 } from "../data/typeguards";
 import { applyMoveShapeToLayer } from "../commands/moveShapeToLayer";
 import { applyUpdateDocument } from "../commands/updateDocument";
@@ -18,6 +20,8 @@ import { applyShapeUpdate } from "../commands/updateShape";
 import { applyAddShapeCommand } from "../commands/addShape";
 import { applyDeleteShapeCommand } from "../commands/deleteShape";
 import { applyReorderLayerCommand } from "../commands/reorderLayer";
+import { applyAddLayerCommand } from "../commands/addLayer";
+import { applyDeleteLayerCommand } from "../commands/deleteLayer";
 
 interface UndoRedoState {
   undo: LinkedCommand | null;
@@ -80,6 +84,14 @@ export class UndoService {
 
     if (isReorderLayerCommand(command)) {
       this._documentService.updateDocumentInMemory(applyReorderLayerCommand(currentDocument, command, direction));
+    }
+
+    if (isAddLayerCommand(command)) {
+      this._documentService.updateDocumentInMemory(applyAddLayerCommand(currentDocument, command, direction));
+    }
+
+    if (isDeleteLayerCommand(command)) {
+      this._documentService.updateDocumentInMemory(applyDeleteLayerCommand(currentDocument, command, direction));
     }
   }
 
