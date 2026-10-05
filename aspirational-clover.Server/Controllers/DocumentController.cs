@@ -56,13 +56,13 @@ public class DocumentController : ControllerBase
         return document;
     }
 
-    private async Task<bool> ValidateCsrfToken()
+    private bool ValidateCsrfToken()
     {
         if (!Request.Headers.TryGetValue("X-CSRF-Token", out var token))
         {
             return false;
         }
-        return await _tokenService.ValidateToken(token.ToString());
+        return _tokenService.ValidateToken(token.ToString());
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<DocumentDTO>> Post([FromBody] DocumentDTO model)
     {
-        if (!await ValidateCsrfToken())
+        if (!ValidateCsrfToken())
         {
             return BadRequest();
         }
@@ -134,7 +134,7 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(int id, [FromBody] DocumentDTO model)
     {
-        if (!await ValidateCsrfToken())
+        if (!ValidateCsrfToken())
         {
             return BadRequest();
         }
@@ -154,7 +154,7 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        if (!await ValidateCsrfToken())
+        if (!ValidateCsrfToken())
         {
             return BadRequest();
         }
