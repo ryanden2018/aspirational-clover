@@ -49,7 +49,7 @@ export function applyReorderLayerCommand(document: AppDocument, update: ReorderL
       }
 
       return { ...layer, zIndex: layer.zIndex - 1 };
-    });
+    }),
   };
 }
 
