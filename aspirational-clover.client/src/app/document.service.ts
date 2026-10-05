@@ -4,7 +4,7 @@ import { Observable, filter, first, map } from "rxjs";
 import { Router, NavigationEnd } from "@angular/router";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AppDocument } from "../data/model";
+import { AppDocument, Layer } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
@@ -33,6 +33,27 @@ export class DocumentService {
   })));
 
   private _newDocumentCount = signal<number>(1);
+
+  private _selectedLayerClientUuidByDocumentClientUuid = signal<Record<string, string>>({});
+
+  setSelectedLayer(documentClientUuid: string, layerClientUuid: string): void {
+    if (!documentClientUuid || !layerClientUuid) return;
+    const value = this._selectedLayerClientUuidByDocumentClientUuid();
+    const newValue = { ...(value ?? {}), [documentClientUuid]: layerClientUuid };
+    this._selectedLayerClientUuidByDocumentClientUuid.set(newValue);
+  }
+
+  selectedLayer = computed(() => {
+    const layerClientUuid = (this._selectedLayerClientUuidByDocumentClientUuid() ?? {})[this.activeDocumentClientUuid()];
+    const layers = this.activeDocument()?.layers ?? [];
+    const layer = layers.find(l => l.clientUuid = layerClientUuid);
+    if (layer) return layer;
+    const maxZIndex = Math.max(0, ...layers.map(l => l.zIndex));
+    if (typeof maxZIndex === "number") {
+      return layers.find(l => l.zIndex === maxZIndex) ?? layers[0] ?? null;
+    }
+    return (layers[0] ?? null) as (Layer | null);
+  });
 
   currentUrl = signal<string>("");
 

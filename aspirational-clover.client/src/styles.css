@@ -332,3 +332,54 @@ div.app-layer-editor-dark {
   color: #ffffff;
   border-color: #ffffff;
 }
+
+div.app-layer-editor-layer {
+  border-width: 1px;
+  border-radius: 4px;
+  font-size: 10px;
+  height: 30px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  border-style: solid;
+  padding-left: 5px;
+  column-gap: 5px;
+}
+
+div.app-layer-editor-unselected-layer {
+  border-color: transparent;
+}
+
+div.app-layer-editor-unselected-layer-light:focus {
+  background-color: #e4e8ef;
+}
+
+div.app-layer-editor-unselected-layer-light:hover {
+  background-color: #e4e8ef;
+}
+
+div.app-layer-editor-unselected-layer-light:active {
+  background-color: #e4e8ef;
+}
+
+div.app-layer-editor-unselected-layer-dark:focus {
+  background-color: #002233;
+}
+
+div.app-layer-editor-unselected-layer-dark:hover {
+  background-color: #002233;
+}
+
+div.app-layer-editor-unselected-layer-dark:active {
+  background-color: #002233;
+}
+
+div.app-layer-editor-selected-layer-light {
+  background-color: #e4e8ef;
+  border-color: #000000;
+}
+
+div.app-layer-editor-selected-layer-dark {
+  background-color:#002233;
+  border-color: #ffffff;
+}
