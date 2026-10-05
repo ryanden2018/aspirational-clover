@@ -6,6 +6,7 @@ import { UndoService } from "../../app/undo.service";
 import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { parseTextBoxContent, updateTextBoxContent } from "../../util/textUtils";
 import { Shape } from "../../data/shapes";
+import { createUpdateDocumentCommand } from '../../commands/updateDocument';
 
 @Component({
   selector: 'app-property-viewer',
@@ -36,7 +37,12 @@ export class PropertyViewerComponent {
   activeDocumentName = computed(() => this._documentService.activeDocument()?.name ?? "");
 
   onChangeDocumentName = (event: Event) => {
-    this._documentService.setActiveDocumentName((event.target as any)?.value ?? "");
+    const document = this._documentService.activeDocument();
+    if (!document) return;
+    const newDocument = { ...document, name: (event.target as any)?.value ?? "" };
+    const command = createUpdateDocumentCommand(document, newDocument);
+    this._undoService.applyCommand(command, "forward");
+    this._undoService.pushCommand(command);
   }
 
   onChangeTextBoxContent = (event: Event, shape: Shape | null | undefined) => {
