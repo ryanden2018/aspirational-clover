@@ -309,3 +309,26 @@ div.graphics-panel-svg-container-inner {
   margin-bottom: 40px;
 }
 
+div.app-layer-editor {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  border-radius: 4px;
+  border-style: solid;
+  height: 150px;
+  overflow-y: auto;
+  margin-bottom: 5px;
+  border-width: 1px;
+}
+
+div.app-layer-editor-light {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+div.app-layer-editor-dark {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+}

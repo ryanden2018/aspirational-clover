@@ -7,13 +7,14 @@ import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { parseTextBoxContent, updateTextBoxContent } from "../../util/textUtils";
 import { Shape } from "../../data/shapes";
 import { createUpdateDocumentCommand } from '../../commands/updateDocument';
+import { LayerEditorComponent } from "../layer-editor/layer-editor.component";
 
 @Component({
   selector: 'app-property-viewer',
   standalone: true,
   styleUrls: ['./property-viewer.component.css'],
   templateUrl: './property-viewer.component.html',
-  imports: []
+  imports: [LayerEditorComponent]
 })
 export class PropertyViewerComponent {
   constructor(
