@@ -25,7 +25,7 @@ export class DocumentService {
       id: 0,
       clientUuid: newUuidV4(),
       documentId: 0,
-      name: "layer-0",
+      name: "Layer 1",
       hidden: false,
       zIndex: 0,
       shapes: [],
@@ -98,7 +98,7 @@ export class DocumentService {
         id: 0,
         clientUuid: newUuidV4(),
         documentId: 0,
-        name: "Layer 0",
+        name: "Layer 1",
         hidden: false,
         zIndex: 0,
         shapes: []
