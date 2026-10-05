@@ -830,6 +830,31 @@
             Service responsible for generating and validating cryptographically secure tokens.
             </summary>
         </member>
+        <member name="M:aspirational_clover.Server.Services.TokenService.#ctor">
+            <summary>
+            Initializes a new instance of the TokenService class.
+            </summary>
+        </member>
+        <member name="T:aspirational_clover.Server.Services.TokenService.Token">
+            <summary>
+            Represents a cryptographically secure token with a nonce, expiry, and signature.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Services.TokenService.Token.Nonce">
+            <summary>
+            Gets or sets the nonce (a unique random value) for the token.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Services.TokenService.Token.Expiry">
+            <summary>
+            Gets or sets the expiry time of the token in UTC format.
+            </summary>
+        </member>
+        <member name="P:aspirational_clover.Server.Services.TokenService.Token.Signature">
+            <summary>
+            Gets or sets the cryptographic signature of the token, used for validation.
+            </summary>
+        </member>
         <member name="M:aspirational_clover.Server.Services.TokenService.GenerateToken">
             <summary>
             Generates a new cryptographically secure token.

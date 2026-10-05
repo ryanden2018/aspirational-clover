@@ -29,9 +29,8 @@ public class TokenController
     /// <returns>Generated token</returns>
     [HttpGet(Name = "GetToken")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    public async Task<ActionResult<string>> GetToken()
+    public ActionResult<string> GetToken()
     {
-        var token = await _tokenService.GenerateToken();
-        return token;
+        return _tokenService.GenerateToken();
     }
 }
