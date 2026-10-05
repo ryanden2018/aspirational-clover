@@ -21,5 +21,7 @@ export class ResourcesComponent {
   toggleOffIcon = viewChild<TemplateRef<unknown>>("toggleOffIcon");
   toggleOnIcon = viewChild<TemplateRef<unknown>>("toggleOnIcon");
   closeIcon = viewChild<TemplateRef<unknown>>("closeIcon");
+  visibilityIcon = viewChild<TemplateRef<unknown>>("visibilityIcon");
+  visibilityOffIcon = viewChild<TemplateRef<unknown>>("visibilityOffIcon");
   githubIcon = viewChild<TemplateRef<unknown>>("githubIcon");
 }
