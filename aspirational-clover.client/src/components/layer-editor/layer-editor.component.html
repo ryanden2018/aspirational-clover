@@ -1,7 +1,9 @@
 <div [class]="layerEditorClass()">
-
+  @for (layer of sortedLayers(); track layer.clientUuid) {
+    <div>{{ layer.name }}</div>
+  }
 </div>
 
 <div class="button-container">
-  <button [class]="buttonClass()">Add Layer</button>
+  <button [class]="buttonClass()" (click)="onClickAddLayer()">Add Layer</button>
 </div>

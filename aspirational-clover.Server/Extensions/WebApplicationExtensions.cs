@@ -93,7 +93,7 @@ public static class WebApplicationExtensions
         {
             DocumentId = descDocument.Id,
             ClientUuid = Guid.NewGuid().ToString(),
-            Name = "layer-1",
+            Name = "Layer 1",
             Hidden = false,
             ZIndex = 0
         };
@@ -164,7 +164,7 @@ public static class WebApplicationExtensions
             {
                 DocumentId = document.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Name = "layer-1",
+                Name = "Layer 1",
                 Hidden = false,
                 ZIndex = 0
             },
@@ -172,7 +172,7 @@ public static class WebApplicationExtensions
             {
                 DocumentId = document.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Name = "layer-2",
+                Name = "Layer 2",
                 Hidden = false,
                 ZIndex = 1
             },
@@ -180,7 +180,7 @@ public static class WebApplicationExtensions
             {
                 DocumentId = document.Id,
                 ClientUuid = Guid.NewGuid().ToString(),
-                Name = "layer-3",
+                Name = "Layer 3",
                 Hidden = false,
                 ZIndex = 2
             }
