@@ -23,5 +23,6 @@ export class ResourcesComponent {
   closeIcon = viewChild<TemplateRef<unknown>>("closeIcon");
   visibilityIcon = viewChild<TemplateRef<unknown>>("visibilityIcon");
   visibilityOffIcon = viewChild<TemplateRef<unknown>>("visibilityOffIcon");
+  linkIcon = viewChild<TemplateRef<unknown>>("linkIcon");
   githubIcon = viewChild<TemplateRef<unknown>>("githubIcon");
 }
