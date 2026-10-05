@@ -6,7 +6,9 @@ import {
   UpdateDocumentCommand,
   AddShapeCommand,
   DeleteShapeCommand,
-  ReorderLayerCommand
+  ReorderLayerCommand,
+  AddLayerCommand,
+  DeleteLayerCommand,
 } from "./commands";
 
 export const isUpdateShapeCommand: (command: Command) => command is UpdateShapeCommand = command => command?.type === "updateShape";
@@ -22,3 +24,7 @@ export const isAddShapeCommand: (command: Command) => command is AddShapeCommand
 export const isDeleteShapeCommand: (command: Command) => command is DeleteShapeCommand = command => command?.type === "deleteShape";
 
 export const isReorderLayerCommand: (command: Command) => command is ReorderLayerCommand = command => command?.type === "reorderLayer";
+
+export const isAddLayerCommand: (command: Command) => command is AddLayerCommand = command => command?.type === "addLayer";
+
+export const isDeleteLayerCommand: (command: Command) => command is DeleteLayerCommand = command => command?.type === "deleteLayer";

@@ -1,5 +1,23 @@
 import { ShapeUpdate, Shape } from "./shapes";
-import { LayerUpdate, DocumentUpdate } from "./model";
+import { LayerUpdate, Layer, DocumentUpdate } from "./model";
+
+export interface AddLayerCommand {
+  type: "addLayer",
+  layerClientUuid: string,
+  payload: {
+    forward: Layer,
+    reverse: null,
+  }
+}
+
+export interface DeleteLayerCommand {
+  type: "deleteLayer",
+  layerClientUuid: string,
+  payload: {
+    forward: null,
+    reverse: Layer,
+  }
+}
 
 export interface ReorderLayerCommand {
   type: "reorderLayer",
@@ -70,6 +88,8 @@ export type Command = UpdateShapeCommand
   | UpdateDocumentCommand
   | AddShapeCommand
   | DeleteShapeCommand
-  | ReorderLayerCommand;
+  | ReorderLayerCommand
+  | AddLayerCommand
+  | DeleteLayerCommand;
 
 export type LinkedCommand = Command & { next: LinkedCommand | null };
