@@ -98,10 +98,26 @@ export class LayerEditorComponent {
 
   onClickRaiseLayer(event: MouseEvent, layer: Layer) {
     event.stopPropagation();
+    if (typeof layer?.zIndex !== "number") return;
+    const layers = this._documentService.activeDocument()?.layers ?? [];
+    const targetLayerZIndex = Math.min(Infinity, ...(layers.filter(l => l.zIndex > layer.zIndex).map(l => l.zIndex)));
+    if (typeof targetLayerZIndex !== "number" || targetLayerZIndex === Infinity) return;
+    const command = createReorderLayerCommand(layer?.clientUuid, { zIndex: layer.zIndex }, { zIndex: targetLayerZIndex });
+    if (!command) return;
+    this._undoService.applyCommand(command, "forward");
+    this._undoService.pushCommand(command);
   }
 
   onClickLowerLayer(event: MouseEvent, layer: Layer) {
     event.stopPropagation();
+    if (typeof layer?.zIndex !== "number") return;
+    const layers = this._documentService.activeDocument()?.layers ?? [];
+    const targetLayerZIndex = Math.max(-Infinity, ...(layers.filter(l => l.zIndex < layer.zIndex).map(l => l.zIndex)));
+    if (typeof targetLayerZIndex !== "number" || targetLayerZIndex === -Infinity) return;
+    const command = createReorderLayerCommand(layer?.clientUuid, { zIndex: layer.zIndex }, { zIndex: targetLayerZIndex });
+    if (!command) return;
+    this._undoService.applyCommand(command, "forward");
+    this._undoService.pushCommand(command);
   }
 
   onClickDeleteLayer(event: MouseEvent, layer: Layer) {
