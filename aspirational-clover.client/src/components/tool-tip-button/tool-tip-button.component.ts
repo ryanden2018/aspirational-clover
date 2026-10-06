@@ -15,6 +15,7 @@ export class ToolTipButtonComponent {
   click = input<(() => void) | void>(() => {});
   positioning = input<'bottom-left' | 'right-center'>('bottom-left');
   timeout = input<number>(0);
+  disabled = input<boolean>(false);
 
   buttonClassName = computed(() => this._themeService.classNames().button);
 

@@ -14,7 +14,7 @@
           v
         </div>
       </app-tool-tip-button>
-      <app-tool-tip-button [id]="'layer-delete-button-' + layer.clientUuid" toolTipContent="Delete" positioning="bottom-left" (click)="onClickDeleteLayer($event, layer)">
+      <app-tool-tip-button [id]="'layer-delete-button-' + layer.clientUuid" toolTipContent="Delete" positioning="bottom-left" (click)="onClickDeleteLayer($event, layer)" [disabled]="deleteLayerButtonDisasbled()">
         <div class="app-layer-editor-button-icon-container">
           D
         </div>
