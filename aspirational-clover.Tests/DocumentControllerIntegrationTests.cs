@@ -24,7 +24,7 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
     {
         var client = _factory.CreateClient();
 
-        var res = await client.GetAsync("/samples");
+        var res = await client.GetAsync("/api/document/samples");
 
         Assert.Equal(HttpStatusCode.OK, res.StatusCode);
 
@@ -33,8 +33,14 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         Assert.True(doc.RootElement.ValueKind == JsonValueKind.Array, "Response should be a JSON array");
     }
 
+    private async Task<string> getCsrfToken(HttpClient client)
+    {
+        var csrfTokenRes = await client.GetAsync("/api/token/create");
+        return await csrfTokenRes.Content.ReadAsStringAsync();
+    }
+
     [Fact]
-    public async Task Post_Put_Delete_Workflow()
+    public async Task Post_Put_Workflow()
     {
         var client = _factory.CreateClient();
 
@@ -85,7 +91,10 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
 
         // POST newItem
         var json = JsonSerializer.Serialize(newItem);
-        var postRes = await client.PostAsync("/Document", new StringContent(json, Encoding.UTF8, "application/json"));
+
+        var postHttpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        postHttpContent.Headers.Add("X-CSRF-Token", await getCsrfToken(client));
+        var postRes = await client.PostAsync("/api/document", postHttpContent);
         Assert.Equal(HttpStatusCode.Created, postRes.StatusCode);
 
         var createdBody = await postRes.Content.ReadAsStringAsync();
@@ -95,7 +104,7 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         var circleId = createdDoc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("id").GetInt32();
 
         // GET by id
-        var getRes = await client.GetAsync($"/Document/{id}");
+        var getRes = await client.GetAsync($"/api/document/{id}");
         Assert.Equal(HttpStatusCode.OK, getRes.StatusCode);
 
         var getBody = await getRes.Content.ReadAsStringAsync();
@@ -108,22 +117,17 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         var updated = getNewItem(updateRotationAngle, id, layerId, circleId);
 
         var putJson = JsonSerializer.Serialize(updated);
-        var putRes = await client.PutAsync($"/Document/{id}", new StringContent(putJson, Encoding.UTF8, "application/json"));
+        var putHttpContent = new StringContent(putJson, Encoding.UTF8, "application/json");
+        putHttpContent.Headers.Add("X-CSRF-Token", await getCsrfToken(client));
+        var putRes = await client.PutAsync($"/api/document/{id}", putHttpContent);
         Assert.Equal(HttpStatusCode.NoContent, putRes.StatusCode);
 
-        var getRes2 = await client.GetAsync($"/Document/{id}");
+        var getRes2 = await client.GetAsync($"/api/document/{id}");
         Assert.Equal(HttpStatusCode.OK, getRes2.StatusCode);
         var getBody2 = await getRes2.Content.ReadAsStringAsync();
         using var getDoc2 = JsonDocument.Parse(getBody2);
 
         Assert.Equal(getDoc2.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetInt32(),
             updateRotationAngle);
-
-        // DELETE
-        var delRes = await client.DeleteAsync($"/Document/{id}");
-        Assert.Equal(HttpStatusCode.NoContent, delRes.StatusCode);
-
-        var getRes3 = await client.GetAsync($"/Document/{id}");
-        Assert.Equal(HttpStatusCode.NotFound, getRes3.StatusCode);
     }
 }

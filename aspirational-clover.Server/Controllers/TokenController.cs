@@ -27,9 +27,9 @@ public class TokenController
     /// Returns a new token for the user.
     /// </summary>
     /// <returns>Generated token</returns>
-    [HttpGet(Name = "GetToken")]
+    [HttpGet("create", Name = "GetToken")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    public ActionResult<string> GetToken()
+    public ActionResult<string> Get()
     {
         return _tokenService.GenerateToken();
     }
