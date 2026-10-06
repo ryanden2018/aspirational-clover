@@ -36,11 +36,21 @@
 </div>
 
 <div class="field-label">Fill Start</div>
+<div class="color-picker-panel">
+@for (color of colorPickerShortcuts; track color) {
+  <div class="color-picker-panel-item" [style.background-color]="color" (click)="onClickShortcutRectangleFillColorFrom(color, selectedShape())"></div>
+}
+</div>
 <div class="field-container">
   <input class="input-field" name="rectfillstart" type="text" [value]="selectedShape()?.rectangle?.fillColorFrom ?? 0" (change)="onChangeRectangleFillColorFrom($event, selectedShape())" />
 </div>
 
 <div class="field-label">Fill End</div>
+<div class="color-picker-panel">
+@for (color of colorPickerShortcuts; track color) {
+  <div class="color-picker-panel-item" [style.background-color]="color" (click)="onClickShortcutRectangleFillColorTo(color, selectedShape())"></div>
+}
+</div>
 <div class="field-container">
   <input class="input-field" name="rectfillend" type="text" [value]="selectedShape()?.rectangle?.fillColorTo ?? 0" (change)="onChangeRectangleFillColorTo($event, selectedShape())" />
 </div>
@@ -77,11 +87,21 @@
 </div>
 
 <div class="field-label">Fill Start</div>
+<div class="color-picker-panel">
+@for (color of colorPickerShortcuts; track color) {
+  <div class="color-picker-panel-item" [style.background-color]="color" (click)="onClickShortcutCircleFillColorFrom(color, selectedShape())"></div>
+}
+</div>
 <div class="field-container">
   <input class="input-field" name="circlfillstart" type="text" [value]="selectedShape()?.circle?.fillColorFrom ?? 0" (change)="onChangeCircleFillColorFrom($event, selectedShape())" />
 </div>
 
 <div class="field-label">Fill End</div>
+<div class="color-picker-panel">
+@for (color of colorPickerShortcuts; track color) {
+  <div class="color-picker-panel-item" [style.background-color]="color" (click)="onClickShortcutCircleFillColorTo(color, selectedShape())"></div>
+}
+</div>
 <div class="field-container">
   <input class="input-field" name="circlfillend" type="text" [value]="selectedShape()?.circle?.fillColorTo ?? 0" (change)="onChangeCircleFillColorTo($event, selectedShape())" />
 </div>

@@ -28,3 +28,17 @@ button.remove-gradient-button {
   width: 90%;
   font-size: 12px;
 }
+
+div.color-picker-panel {
+  display: flex;
+  width: 90%;
+  max-width: 90%;
+  gap: 2px;
+}
+
+div.color-picker-panel-item {
+  width: 16px;
+  height: 16px;
+  border: solid 1px;
+  border-color: #666;
+}
