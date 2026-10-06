@@ -45,6 +45,10 @@
   <input class="input-field" name="rectfillend" type="text" [value]="selectedShape()?.rectangle?.fillColorTo ?? 0" (change)="onChangeRectangleFillColorTo($event, selectedShape())" />
 </div>
 
+<button [class]="buttonClass() + ' ' + 'remove-gradient-button'" (click)="onClickRemoveGradientRectangle(selectedShape())" [disabled]="selectedShape()?.rectangle?.fillColorTo === ''">
+  Remove Gradient
+</button>
+
 <div class="field-label">Fill Angle</div>
 <div class="field-container">
   <input class="input-field" name="rectfillangle" type="number" [value]="selectedShape()?.rectangle?.fillAngle ?? 0" (change)="onChangeRectangleFillAngle($event, selectedShape())" />
@@ -81,6 +85,10 @@
 <div class="field-container">
   <input class="input-field" name="circlfillend" type="text" [value]="selectedShape()?.circle?.fillColorTo ?? 0" (change)="onChangeCircleFillColorTo($event, selectedShape())" />
 </div>
+
+<button [class]="buttonClass() + ' ' + 'remove-gradient-button'" (click)="onClickRemoveGradientCircle(selectedShape())"  [disabled]="selectedShape()?.circle?.fillColorTo === ''">
+  Remove Gradient
+</button>
 
 <div class="field-label">Fill Angle</div>
 <div class="field-container">

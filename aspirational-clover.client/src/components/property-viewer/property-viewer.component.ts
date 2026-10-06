@@ -3,6 +3,7 @@ import { Component, computed } from '@angular/core';
 import { SelectionService } from "../../app/selection.service";
 import { DocumentService } from "../../app/document.service";
 import { UndoService } from "../../app/undo.service";
+import { ThemeService } from "../../app/theme.service";
 import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { parseTextBoxContent, updateTextBoxContent } from "../../util/textUtils";
 import { Shape } from "../../data/shapes";
@@ -22,7 +23,10 @@ export class PropertyViewerComponent {
     private _selectionService: SelectionService,
     private _documentService: DocumentService,
     private _undoService: UndoService,
+    private _themeService: ThemeService,
   ) {}
+
+  buttonClass = computed(() => this._themeService.classNames().button);
 
   selectedShape = computed(() => this._selectionService.selectedShape());
 
@@ -170,6 +174,16 @@ export class PropertyViewerComponent {
     }
   }
 
+  onClickRemoveGradientRectangle(shape: Shape | null | undefined) {
+    if (shape?.rectangle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorTo: "" }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
   onChangeCircleRadius = (event: Event, shape: Shape | null | undefined) => {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
     if (shape?.circle) {
@@ -240,6 +254,16 @@ export class PropertyViewerComponent {
     const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewY: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
+  onClickRemoveGradientCircle(shape: Shape | null | undefined) {
+    if (shape?.circle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorTo: "" }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
         this._undoService.pushCommand(command);

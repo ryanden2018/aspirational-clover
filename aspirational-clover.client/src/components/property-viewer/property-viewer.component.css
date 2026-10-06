@@ -23,3 +23,8 @@ input.input-field {
   background-color: white;
   color: black;
 }
+
+button.remove-gradient-button {
+  width: 90%;
+  font-size: 12px;
+}
