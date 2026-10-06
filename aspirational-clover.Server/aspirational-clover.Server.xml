@@ -847,7 +847,7 @@
         </member>
         <member name="P:aspirational_clover.Server.Services.TokenService.Token.Expiry">
             <summary>
-            Gets or sets the expiry time of the token in UTC format.
+            Gets or sets the expiry time of the token in binary format.
             </summary>
         </member>
         <member name="P:aspirational_clover.Server.Services.TokenService.Token.Signature">
