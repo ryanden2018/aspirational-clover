@@ -69,7 +69,7 @@
             </summary>
             <param name="tokenService"></param>
         </member>
-        <member name="M:aspirational_clover.Server.Controllers.TokenController.GetToken">
+        <member name="M:aspirational_clover.Server.Controllers.TokenController.Get">
             <summary>
             Returns a new token for the user.
             </summary>
