@@ -76,6 +76,13 @@ button.styled-button {
   justify-content: center;
 }
 
+button.styled-button:disabled {
+  cursor: default !important;
+  color: #888 !important;
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
 button.styled-button:focus {
   outline: 1px solid lightblue;
 }
