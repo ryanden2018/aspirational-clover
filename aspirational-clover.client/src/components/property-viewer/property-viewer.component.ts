@@ -7,6 +7,7 @@ import { createShapeUpdateCommand } from "../../commands/updateShape";
 import { parseTextBoxContent, updateTextBoxContent } from "../../util/textUtils";
 import { Shape } from "../../data/shapes";
 import { createUpdateDocumentCommand } from '../../commands/updateDocument';
+import { createLayerUpdateCommand } from "../../commands/updateLayer";
 import { LayerEditorComponent } from "../layer-editor/layer-editor.component";
 
 @Component({
@@ -37,11 +38,23 @@ export class PropertyViewerComponent {
 
   activeDocumentName = computed(() => this._documentService.activeDocument()?.name ?? "");
 
+  selectedLayer = computed(() => this._documentService.selectedLayer());
+
   onChangeDocumentName = (event: Event) => {
     const document = this._documentService.activeDocument();
     if (!document) return;
     const newDocument = { ...document, name: (event.target as any)?.value ?? "" };
     const command = createUpdateDocumentCommand(document, newDocument);
+    this._undoService.applyCommand(command, "forward");
+    this._undoService.pushCommand(command);
+  }
+
+  onChangeLayerName = (event: Event) => {
+    const layer = this._documentService.selectedLayer();
+    if (!layer) return;
+    const updatedLayer = { ...layer, name: (event.target as any)?.value ?? "" };
+    const command = createLayerUpdateCommand(layer, updatedLayer);
+    if (!command) return;
     this._undoService.applyCommand(command, "forward");
     this._undoService.pushCommand(command);
   }
