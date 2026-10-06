@@ -91,8 +91,7 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   getInitialShape(event: MouseEvent, mode: "rectangle" | "circle" | "polyline" | "textbox"): Shape | null {
-    // TODO: use current layer instead of default layer
-    const layerId = this._documentService.activeDocument()?.layers?.[0]?.id;
+    const layerId = this._documentService.selectedLayer()?.id;
 
     if (layerId === undefined) return null;
 
@@ -177,13 +176,12 @@ export class GraphicsPanelComponent implements OnInit {
     const offsetX = event.offsetX;
     const offsetY = event.offsetY;
 
-    // TODO: use active layer instead of default layer
-    const defaultLayer = this._documentService.activeDocument()?.layers[0];
-    const defaultLayerClientUuid = defaultLayer?.clientUuid;
+    const selectedLayer = this._documentService.selectedLayer();
+    const selectedLayerClientUuid = selectedLayer?.clientUuid;
     
-    if (!defaultLayerClientUuid) return;
+    if (!selectedLayerClientUuid) return;
 
-    const addShapeCommand = createAddShapeCommand(defaultLayerClientUuid, initial);
+    const addShapeCommand = createAddShapeCommand(selectedLayerClientUuid, initial);
 
     if (!addShapeCommand) return;
     this._undoService.applyCommand(addShapeCommand, "forward");

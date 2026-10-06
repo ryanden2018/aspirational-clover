@@ -40,11 +40,16 @@ export class LayerEditorComponent {
 
   visibilityOffIcon = computed(() => this._resourcesService.resources()?.visibilityOffIcon());
 
-  visibilityIconForLayer = (layer: Layer) => {
-    return layer.hidden ? this.visibilityOffIcon() : this.visibilityIcon();
+  getVisibilityIcon = (visibilityOff?: boolean | null | undefined) => {
+    return visibilityOff ? this.visibilityOffIcon() : this.visibilityIcon();
   }
 
-  constructor(private _themeService: ThemeService, private _documentService: DocumentService, private _undoService: UndoService, private _resourcesService: ResourcesService) {}
+  constructor(
+    private _themeService: ThemeService,
+    private _documentService: DocumentService,
+    private _undoService: UndoService,
+    private _resourcesService: ResourcesService,
+  ) {}
 
   onClickAddLayer() {
     const activeDocument = this.activeDocument();
