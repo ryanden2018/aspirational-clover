@@ -83,4 +83,12 @@ export class LayerEditorComponent {
       this._undoService.pushCommand(command);
     }
   }
+
+  onClickLayer(event: MouseEvent, layer: Layer) {
+    event.stopPropagation();
+    if (!layer?.clientUuid) return;
+    const activeDocumentClientUuid = this.activeDocument()?.clientUuid;
+    if (!activeDocumentClientUuid) return;
+    this._documentService.setSelectedLayer(activeDocumentClientUuid, layer?.clientUuid);
+  }
 }
