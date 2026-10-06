@@ -218,17 +218,10 @@ public class CreateSamples
                 MakeRandomCircle(0),
                 MakeRandomCircle(0),
                 MakeRandomCircle(0),
-                MakeRandomCircle(0),
-                MakeRandomCircle(0),
-                MakeRandomCircle(0),
             };
 
             var rectangles = new[]
             {
-                MakeRandomRectangle(0),
-                MakeRandomRectangle(0),
-                MakeRandomRectangle(0),
-                MakeRandomRectangle(0),
                 MakeRandomRectangle(0),
                 MakeRandomRectangle(0),
                 MakeRandomRectangle(0),
