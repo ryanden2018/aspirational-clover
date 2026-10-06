@@ -1,31 +1,33 @@
 <div [class]="layerEditorClass()">
   @for (layer of sortedLayers(); track layer.clientUuid) {
     <div [class]="layer.clientUuid === selectedLayerClientUuid() ? selectedLayerClass() : unselectedLayerClass()" (click)="onClickLayer($event, layer)">
-      <button [class]="buttonClass()" (click)="onClickVisibility($event, layer)">
-        <div class="layer-editor-button-icon-container">
-          <ng-container *ngTemplateOutlet="getVisibilityIcon(layer.hidden); context: { width: '18px', height: '18px' }"></ng-container>
-        </div>
-      </button>
-      <button [class]="buttonClass()" (click)="onClickRaiseLayer($event, layer)">
-        <div class="layer-editor-button-icon-container">
+      <app-tool-tip-button [id]="'layer-visibility-button-' + layer.clientUuid" toolTipContent="Visibility" positioning="bottom-left" (click)="onClickVisibility($event, layer)">
+        <ng-container *ngTemplateOutlet="getVisibilityIcon(layer.hidden); context: { width: '18px', height: '18px' }"></ng-container>
+      </app-tool-tip-button>
+      <app-tool-tip-button [id]="'layer-raise-button-' + layer.clientUuid" toolTipContent="Raise" positioning="bottom-left" (click)="onClickRaiseLayer($event, layer)">
+        <div class="app-layer-editor-button-icon-container">
           ^
         </div>
-      </button>
-      <button [class]="buttonClass()" (click)="onClickLowerLayer($event, layer)">
-        <div class="layer-editor-button-icon-container">
+      </app-tool-tip-button>
+      <app-tool-tip-button [id]="'layer-lower-button-' + layer.clientUuid" toolTipContent="Lower" positioning="bottom-left" (click)="onClickLowerLayer($event, layer)">
+        <div class="app-layer-editor-button-icon-container">
           v
         </div>
-      </button>
-      <button [class]="buttonClass()" (click)="onClickDeleteLayer($event, layer)" [disabled]="deleteLayerButtonDisasbled()">
-        <div class="layer-editor-button-icon-container">
+      </app-tool-tip-button>
+      <app-tool-tip-button [id]="'layer-delete-button-' + layer.clientUuid" toolTipContent="Delete" positioning="bottom-left" (click)="onClickDeleteLayer($event, layer)">
+        <div class="app-layer-editor-button-icon-container">
           D
         </div>
-      </button>
+      </app-tool-tip-button>
       <div class="app-layer-editor-layer-text">{{ layer.name }}</div>
     </div>
   }
 </div>
 
 <div class="button-container">
-  <button [class]="buttonClass()" (click)="onClickAddLayer()">+</button>
+  <app-tool-tip-button id="layer-add-button" toolTipContent="Add Layer" positioning="bottom-left" (click)="onClickAddLayer()">
+    <div class="app-layer-editor-button-icon-container">
+      +
+    </div>
+  </app-tool-tip-button>
 </div>

@@ -11,13 +11,14 @@ import { createLayerUpdateCommand } from "../../commands/updateLayer";
 import { createDeleteLayerCommand } from "../../commands/deleteLayer";
 import { createReorderLayerCommand } from "../../commands/reorderLayer";
 import { newUuidV4 } from "../../util/uuid";
+import { ToolTipButtonComponent } from "../tool-tip-button/tool-tip-button.component";
 
 @Component({
   selector: 'app-layer-editor',
   standalone: true,
   styleUrls: ['./layer-editor.component.css'],
   templateUrl: './layer-editor.component.html',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, ToolTipButtonComponent],
 })
 export class LayerEditorComponent {
   layerEditorClass = computed(() => this._themeService.classNames().layerEditor);
