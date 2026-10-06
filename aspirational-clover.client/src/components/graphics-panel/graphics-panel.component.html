@@ -9,7 +9,7 @@
                 <defs>
                   <linearGradient [attr.id]="getGradientId(shape.circle)" [attr.x1]="getFillX1(shape.circle)" [attr.y1]="getFillY1(shape.circle)" [attr.x2]="getFillX2(shape.circle)" [attr.y2]="getFillY2(shape.circle)">
                     <stop offset="0%" [attr.stop-color]="shape.circle.fillColorFrom" />
-                    <stop offset="100%" [attr.stop-color]="shape.circle.fillColorTo" />
+                    <stop offset="100%" [attr.stop-color]="shape.circle.fillColorTo !== '' ? shape.circle.fillColorTo : shape.circle.fillColorFrom" />
                   </linearGradient>
                 </defs>
                 <circle
@@ -30,7 +30,7 @@
                 <defs>
                   <linearGradient [attr.id]="getGradientId(shape.rectangle)" [attr.x1]="getFillX1(shape.rectangle)" [attr.y1]="getFillY1(shape.rectangle)" [attr.x2]="getFillX2(shape.rectangle)" [attr.y2]="getFillY2(shape.rectangle)">
                     <stop offset="0%" [attr.stop-color]="shape.rectangle.fillColorFrom" />
-                    <stop offset="100%" [attr.stop-color]="shape.rectangle.fillColorTo" />
+                    <stop offset="100%" [attr.stop-color]="shape.rectangle.fillColorTo !== '' ? shape.rectangle.fillColorTo : shape.rectangle.fillColorFrom" />
                   </linearGradient>
                 </defs>
                 <rect
