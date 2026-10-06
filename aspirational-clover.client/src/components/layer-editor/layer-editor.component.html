@@ -2,15 +2,30 @@
   @for (layer of sortedLayers(); track layer.clientUuid) {
     <div [class]="layer.clientUuid === selectedLayerClientUuid() ? selectedLayerClass() : unselectedLayerClass()" (click)="onClickLayer($event, layer)">
       <button [class]="buttonClass()" (click)="onClickVisibility($event, layer)">
-        <div style="width:18px;height:18px;display:flex;align-items:center;justify-content:center">
+        <div class="layer-editor-button-icon-container">
           <ng-container *ngTemplateOutlet="getVisibilityIcon(layer.hidden); context: { width: '18px', height: '18px' }"></ng-container>
         </div>
       </button>
-      <span>{{ layer.name }}</span>
+      <button [class]="buttonClass()" (click)="onClickRaiseLayer($event, layer)">
+        <div class="layer-editor-button-icon-container">
+          ^
+        </div>
+      </button>
+      <button [class]="buttonClass()" (click)="onClickLowerLayer($event, layer)">
+        <div class="layer-editor-button-icon-container">
+          v
+        </div>
+      </button>
+      <button [class]="buttonClass()" (click)="onClickDeleteLayer($event, layer)" [disabled]="deleteLayerButtonDisasbled()">
+        <div class="layer-editor-button-icon-container">
+          D
+        </div>
+      </button>
+      <div class="app-layer-editor-layer-text">{{ layer.name }}</div>
     </div>
   }
 </div>
 
 <div class="button-container">
-  <button [class]="buttonClass()" (click)="onClickAddLayer()">Add Layer</button>
+  <button [class]="buttonClass()" (click)="onClickAddLayer()">+</button>
 </div>

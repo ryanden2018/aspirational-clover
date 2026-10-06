@@ -4,3 +4,70 @@
   gap: 12px;
   padding-left: 8px;
 }
+
+div.app-tab-bar-tab {
+  border-top: solid 2px;
+  border-left: solid 1px;
+  border-right: solid 1px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  user-select: none;
+  font-size: 18px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  align-items: center;
+  gap: 4px;
+  text-wrap: nowrap;
+}
+
+div.app-tab-bar-tab-active-light {
+  background-color: #ffffff;
+  border-color: #999999;
+  color: #333333;
+}
+
+  div.app-tab-bar-tab-active-light:hover {
+    background-color: #cccccc;
+    border-color: #999999;
+    color: #333333;
+  }
+
+div.app-tab-bar-tab-active-dark {
+  background-color: #4d4d4d;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
+}
+
+  div.app-tab-bar-tab-active-dark:hover {
+    background-color: #333333;
+    border-color: #4d4d4d;
+    color: #e6e6e6;
+  }
+
+div.app-tab-bar-tab-inactive-light {
+  background-color: #e6e6e6;
+  border-color: #999999;
+  color: #333333;
+}
+
+  div.app-tab-bar-tab-inactive-light:hover {
+    background-color: #cccccc;
+    border-color: #999999;
+    color: #333333;
+  }
+
+div.app-tab-bar-tab-inactive-dark {
+  background-color: #191919;
+  border-color: #4d4d4d;
+  color: #e6e6e6;
+}
+
+  div.app-tab-bar-tab-inactive-dark:hover {
+    background-color: #333333;
+    border-color: #4d4d4d;
+    color: #e6e6e6;
+  }
