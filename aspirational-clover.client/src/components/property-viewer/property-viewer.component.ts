@@ -10,6 +10,7 @@ import { Shape } from "../../data/shapes";
 import { createUpdateDocumentCommand } from '../../commands/updateDocument';
 import { createLayerUpdateCommand } from "../../commands/updateLayer";
 import { LayerEditorComponent } from "../layer-editor/layer-editor.component";
+import { colorPickerShortcuts } from "../../constants";
 
 @Component({
   selector: 'app-property-viewer',
@@ -43,6 +44,8 @@ export class PropertyViewerComponent {
   activeDocumentName = computed(() => this._documentService.activeDocument()?.name ?? "");
 
   selectedLayer = computed(() => this._documentService.selectedLayer());
+
+  colorPickerShortcuts = colorPickerShortcuts;
 
   onChangeDocumentName = (event: Event) => {
     const document = this._documentService.activeDocument();
@@ -108,10 +111,30 @@ export class PropertyViewerComponent {
     }
   }
 
+  onClickShortcutRectangleFillColorFrom = (newValue: string, shape: Shape | null | undefined) => {
+    if (shape?.rectangle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorFrom: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
   onChangeRectangleFillColorFrom = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorFrom: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
+  onClickShortcutRectangleFillColorTo = (newValue: string, shape: Shape | null | undefined) => {
+    if (shape?.rectangle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorTo: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
         this._undoService.pushCommand(command);
@@ -195,10 +218,30 @@ export class PropertyViewerComponent {
     }
   }
 
+  onClickShortcutCircleFillColorFrom = (newValue: string, shape: Shape | null | undefined) => {
+    if (shape?.circle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorFrom: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
   onChangeCircleFillColorFrom = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorFrom: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
+  onClickShortcutCircleFillColorTo = (newValue: string, shape: Shape | null | undefined) => {
+    if (shape?.circle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorTo: newValue }});
       if (command) {
         this._undoService.applyCommand(command, "forward");
         this._undoService.pushCommand(command);
