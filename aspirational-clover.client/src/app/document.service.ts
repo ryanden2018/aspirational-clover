@@ -46,7 +46,7 @@ export class DocumentService {
   selectedLayer = computed(() => {
     const layerClientUuid = (this._selectedLayerClientUuidByDocumentClientUuid() ?? {})[this.activeDocumentClientUuid()];
     const layers = this.activeDocument()?.layers ?? [];
-    const layer = layers.find(l => l.clientUuid = layerClientUuid);
+    const layer = layers.find(l => l.clientUuid === layerClientUuid);
     if (layer) return layer;
     const maxZIndex = Math.max(0, ...layers.map(l => l.zIndex));
     if (typeof maxZIndex === "number") {
