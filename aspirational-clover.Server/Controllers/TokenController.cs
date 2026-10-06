@@ -29,6 +29,7 @@ public class TokenController
     /// <returns>Generated token</returns>
     [HttpGet("create", Name = "GetToken")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [Produces("text/plain")] /* return data as STRING instead of JSON */
     public ActionResult<string> Get()
     {
         return _tokenService.GenerateToken();

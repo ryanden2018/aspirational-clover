@@ -91,8 +91,7 @@ public class TokenService : ITokenService
     /// <returns>A new token string with one-minute expiry.</returns>
     public string GenerateToken()
     {
-        var date = DateTime.UtcNow;
-        var expiry = date.AddMinutes(1).ToString();
+        var expiry = DateTime.UtcNow.AddMinutes(1).ToUniversalTime().ToString("u");
         var nonceBytes = new byte[32]; // 256-bit nonce
         using (var rng = RandomNumberGenerator.Create())
         {
