@@ -8,6 +8,8 @@ import { UndoService } from "../../app/undo.service";
 import { Layer } from "../../data/model";
 import { createAddLayerCommand } from "../../commands/addLayer";
 import { createLayerUpdateCommand } from "../../commands/updateLayer";
+import { createDeleteLayerCommand } from "../../commands/deleteLayer";
+import { createReorderLayerCommand } from "../../commands/reorderLayer";
 import { newUuidV4 } from "../../util/uuid";
 
 @Component({
@@ -39,6 +41,8 @@ export class LayerEditorComponent {
   visibilityIcon = computed(() => this._resourcesService.resources()?.visibilityIcon());
 
   visibilityOffIcon = computed(() => this._resourcesService.resources()?.visibilityOffIcon());
+
+  deleteLayerButtonDisasbled = computed(() => (this._documentService.activeDocument()?.layers?.length ?? 0) < 2);
 
   getVisibilityIcon = (visibilityOff?: boolean | null | undefined) => {
     return visibilityOff ? this.visibilityOffIcon() : this.visibilityIcon();
@@ -90,5 +94,23 @@ export class LayerEditorComponent {
     const activeDocumentClientUuid = this.activeDocument()?.clientUuid;
     if (!activeDocumentClientUuid) return;
     this._documentService.setSelectedLayer(activeDocumentClientUuid, layer?.clientUuid);
+  }
+
+  onClickRaiseLayer(event: MouseEvent, layer: Layer) {
+    event.stopPropagation();
+  }
+
+  onClickLowerLayer(event: MouseEvent, layer: Layer) {
+    event.stopPropagation();
+  }
+
+  onClickDeleteLayer(event: MouseEvent, layer: Layer) {
+    event.stopPropagation();
+    if (this.deleteLayerButtonDisasbled()) return;
+    if (!layer.clientUuid) return;
+    const command = createDeleteLayerCommand(layer);
+    if (!command) return;
+    this._undoService.applyCommand(command, "forward");
+    this._undoService.pushCommand(command);
   }
 }

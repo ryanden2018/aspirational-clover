@@ -12,3 +12,95 @@ div.button-container {
   flex-direction: row;
   width: 95%;
 }
+
+div.layer-editor-button-icon-container {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+div.app-layer-editor {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  border-radius: 4px;
+  border-style: solid;
+  height: 150px;
+  overflow-y: auto;
+  margin-bottom: 5px;
+  border-width: 1px;
+}
+
+div.app-layer-editor-light {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+div.app-layer-editor-dark {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+div.app-layer-editor-layer {
+  border-width: 1px;
+  border-radius: 4px;
+  font-size: 10px;
+  height: 30px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  border-style: solid;
+  padding-left: 2px;
+  column-gap: 2px;
+}
+
+div.app-layer-editor-layer-text {
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow: hidden;
+  width: 120px;
+  max-width: 120px;
+}
+
+div.app-layer-editor-unselected-layer {
+  border-color: transparent;
+}
+
+div.app-layer-editor-unselected-layer-light:focus {
+  background-color: #e4e8ef;
+}
+
+div.app-layer-editor-unselected-layer-light:hover {
+  background-color: #e4e8ef;
+}
+
+div.app-layer-editor-unselected-layer-light:active {
+  background-color: #e4e8ef;
+}
+
+div.app-layer-editor-unselected-layer-dark:focus {
+  background-color: #002233;
+}
+
+div.app-layer-editor-unselected-layer-dark:hover {
+  background-color: #002233;
+}
+
+div.app-layer-editor-unselected-layer-dark:active {
+  background-color: #002233;
+}
+
+div.app-layer-editor-selected-layer-light {
+  background-color: #e4e8ef;
+  border-color: #000000;
+}
+
+div.app-layer-editor-selected-layer-dark {
+  background-color: #002233;
+  border-color: #ffffff;
+}
