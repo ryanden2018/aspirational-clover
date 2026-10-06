@@ -8,7 +8,7 @@ import { AppDocument, Layer } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
-import { defaultSlugs, apiDocumentUrl } from "../constants";
+import { defaultSlugs, apiDocumentSamplesUrl } from "../constants";
 
 @Injectable({
   providedIn: "root"
@@ -82,12 +82,12 @@ export class DocumentService {
     });
   }
 
-  getDocuments(): Observable<AppDocument[]> {
-    return this.http.get<AppDocument[]>(apiDocumentUrl);
+  getSampleDocuments(): Observable<AppDocument[]> {
+    return this.http.get<AppDocument[]>(apiDocumentSamplesUrl);
   }
 
-  retrieveDocumentsOnce() {
-    this.getDocuments().pipe(
+  retrieveSampleDocumentsOnce() {
+    this.getSampleDocuments().pipe(
       filter(x => x && x.length > 0),
       first(),
     ).subscribe({

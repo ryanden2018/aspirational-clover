@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._documentService.retrieveDocumentsOnce();
+    this._documentService.retrieveSampleDocumentsOnce();
     this._hotkeysService.connectDeleteKeydown();
     this._hotkeysService.connectCtrlZKeydown();
     this._hotkeysService.connectCtrlYKeydown();

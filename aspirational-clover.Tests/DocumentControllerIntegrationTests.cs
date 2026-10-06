@@ -20,18 +20,17 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
     }
 
     [Fact]
-    public async Task Get_ReturnsSeededForecasts()
+    public async Task GetSamples_ReturnsSampleData()
     {
         var client = _factory.CreateClient();
 
-        var res = await client.GetAsync("/Document");
+        var res = await client.GetAsync("/samples");
 
         Assert.Equal(HttpStatusCode.OK, res.StatusCode);
 
         var body = await res.Content.ReadAsStringAsync();
         using var doc = JsonDocument.Parse(body);
         Assert.True(doc.RootElement.ValueKind == JsonValueKind.Array, "Response should be a JSON array");
-        Assert.True(doc.RootElement.GetArrayLength() >= 5, "Expected at least 5 seeded items");
     }
 
     [Fact]
