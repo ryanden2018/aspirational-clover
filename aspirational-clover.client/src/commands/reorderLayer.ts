@@ -21,6 +21,9 @@ export function applyReorderLayerCommand(document: AppDocument, update: ReorderL
   if (typeof oldZIndex !== "number") return document;
 
   if (direction === "forward") {
+    const minZIndex = Math.min(oldZIndex, update.payload.forward.zIndex);
+    const maxZIndex = Math.max(oldZIndex, update.payload.forward.zIndex);
+    const differential = (oldZIndex < update.payload.forward.zIndex) ? -1 : 1;
     return {
       ...document,
       layers: (document.layers ?? []).map(layer => {
@@ -28,29 +31,32 @@ export function applyReorderLayerCommand(document: AppDocument, update: ReorderL
           return { ...layer, zIndex: update.payload.forward.zIndex}
         }
 
-        if (layer.zIndex < update.payload.forward.zIndex) {
+        if (layer.zIndex < minZIndex || layer.zIndex > maxZIndex) {
           return layer;
         }
 
-        return { ...layer, zIndex: layer.zIndex + 1 };
+        return { ...layer, zIndex: layer.zIndex + differential };
+      }),
+    };
+  } else {
+    const minZIndex = Math.min(oldZIndex, update.payload.reverse.zIndex);
+    const maxZIndex = Math.max(oldZIndex, update.payload.reverse.zIndex);
+    const differential = (oldZIndex < update.payload.reverse.zIndex) ? -1 : 1;
+    return {
+      ...document,
+      layers: (document.layers ?? []).map(layer => {
+        if (layer.clientUuid === layerClientUuid) {
+          return { ...layer, zIndex: update.payload.reverse.zIndex };
+        }
+
+        if (layer.zIndex < minZIndex || layer.zIndex > maxZIndex) {
+          return layer;
+        }
+
+        return { ...layer, zIndex: layer.zIndex + differential };
       }),
     };
   }
-
-  return {
-    ...document,
-    layers: (document.layers ?? []).map(layer => {
-      if (layer.clientUuid === layerClientUuid) {
-        return { ...layer, zIndex: update.payload.reverse.zIndex };
-      }
-
-      if (layer.zIndex < oldZIndex) {
-        return layer;
-      }
-
-      return { ...layer, zIndex: layer.zIndex - 1 };
-    }),
-  };
 }
 
 export function createReorderLayerCommand(layerClientUuid: string, initial: Pick<LayerUpdate, "zIndex">, target: Pick<LayerUpdate, "zIndex">): ReorderLayerCommand | null {
