@@ -138,7 +138,7 @@ export class GraphicsPanelComponent implements OnInit {
           id: 0,
           clientUuid: newUuidV4(),
           layerId,
-          content: "{\"text\":\"Click to enter text\"}",
+          content: "{\"text\":\"Click to enter text (no sensitive data!)\"}",
           fontSize: 24,
         } };
       default:
