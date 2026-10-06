@@ -17,11 +17,11 @@
             <param name="documentService"></param>
             <param name="tokenService"></param>
         </member>
-        <member name="M:aspirational_clover.Server.Controllers.DocumentController.Get">
+        <member name="M:aspirational_clover.Server.Controllers.DocumentController.GetSamples">
             <summary>
-            Returns a list of all documents, including nested layers and shapes.
+            Returns a list of sample documents, including nexted layers and shapes.
             </summary>
-            <returns>Array of DocumentDTO</returns>
+            <returns></returns>
         </member>
         <member name="M:aspirational_clover.Server.Controllers.DocumentController.GetById(System.Int32)">
             <summary>
@@ -867,6 +867,44 @@
             </summary>
             <param name="token">The token to validate.</param>
             <returns>True if the token is valid and has not expired; otherwise, false.</returns>
+        </member>
+        <member name="T:aspirational_clover.Server.Util.CreateSamples">
+            <summary>
+            Create sample data
+            </summary>
+        </member>
+        <member name="M:aspirational_clover.Server.Util.CreateSamples.MakeRandomCircle(System.Int32)">
+            <summary>
+            Make a random circle.
+            </summary>
+            <param name="layerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Util.CreateSamples.MakeRandomRectangle(System.Int32)">
+            <summary>
+            Make a random rectangle.
+            </summary>
+            <param name="layerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Util.CreateSamples.CreateDescriptionDocument">
+            <summary>
+            Create a sample document with name 'description' and introductory text.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Util.CreateSamples.CreateDescriptionDocumentDTO">
+            <summary>
+            Create a description document DTO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:aspirational_clover.Server.Util.CreateSamples.CreateSampleDocumentDTO(System.String)">
+            <summary>
+            Create a random sample document DTO.
+            </summary>
+            <param name="slug"></param>
+            <returns></returns>
         </member>
         <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
             <summary>

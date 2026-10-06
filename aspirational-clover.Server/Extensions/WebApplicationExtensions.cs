@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Models;
+using aspirational_clover.Server.Util;
 
 namespace aspirational_clover.Server.Extensions;
 
@@ -8,52 +9,6 @@ namespace aspirational_clover.Server.Extensions;
 /// </summary>
 public static class WebApplicationExtensions
 {
-    private static string[] _colors = new[]
-    {
-        "#FF0000", "#00FF00", "#0000FF", "#A1A1A1", "#B2B2B2", "#C3C3C3"
-    };
-
-    private static Circle MakeRandomCircle(int layerId)
-    {
-        return new Circle
-        {
-            LayerId = layerId,
-            ClientUuid = Guid.NewGuid().ToString(),
-            FillColorFrom = _colors[Random.Shared.Next(_colors.Length)],
-            FillColorTo = _colors[Random.Shared.Next(_colors.Length)],
-            FillAngle = Random.Shared.Next(0, 360),
-            CenterX = Random.Shared.Next(0, 850),
-            CenterY = Random.Shared.Next(0, 1100),
-            Radius = Random.Shared.Next(50, 200),
-            RotationAngle = Random.Shared.Next(0, 360),
-            RotationCenterOffsetX = Random.Shared.Next(0, 4),
-            RotationCenterOffsetY = Random.Shared.Next(0, 4),
-            SkewX = Random.Shared.Next(-50, 50),
-            SkewY = Random.Shared.Next(-50, 50)
-        };
-    }
-
-    private static Rectangle MakeRandomRectangle(int layerId)
-    {
-        return new Rectangle
-        {
-            LayerId = layerId,
-            ClientUuid = Guid.NewGuid().ToString(),
-            FillColorFrom = _colors[Random.Shared.Next(_colors.Length)],
-            FillColorTo = _colors[Random.Shared.Next(_colors.Length)],
-            FillAngle = Random.Shared.Next(0, 360),
-            X = Random.Shared.Next(0, 850),
-            Y = Random.Shared.Next(0, 1100),
-            Width = Random.Shared.Next(50, 200),
-            Height = Random.Shared.Next(50, 200),
-            RotationAngle = Random.Shared.Next(0, 360),
-            RotationCenterOffsetX = Random.Shared.Next(0, 4),
-            RotationCenterOffsetY = Random.Shared.Next(0, 4),
-            SkewX = Random.Shared.Next(-50, 50),
-            SkewY = Random.Shared.Next(-50, 50)
-        };
-    }
-
     /// <summary>
     /// Seed test data into the AppDbContext when running in Development and when enabled via configuration.
     /// </summary>
@@ -78,69 +33,20 @@ public static class WebApplicationExtensions
             return;
         }
 
-        var descDocument = new Document
-        {
-            DocumentSlug = "description",
-            ClientUuid = Guid.NewGuid().ToString(),
-            Name = "description",
-            CreatedAt = DateTime.UtcNow,
-            LastUpdatedAt = DateTime.UtcNow
-        };
+        var (descDocument, descLayer, descTextBoxes) = CreateSamples.CreateDescriptionDocument();
 
         db.Documents.Add(descDocument);
 
-        var descLayer = new Layer
-        {
-            DocumentId = descDocument.Id,
-            ClientUuid = Guid.NewGuid().ToString(),
-            Name = "Layer 1",
-            Hidden = false,
-            ZIndex = 0
-        };
+        descLayer.DocumentId = descDocument.Id;
 
         db.Layers.Add(descLayer);
 
-        db.TextBoxes.AddRange(
-            new[]
-            {
-                new TextBox
-                {
-                    LayerId = descLayer.Id,
-                    ClientUuid = Guid.NewGuid().ToString(),
-                    Content = "{\"text\": \"This is a sample document.\"}",
-                    X = 10,
-                    Y = 100,
-                    FontSize = 24,
-                },
-                new TextBox
-                {
-                    LayerId = descLayer.Id,
-                    ClientUuid = Guid.NewGuid().ToString(),
-                    Content = "{\"text\": \"You can edit this document, or create your own.\"}",
-                    X = 10,
-                    Y = 200,
-                    FontSize = 24,
-                },
-                new TextBox
-                {
-                    LayerId = descLayer.Id,
-                    ClientUuid = Guid.NewGuid().ToString(),
-                    Content = "{\"text\": \"See above tabs for samples demonstrating the feature set.\"}",
-                    X = 10,
-                    Y = 300,
-                    FontSize = 24,
-                },
-                new TextBox
-                {
-                    LayerId = descLayer.Id,
-                    ClientUuid = Guid.NewGuid().ToString(),
-                    Content = "{\"text\": \"This application is best viewed on a laptop or desktop device.\"}",
-                    X = 10,
-                    Y = 400,
-                    FontSize = 24,
-                },
-            }
-        );
+        foreach (var item in descTextBoxes)
+        {
+            item.LayerId = descLayer.Id;
+        }
+
+        db.TextBoxes.AddRange(descTextBoxes);
 
         var slugs = new[]
         {
@@ -190,25 +96,25 @@ public static class WebApplicationExtensions
 
         var circles = layers.Select(layer => new[]
         {
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
-            MakeRandomCircle(layer.Id),
+            CreateSamples.MakeRandomCircle(layer.Id),
+            CreateSamples.MakeRandomCircle(layer.Id),
+            CreateSamples.MakeRandomCircle(layer.Id),
+            CreateSamples.MakeRandomCircle(layer.Id),
+            CreateSamples.MakeRandomCircle(layer.Id),
+            CreateSamples.MakeRandomCircle(layer.Id),
         }).Aggregate(new List<Circle>(), (acc, val) => acc.Concat(val).ToList());
 
         db.Circles.AddRange(circles);
 
         var rectangles = layers.Select(layer => new[]
         {
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
-            MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
+            CreateSamples.MakeRandomRectangle(layer.Id),
         }).Aggregate(new List<Rectangle>(), (acc, val) => acc.Concat(val).ToList());
 
         db.Rectangles.AddRange(rectangles);

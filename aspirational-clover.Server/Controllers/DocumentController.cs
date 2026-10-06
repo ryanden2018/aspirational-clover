@@ -2,6 +2,7 @@
 using aspirational_clover.Server.DTOs;
 using aspirational_clover.Server.Interfaces;
 using aspirational_clover.Server.Extensions;
+using aspirational_clover.Server.Util;
 
 namespace aspirational_clover.Server.Controllers;
 
@@ -31,14 +32,18 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a list of all documents, including nested layers and shapes.
+    /// Returns a list of sample documents, including nexted layers and shapes.
     /// </summary>
-    /// <returns>Array of DocumentDTO</returns>
-    [HttpGet(Name = "GetDocuments")]
+    /// <returns></returns>
+    [HttpGet("samples")]
     [ProducesResponseType(typeof(IEnumerable<DocumentDTO>), StatusCodes.Status200OK)]
-    public async Task<IEnumerable<DocumentDTO>> Get()
+    public async Task<IEnumerable<DocumentDTO>> GetSamples()
     {
-        return await _documentService.GetDocumentsWithLayersAndShapes();
+        var documents = new List<DocumentDTO>();
+        var descDocumentDTO = CreateSamples.CreateDescriptionDocumentDTO();
+        var sampleOneDocumentDTO = CreateSamples.CreateSampleDocumentDTO("sample-one");
+        var sampleTwoDocumentDTO = CreateSamples.CreateSampleDocumentDTO("sample-two");
+        return new[] { descDocumentDTO, sampleOneDocumentDTO, sampleTwoDocumentDTO };
     }
 
     /// <summary>
