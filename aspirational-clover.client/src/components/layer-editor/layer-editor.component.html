@@ -3,7 +3,7 @@
     <div [class]="layer.clientUuid === selectedLayerClientUuid() ? selectedLayerClass() : unselectedLayerClass()">
       <button [class]="buttonClass()" (click)="onClickVisibility($event, layer)">
         <div style="width:18px;height:18px;display:flex;align-items:center;justify-content:center">
-          <ng-container *ngTemplateOutlet="visibilityIconForLayer(layer); context: { width: '18px', height: '18px' }"></ng-container>
+          <ng-container *ngTemplateOutlet="getVisibilityIcon(layer.hidden); context: { width: '18px', height: '18px' }"></ng-container>
         </div>
       </button>
       <span>{{ layer.name }}</span>

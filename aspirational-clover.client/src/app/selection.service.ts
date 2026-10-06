@@ -64,8 +64,7 @@ export class SelectionService {
       const newShape = this.processPastedShape(shapeFromClipboard);
       if (!newShape) return;
 
-      // TODO: use active layer instead of default layer
-      const layerClientUuid = this._documentService.activeDocument()?.layers?.[0]?.clientUuid;
+      const layerClientUuid = this._documentService.selectedLayer()?.clientUuid;
       if (!layerClientUuid) return;
 
       const addShapeCommand = createAddShapeCommand(layerClientUuid, newShape);
