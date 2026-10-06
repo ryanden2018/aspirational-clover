@@ -70,9 +70,9 @@ public class TokenService : ITokenService
         public string? Nonce { get; set; }
 
         /// <summary>
-        /// Gets or sets the expiry time of the token in UTC format.
+        /// Gets or sets the expiry time of the token in binary format.
         /// </summary>
-        public string? Expiry { get; set; }
+        public long? Expiry { get; set; }
 
         /// <summary>
         /// Gets or sets the cryptographic signature of the token, used for validation.
@@ -80,9 +80,9 @@ public class TokenService : ITokenService
         public string? Signature { get; set; }
     }
 
-    private byte[] GetBytesForToken(string nonce, string expiry)
+    private byte[] GetBytesForToken(string nonce, long expiry)
     {
-        return Encoding.UTF8.GetBytes($"{nonce}:{expiry}");
+        return Encoding.UTF8.GetBytes($"{nonce}:{expiry.ToString()}");
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class TokenService : ITokenService
     /// <returns>A new token string with one-minute expiry.</returns>
     public string GenerateToken()
     {
-        var expiry = DateTime.UtcNow.AddMinutes(1).ToUniversalTime().ToString("u");
+        var expiry = DateTime.UtcNow.AddMinutes(1).ToUniversalTime().ToBinary();
         var nonceBytes = new byte[32]; // 256-bit nonce
         using (var rng = RandomNumberGenerator.Create())
         {
@@ -120,13 +120,15 @@ public class TokenService : ITokenService
         {
             var tokenObj = System.Text.Json.JsonSerializer.Deserialize<Token>(token);
             if (tokenObj == null) return false;
+            long expiry = tokenObj.Expiry ?? 0;
+            if (expiry == 0) return false;
             // Check expiry
-            if (DateTime.UtcNow > DateTime.Parse(tokenObj.Expiry ?? ""))
+            if (DateTime.UtcNow > DateTime.FromBinary(expiry))
             {
                 return false; // Token has expired
             }
             // Verify signature
-            var dataToVerify = GetBytesForToken(tokenObj.Nonce ?? "", tokenObj.Expiry ?? "");
+            var dataToVerify = GetBytesForToken(tokenObj.Nonce ?? "", expiry);
             var signatureBytes = Convert.FromBase64String(tokenObj.Signature ?? "");
             return VerifyData(dataToVerify, signatureBytes, _signatureKeys.PublicKeyPem);
         }
