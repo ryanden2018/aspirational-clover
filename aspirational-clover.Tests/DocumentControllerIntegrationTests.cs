@@ -49,7 +49,7 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         var getNewItem = (int rotationAngle, int documentId, int layerId, int circleId) => new
         {
             Id = documentId,
-            DocumentSlug = "test-doc",
+            DocumentSlug = Guid.NewGuid().ToString(),
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow,
             Layers = new[]

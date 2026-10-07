@@ -37,7 +37,7 @@ public class Polyline : IFillable, ILayerable
     /// <summary>
     /// Gets or sets the angle of the fill, in degrees.
     /// </summary>
-    public int FillAngle { get; set; }
+    public float FillAngle { get; set; }
 
     /// <summary>
     /// Gets or sets the coordinates as a JSON string, eg:

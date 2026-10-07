@@ -18,6 +18,6 @@ public interface IFillable
     /// <summary>
     /// Gets or sets the angle of the fill, in degrees.
     /// </summary>
-    public int FillAngle { get; set; }
+    public float FillAngle { get; set; }
 }
 

@@ -8,7 +8,8 @@ import { AppDocument, Layer } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
-import { defaultSlugs, apiDocumentSamplesUrl, apiDocumentUrl } from "../constants";
+import { getToken } from "../util/getToken";
+import { defaultSlugs, apiDocumentSamplesUrl, apiDocumentUrl, apiDocumentSlugUrl } from "../constants";
 
 @Injectable({
   providedIn: "root"
@@ -107,17 +108,26 @@ export class DocumentService {
     });
   }
 
-  retrieveDocumentBySlug(slug: string) {
-    this.http.get<AppDocument>(`${apiDocumentUrl}/${slug}`).pipe(
-      filter(x => x?.documentSlug === slug),
-      first()
-    ).subscribe({
-      next: (doc) => {
-      this.documents.set([...this.documents(), doc]);
-      },
-      error: (err) => {
-        console.error('Error fetching document by slug:', err);
-      }
+  retrieveDocumentBySlug(slug: string): Promise<string> {
+    return new Promise<string>(resolve => {
+      this.http.get<AppDocument>(`${apiDocumentSlugUrl}/${slug}`).pipe(
+        filter(x => x?.documentSlug === slug),
+        first()
+      ).subscribe({
+        next: (doc) => {
+          const currentDocuments = this.documents() ?? [];
+          if (!currentDocuments.find(d => d.documentSlug === slug)) {
+            this.documents.set([...currentDocuments, doc]);
+          } else {
+            const newDocuments = currentDocuments.map(d => d.documentSlug === slug ? doc : d);
+            this.documents.set(newDocuments);
+          }
+          resolve(slug);
+        },
+        error: (err) => {
+          console.error('Error fetching document by slug:', err);
+        }
+      });
     });
   }
 
@@ -133,8 +143,8 @@ export class DocumentService {
       clientUuid: newUuidV4(),
       documentSlug: newUuidV4(),
       name: `New Document ${this._newDocumentCount()}`,
-      createdAt: "",
-      lastUpdatedAt: "",
+      createdAt: null,
+      lastUpdatedAt: null,
       layers: [{
         id: 0,
         clientUuid: newUuidV4(),
@@ -161,5 +171,26 @@ export class DocumentService {
   allowSave() {
     if (!this.activeDocument()?.documentSlug) return false;
     return !defaultSlugs.includes(this.activeDocument()?.documentSlug ?? "");
+  }
+
+  saveDocument() {
+    const documentToSave = this.activeDocument();
+    const slug = documentToSave?.documentSlug;
+    if (!slug || !documentToSave) return;
+    if (defaultSlugs.includes(slug)) return;
+    const method = documentToSave?.id === 0 ? "POST" : "PUT";
+    const url = documentToSave?.id === 0 ? apiDocumentUrl : `${apiDocumentUrl}/${documentToSave.id}`;
+    getToken().then(async (token: string) => {
+      await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": `${token}`
+        },
+        body: JSON.stringify(documentToSave)
+      });
+    }).then(async () => {
+      await this.retrieveDocumentBySlug(slug);
+    });
   }
 }

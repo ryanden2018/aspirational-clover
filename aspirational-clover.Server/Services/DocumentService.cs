@@ -410,6 +410,8 @@ public class DocumentService : IDocumentService
         // to allow modifying them.
         existing.LastUpdatedAt = DateTime.UtcNow;
 
+        existing.Name = documentDTO.Name;
+
         var existingLayersMap = (existingDTO.Layers ?? new List<LayerDTO>())
             .ToDictionary(l => l.Id, l => l);
 
