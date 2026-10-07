@@ -63,11 +63,11 @@ export class DocumentService {
   activeDocument = computed(() => this.documents()?.find(d => d.clientUuid === this.activeDocumentClientUuid()) ?? null);
 
   activeDocumentClientUuid = computed(() => {
-    const slug = getDocumentSlugFromUrl(this.currentUrl() ?? "");
+    const slug = Boolean(this.currentUrl()) ? getDocumentSlugFromUrl(this.currentUrl() ?? "") : getDocumentSlugFromUrl(window.location?.href ?? "");
     if (typeof slug === "string" && slug.length > 0) {
       const document = this.documents().find(d => d?.documentSlug === slug);
       if (document) {
-        return document.clientUuid;;
+        return document.clientUuid;
       }
       return "";
     }
