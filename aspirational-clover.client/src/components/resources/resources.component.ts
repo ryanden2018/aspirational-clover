@@ -23,6 +23,10 @@ export class ResourcesComponent {
   closeIcon = viewChild<TemplateRef<unknown>>("closeIcon");
   visibilityIcon = viewChild<TemplateRef<unknown>>("visibilityIcon");
   visibilityOffIcon = viewChild<TemplateRef<unknown>>("visibilityOffIcon");
+  arrowUpwardIcon = viewChild<TemplateRef<unknown>>("arrowUpwardIcon");
+  arrowDownwardIcon = viewChild<TemplateRef<unknown>>("arrowDownwardIcon");
+  deleteIcon = viewChild<TemplateRef<unknown>>("deleteIcon");
+  addIcon = viewChild<TemplateRef<unknown>>("addIcon");
   linkIcon = viewChild<TemplateRef<unknown>>("linkIcon");
   githubIcon = viewChild<TemplateRef<unknown>>("githubIcon");
 }

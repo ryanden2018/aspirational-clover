@@ -39,6 +39,14 @@ export class LayerEditorComponent {
 
   selectedLayerClientUuid = computed(() => this.selectedLayer()?.clientUuid);
 
+  arrowUpwardIcon = computed(() => this._resourcesService.resources()?.arrowUpwardIcon());
+
+  arrowDownwardIcon = computed(() => this._resourcesService.resources()?.arrowDownwardIcon());
+
+  addIcon = computed(() => this._resourcesService.resources()?.addIcon());
+
+  deleteIcon = computed(() => this._resourcesService.resources()?.deleteIcon());
+
   visibilityIcon = computed(() => this._resourcesService.resources()?.visibilityIcon());
 
   visibilityOffIcon = computed(() => this._resourcesService.resources()?.visibilityOffIcon());

@@ -66,4 +66,6 @@ export class ToolBarComponent {
   onClickCopy = () => this._selectionService.copySelectedShapeToClipboard();
 
   onClickPaste = () => this._selectionService.pasteShapeFromClipboard();
+
+  saveButtonDisabled = computed(() => !this._documentService.allowSave());
 }
