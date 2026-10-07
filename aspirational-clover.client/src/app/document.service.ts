@@ -69,6 +69,7 @@ export class DocumentService {
       if (document) {
         return document.clientUuid;;
       }
+      return "";
     }
     return this.documents()[0]?.clientUuid ?? "";
   });
@@ -82,9 +83,31 @@ export class DocumentService {
       this.currentUrl.set(url);
       const slug = getDocumentSlugFromUrl(url);
       if (slug && !this.documents().find(d => d.documentSlug === slug) && !defaultSlugs.includes(slug)) {
+        this.documents.set([...(this.documents() ?? []), {
+          id: 0,
+          clientUuid: newUuidV4(),
+          documentSlug: slug,
+          name: "",
+          createdAt: "",
+          lastUpdatedAt: "",
+          layers: [{
+            id: 0,
+            clientUuid: newUuidV4(),
+            documentId: 0,
+            name: "Layer 1",
+            hidden: false,
+            zIndex: 0,
+            shapes: [],
+          }],
+        }]);
         this.retrieveDocumentBySlug(slug);
       }
     });
+  }
+
+  getInitialDocuments = () => {
+
+
   }
 
   getSampleDocuments(): Observable<AppDocument[]> {

@@ -14,6 +14,7 @@ import { newUuidV4 } from "../../util/uuid";
 import { createAddShapeCommand } from '../../commands/addShape';
 import { getClientUuidFromShape } from '../../util/getClientUuidFromShape';
 import { parseTextBoxContent } from "../../util/textUtils";
+import { truncateFloat } from "../../util/truncateFloat";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -98,8 +99,8 @@ export class GraphicsPanelComponent implements OnInit {
     switch (mode) {
       case 'rectangle':
         return { layerId, circle: null, textBox: null, polyline: null, rectangle: {
-          x: event.offsetX,
-          y: event.offsetY,
+          x: truncateFloat(event.offsetX ?? 0, 0),
+          y: truncateFloat(event.offsetY ?? 0, 0),
           width: 0,
           height: 0,
           fillColorFrom: "#333333",
@@ -116,8 +117,8 @@ export class GraphicsPanelComponent implements OnInit {
         } };
       case 'circle':
         return { layerId, rectangle: null, textBox: null, polyline: null, circle: {
-          centerX: event.offsetX,
-          centerY: event.offsetY,
+          centerX: truncateFloat(event.offsetX ?? 0, 0),
+          centerY: truncateFloat(event.offsetY ?? 0, 0),
           radius: 0,
           fillColorFrom: "#333333",
           fillColorTo: "#999999",
@@ -133,8 +134,8 @@ export class GraphicsPanelComponent implements OnInit {
         } };
       case 'textbox':
         return { layerId, circle: null, rectangle: null, polyline: null, textBox: {
-          x: event.offsetX,
-          y: event.offsetY,
+          x: truncateFloat(event.offsetX ?? 0, 0),
+          y: truncateFloat(event.offsetY ?? 0, 0),
           id: 0,
           clientUuid: newUuidV4(),
           layerId,
@@ -148,15 +149,15 @@ export class GraphicsPanelComponent implements OnInit {
 
   updateShapeForShapesTool(shape: Shape, dx: number, dy: number, shapeClientUuid?: string | null | undefined): Shape | null {
      if (shape.circle) {
-       return { ...shape, circle: { ...shape.circle, radius: Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)), clientUuid: shapeClientUuid ?? shape.circle.clientUuid }};
+       return { ...shape, circle: { ...shape.circle, radius: truncateFloat(Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)), 0), clientUuid: shapeClientUuid ?? shape.circle.clientUuid }};
      }
 
      if (shape.rectangle) {
-       return { ...shape, rectangle: { ...shape.rectangle, width: dx, height: dy, clientUuid: shapeClientUuid ?? shape.rectangle.clientUuid }};
+       return { ...shape, rectangle: { ...shape.rectangle, width: truncateFloat(dx, 0), height: truncateFloat(dy, 0), clientUuid: shapeClientUuid ?? shape.rectangle.clientUuid }};
      }
 
      if (shape.textBox) {
-       return { ...shape, textBox: { ...shape.textBox, x: shape.textBox.x + dx, y: shape.textBox.y + dy, clientUuid: shapeClientUuid ?? shape.textBox.clientUuid }};
+       return { ...shape, textBox: { ...shape.textBox, x: truncateFloat(shape.textBox.x + dx, 0), y: truncateFloat(shape.textBox.y + dy, 0), clientUuid: shapeClientUuid ?? shape.textBox.clientUuid }};
      }
 
      return null;
@@ -295,16 +296,16 @@ export class GraphicsPanelComponent implements OnInit {
 
   onCircleMouseDown = (event: MouseEvent, circle: Circle) => {
     this.onShapeMouseDown(event, { layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
-      (initial, update) => ({ ...initial, circle: { ...circle, centerX: circle.centerX + update.dx, centerY: circle.centerY + update.dy } }));
+      (initial, update) => ({ ...initial, circle: { ...circle, centerX: truncateFloat(circle.centerX + update.dx, 0), centerY: truncateFloat(circle.centerY + update.dy, 0) } }));
   }
 
   onRectangleMouseDown = (event: MouseEvent, rectangle: Rectangle) => {
     this.onShapeMouseDown(event, { layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
-      (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: rectangle.x + update.dx, y: rectangle.y + update.dy }}));
+      (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: truncateFloat(rectangle.x + update.dx, 0), y: truncateFloat(rectangle.y + update.dy, 0) }}));
   }
 
   onTextBoxMouseDown = (event: MouseEvent, textBox: TextBox) => {
     this.onShapeMouseDown(event, { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
-      (initial, update) => ({ ...initial, textBox: { ...textBox, x: textBox.x + update.dx, y: textBox.y + update.dy }}));
+      (initial, update) => ({ ...initial, textBox: { ...textBox, x: truncateFloat(textBox.x + update.dx, 0), y: truncateFloat(textBox.y + update.dy, 0) }}));
   }
 }

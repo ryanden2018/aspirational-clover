@@ -13,6 +13,16 @@
 }
 
 @if (hasSelectedTextBox()) {
+<div class="field-label">X</div>
+<div class="field-container">
+  <input class="input-field" name="textboxx" type="number" [value]="selectedShape()?.textBox?.x ?? 0" (change)="onChangeTextBoxX($event, selectedShape())" />
+</div>
+
+<div class="field-label">Y</div>
+<div class="field-container">
+  <input class="input-field" name="textboxy" type="number" [value]="selectedShape()?.textBox?.y ?? 0" (change)="onChangeTextBoxY($event, selectedShape())" />
+</div>
+
 <div class="field-label">Contents</div>
 <div class="field-container">
   <input class="input-field" name="textboxcontent" type="text" [value]="textBoxContent()" (change)="onChangeTextBoxContent($event, selectedShape())" />
@@ -25,6 +35,16 @@
 }
 
 @if (hasSelectedRectangle()) {
+<div class="field-label">X</div>
+<div class="field-container">
+  <input class="input-field" name="rectx" type="number" [value]="selectedShape()?.rectangle?.x ?? 0" (change)="onChangeRectangleX($event, selectedShape())" />
+</div>
+
+<div class="field-label">Y</div>
+<div class="field-container">
+  <input class="input-field" name="recty" type="number" [value]="selectedShape()?.rectangle?.y ?? 0" (change)="onChangeRectangleY($event, selectedShape())" />
+</div>
+
 <div class="field-label">Width</div>
 <div class="field-container">
   <input class="input-field" name="rectwidth" type="number" [value]="selectedShape()?.rectangle?.width ?? 0" (change)="onChangeRectangleWidth($event, selectedShape())" />
@@ -81,6 +101,16 @@
 }
 
 @if (hasSelectedCircle()) {
+<div class="field-label">Center X</div>
+<div class="field-container">
+  <input class="input-field" name="circlecenterx" type="number" [value]="selectedShape()?.circle?.centerX ?? 0" (change)="onChangeCircleCenterX($event, selectedShape())" />
+</div>
+
+<div class="field-label">Center Y</div>
+<div class="field-container">
+  <input class="input-field" name="circlecentery" type="number" [value]="selectedShape()?.circle?.centerY ?? 0" (change)="onChangeCircleCenterY($event, selectedShape())" />
+</div>
+
 <div class="field-label">Radius</div>
 <div class="field-container">
   <input class="input-field" name="circleradius" type="number" [value]="selectedShape()?.circle?.radius ?? 0" (change)="onChangeCircleRadius($event, selectedShape())" />
@@ -88,9 +118,9 @@
 
 <div class="field-label">Fill Start</div>
 <div class="color-picker-panel">
-@for (color of colorPickerShortcuts; track color) {
+  @for (color of colorPickerShortcuts; track color) {
   <div class="color-picker-panel-item" [style.background-color]="color" (click)="onClickShortcutCircleFillColorFrom(color, selectedShape())"></div>
-}
+  }
 </div>
 <div class="field-container">
   <input class="input-field" name="circlfillstart" type="text" [value]="selectedShape()?.circle?.fillColorFrom ?? 0" (change)="onChangeCircleFillColorFrom($event, selectedShape())" />
@@ -98,15 +128,15 @@
 
 <div class="field-label">Fill End</div>
 <div class="color-picker-panel">
-@for (color of colorPickerShortcuts; track color) {
+  @for (color of colorPickerShortcuts; track color) {
   <div class="color-picker-panel-item" [style.background-color]="color" (click)="onClickShortcutCircleFillColorTo(color, selectedShape())"></div>
-}
+  }
 </div>
 <div class="field-container">
   <input class="input-field" name="circlfillend" type="text" [value]="selectedShape()?.circle?.fillColorTo ?? 0" (change)="onChangeCircleFillColorTo($event, selectedShape())" />
 </div>
 
-<button [class]="buttonClass() + ' ' + 'remove-gradient-button'" (click)="onClickRemoveGradientCircle(selectedShape())"  [disabled]="selectedShape()?.circle?.fillColorTo === ''">
+<button [class]="buttonClass() + ' ' + 'remove-gradient-button'" (click)="onClickRemoveGradientCircle(selectedShape())" [disabled]="selectedShape()?.circle?.fillColorTo === ''">
   Remove Gradient
 </button>
 

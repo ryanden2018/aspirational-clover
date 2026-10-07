@@ -247,6 +247,9 @@ public class DocumentService : IDocumentService
                 if (update != null)
                 {
                     shape.TextBox.Content = update.Content;
+                    shape.TextBox.X = update.X;
+                    shape.TextBox.Y = update.Y;
+                    shape.TextBox.FontSize = update.FontSize;
                 }
             } else if (shape?.Polyline != null && shape.Polyline.Id != 0)
             {
