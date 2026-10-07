@@ -94,11 +94,8 @@ public class Program
 
         app.MapDefaultEndpoints();
 
-        // Apply a strict Content Security Policy that allows only same-origin resources
         app.Use(async (context, next) =>
         {
-            // Strong CSP: only allow resources from the same origin. Adjust if your front-end
-            // needs external CDNs or development allowances.
             context.Response.Headers["Content-Security-Policy"] =
                 "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
                 "connect-src 'self'; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';";
