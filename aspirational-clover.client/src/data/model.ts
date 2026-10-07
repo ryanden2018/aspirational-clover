@@ -17,8 +17,8 @@ export interface AppDocument {
   clientUuid: string;
   documentSlug: string;
   name: string;
-  createdAt: string;
-  lastUpdatedAt: string;
+  createdAt: string | null;
+  lastUpdatedAt: string | null;
   layers: Layer[];
 }
 

@@ -35,45 +35,45 @@ public class Circle : IFillable, ILayerable, ITransformable
     /// <summary>
     /// Gets or sets the angle of the fill, in degrees.
     /// </summary>
-    public int FillAngle { get; set; }
+    public float FillAngle { get; set; }
 
     /// <summary>
     /// Gets or sets the X coordinate of the center of the circle.
     /// </summary>
-    public int CenterX { get; set; }
+    public float CenterX { get; set; }
 
     /// <summary>
     /// Gets or sets the Y coordinate of the center of the circle.
     /// </summary>
-    public int CenterY { get; set; }
+    public float CenterY { get; set; }
 
     /// <summary>
     /// Gets or sets the radius of the circle.
     /// </summary>
-    public int Radius { get; set; }
+    public float Radius { get; set; }
 
     /// <summary>
     /// Gets or sets the rotation angle in degrees for the circle.
     /// </summary>
-    public int RotationAngle { get; set; }
+    public float RotationAngle { get; set; }
 
     /// <summary>
     /// Gets or sets the X offset for the rotation center of the circle, originating from the standard center point.
     /// </summary>
-    public int RotationCenterOffsetX { get; set; }
+    public float RotationCenterOffsetX { get; set; }
 
     /// <summary>
     /// Gets or sets the Y offset for the rotation center of the circle, originating from the standard center point.
     /// </summary>
-    public int RotationCenterOffsetY { get; set; }
+    public float RotationCenterOffsetY { get; set; }
 
     /// <summary>
     /// Gets or sets the skew in degrees along the X-axis for the circle.
     /// </summary>
-    public int SkewX { get; set; }
+    public float SkewX { get; set; }
 
     /// <summary>
     /// Gets or sets the skew in degrees along the Y-axis for the circle.
     /// </summary>
-    public int SkewY { get; set; }
+    public float SkewY { get; set; }
 }

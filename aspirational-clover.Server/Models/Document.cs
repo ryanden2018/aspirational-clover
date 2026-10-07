@@ -29,12 +29,12 @@ public class Document
     /// Gets or sets the timestamp indicating when the document was created. This property is set by the server during the initial 
     /// creation of the document and is immutable by the client.
     /// </summary>
-    public DateTime CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
     /// <summary>
     /// Gets or sets the timestamp indicating when the document was last updated. This property is set by the server during the
     /// initial creation of the document and updates, but should not be modified by the client (any value pushed by the client
     /// will be ignored).
     /// </summary>
-    public DateTime LastUpdatedAt { get; set; }
+    public DateTime? LastUpdatedAt { get; set; }
 }

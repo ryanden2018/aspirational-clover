@@ -104,8 +104,11 @@ public class DocumentController : ControllerBase
         // Ensure id is not set by client
         model.Id = 0;
 
-        // Ensure slug is not set by the client
-        model.DocumentSlug = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+        // Ensure slug looks like a GUID
+        if (model.DocumentSlug != Guid.Parse(model.DocumentSlug ?? "").ToString())
+        {
+            return BadRequest();
+        }
 
         if (model.Layers != null)
         {

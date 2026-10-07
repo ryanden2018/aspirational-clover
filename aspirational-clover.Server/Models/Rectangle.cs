@@ -35,51 +35,51 @@ public class Rectangle : IFillable, ILayerable, ITransformable
     /// <summary>
     /// Gets or sets the angle of the fill, in degrees.
     /// </summary>
-    public int FillAngle { get; set; }
+    public float FillAngle { get; set; }
 
     /// <summary>
     /// Gets or sets the X coordinate of the logical top-left point of the rectangle.
     /// </summary>
-    public int X { get; set; }
+    public float X { get; set; }
 
     /// <summary>
     /// Gets or sets the Y coordinate of the logical top-left point of the rectangle.
     /// </summary>
-    public int Y { get; set; }
+    public float Y { get; set; }
 
     /// <summary>
     /// Gets or sets the width of the rectangle
     /// </summary>
 
-    public int Width { get; set; }
+    public float Width { get; set; }
 
     /// <summary>
     /// Gets or sets the height of the rectangle.
     /// </summary>
-    public int Height { get; set; }
+    public float Height { get; set; }
 
     /// <summary>
     /// Gets or sets the rotation angle in degrees for the rectangle.
     /// </summary>
-    public int RotationAngle { get; set; }
+    public float RotationAngle { get; set; }
 
     /// <summary>
     /// Gets or sets the X offset for the rotation center of the rectangle, originating from the standard center point.
     /// </summary>
-    public int RotationCenterOffsetX { get; set; }
+    public float RotationCenterOffsetX { get; set; }
 
     /// <summary>
     /// Gets or sets the Y offset for the rotation center of the rectangle, originating from the standard center point.
     /// </summary>
-    public int RotationCenterOffsetY { get; set; }
+    public float RotationCenterOffsetY { get; set; }
 
     /// <summary>
     /// Gets or sets the skew in degrees along the X-axis for the rectangle.
     /// </summary>
-    public int SkewX { get; set; }
+    public float SkewX { get; set; }
 
     /// <summary>
     /// Gets or sets the skew in degrees along the Y-axis for the rectangle.
     /// </summary>
-    public int SkewY { get; set; }
+    public float SkewY { get; set; }
 }
