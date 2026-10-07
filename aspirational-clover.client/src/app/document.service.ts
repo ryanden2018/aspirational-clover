@@ -8,7 +8,7 @@ import { AppDocument, Layer } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
-import { defaultSlugs, apiDocumentSamplesUrl } from "../constants";
+import { defaultSlugs, apiDocumentSamplesUrl, apiDocumentUrl } from "../constants";
 
 @Injectable({
   providedIn: "root"
@@ -79,6 +79,10 @@ export class DocumentService {
       takeUntilDestroyed()
     ).subscribe(url => {
       this.currentUrl.set(url);
+      const slug = getDocumentSlugFromUrl(url);
+      if (slug && !this.documents().find(d => d.documentSlug === slug) && !defaultSlugs.includes(slug)) {
+        this.retrieveDocumentBySlug(slug);
+      }
     });
   }
 
@@ -92,11 +96,27 @@ export class DocumentService {
       first(),
     ).subscribe({
       next: (docs) => {
-        this.documents.set(docs);
+        const docsMap = new Map(docs.map(doc => [doc.documentSlug, doc]));
+        const existingDocs = this.documents() ?? [];
+        const newDocs = existingDocs.map(doc => docsMap.get(doc.documentSlug) ?? doc);
+        this.documents.set(newDocs);
       },
       error: (err) => {
         console.error('Error fetching documents:', err);
-        this.documents.set([]);
+      }
+    });
+  }
+
+  retrieveDocumentBySlug(slug: string) {
+    this.http.get<AppDocument>(`${apiDocumentUrl}/${slug}`).pipe(
+      filter(x => x?.documentSlug === slug),
+      first()
+    ).subscribe({
+      next: (doc) => {
+      this.documents.set([...this.documents(), doc]);
+      },
+      error: (err) => {
+        console.error('Error fetching document by slug:', err);
       }
     });
   }
