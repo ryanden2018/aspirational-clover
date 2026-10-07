@@ -66,6 +66,28 @@ export class PropertyViewerComponent {
     this._undoService.pushCommand(command);
   }
 
+  onChangeTextBoxX = (event: Event, shape: Shape | null | undefined) => {
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    if (shape?.textBox) {
+      const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, x: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
+  onChangeTextBoxY = (event: Event, shape: Shape | null | undefined) => {
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    if (shape?.textBox) {
+      const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, y: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
   onChangeTextBoxContent = (event: Event, shape: Shape | null | undefined) => {
     const newValue = ((event.target as any)?.value as string) ?? "";
     const updatedTextBox = updateTextBoxContent(shape?.textBox, newValue);
@@ -89,8 +111,30 @@ export class PropertyViewerComponent {
     }
   }
 
+  onChangeRectangleX = (event: Event, shape: Shape | null | undefined) => {
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    if (shape?.rectangle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, x: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
+  onChangeRectangleY = (event: Event, shape: Shape | null | undefined) => {
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    if (shape?.rectangle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, y: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
   onChangeRectangleWidth = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, width: newValue }});
       if (command) {
@@ -101,7 +145,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleHeight = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, height: newValue }});
       if (command) {
@@ -154,7 +198,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleFillAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillAngle: newValue }});
       if (command) {
@@ -165,7 +209,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleRotationAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, rotationAngle: newValue }});
       if (command) {
@@ -176,7 +220,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleSkewX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, skewX: newValue }});
       if (command) {
@@ -187,7 +231,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleSkewY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, skewY: newValue }});
       if (command) {
@@ -207,8 +251,30 @@ export class PropertyViewerComponent {
     }
   }
 
+  onChangeCircleCenterX = (event: Event, shape: Shape | null | undefined) => {
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    if (shape?.circle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, centerX: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
+  onChangeCircleCenterY = (event: Event, shape: Shape | null | undefined) => {
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    if (shape?.circle) {
+      const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, centerY: newValue }});
+      if (command) {
+        this._undoService.applyCommand(command, "forward");
+        this._undoService.pushCommand(command);
+      }
+    }
+  }
+
   onChangeCircleRadius = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, radius: newValue }});
       if (command) {
@@ -261,7 +327,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleFillAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillAngle: newValue }});
       if (command) {
@@ -272,7 +338,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleRotationAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, rotationAngle: newValue }});
       if (command) {
@@ -283,7 +349,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleSkewX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewX: newValue }});
       if (command) {
@@ -294,7 +360,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleSkewY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewY: newValue }});
       if (command) {
