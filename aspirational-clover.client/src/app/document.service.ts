@@ -137,4 +137,9 @@ export class DocumentService {
       this._router.navigateByUrl(getDocumentUrl(this.documents()[0]));
     }
   }
+
+  allowSave() {
+    if (!this.activeDocument()?.documentSlug) return false;
+    return !defaultSlugs.includes(this.activeDocument()?.documentSlug ?? "");
+  }
 }

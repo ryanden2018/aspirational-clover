@@ -1,23 +1,17 @@
 <div [class]="layerEditorClass()">
   @for (layer of sortedLayers(); track layer.clientUuid) {
     <div [class]="layer.clientUuid === selectedLayerClientUuid() ? selectedLayerClass() : unselectedLayerClass()" (click)="onClickLayer($event, layer)">
-      <app-tool-tip-button [id]="'layer-visibility-button-' + layer.clientUuid" toolTipContent="Visibility" positioning="bottom-left" (click)="onClickVisibility($event, layer)">
+      <app-tool-tip-button [id]="'layer-visibility-button-' + layer.clientUuid" toolTipContent="Visibility" [timeout]="1500" positioning="bottom-left" (click)="onClickVisibility($event, layer)">
         <ng-container *ngTemplateOutlet="getVisibilityIcon(layer.hidden); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
       <app-tool-tip-button [id]="'layer-raise-button-' + layer.clientUuid" toolTipContent="Raise" [timeout]="1500" positioning="bottom-left" (click)="onClickRaiseLayer($event, layer)">
-        <div class="app-layer-editor-button-icon-container">
-          ^
-        </div>
+        <ng-container *ngTemplateOutlet="arrowUpwardIcon(); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
       <app-tool-tip-button [id]="'layer-lower-button-' + layer.clientUuid" toolTipContent="Lower" [timeout]="1500" positioning="bottom-left" (click)="onClickLowerLayer($event, layer)">
-        <div class="app-layer-editor-button-icon-container">
-          v
-        </div>
+        <ng-container *ngTemplateOutlet="arrowDownwardIcon(); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
       <app-tool-tip-button [id]="'layer-delete-button-' + layer.clientUuid" toolTipContent="Delete" [timeout]="1500" positioning="bottom-left" (click)="onClickDeleteLayer($event, layer)" [disabled]="deleteLayerButtonDisasbled()">
-        <div class="app-layer-editor-button-icon-container">
-          D
-        </div>
+        <ng-container *ngTemplateOutlet="deleteIcon(); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
       <div class="app-layer-editor-layer-text">{{ layer.name }}</div>
     </div>
@@ -26,8 +20,6 @@
 
 <div class="button-container">
   <app-tool-tip-button id="layer-add-button" toolTipContent="Add Layer" [timeout]="1500" positioning="bottom-left" (click)="onClickAddLayer()">
-    <div class="app-layer-editor-button-icon-container">
-      +
-    </div>
+    <ng-container *ngTemplateOutlet="addIcon(); context: { width: '18px', height: '18px' }"></ng-container>
   </app-tool-tip-button>
 </div>

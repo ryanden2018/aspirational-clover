@@ -13,15 +13,6 @@ div.button-container {
   width: 95%;
 }
 
-div.app-layer-editor-button-icon-container {
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
 div.app-layer-editor {
   display: flex;
   flex-direction: column;

@@ -6,9 +6,9 @@
 <!--<app-tool-tip-button id="toolbar-file-open-icon" toolTipContent="Open" positioning="right-center">
   <ng-container *ngTemplateOutlet="fileOpenIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
-<!--<app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center">
+<app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center" [disabled]="saveButtonDisabled()">
   <ng-container *ngTemplateOutlet="saveIcon(); context: { width: '32px', height: '32px' }"></ng-container>
-</app-tool-tip-button>-->
+</app-tool-tip-button>
 <!--<app-tool-tip-button id="toolbar-save-as-icon" toolTipContent="Save As" positioning="right-center">
   <ng-container *ngTemplateOutlet="saveAsIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
