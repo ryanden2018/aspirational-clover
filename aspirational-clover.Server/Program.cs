@@ -34,6 +34,23 @@ public class Program
         // Use InMemory when running in Development (localhost) for test implementation
         // Otherwise use Npgsql if a connection string is provided, fallback to InMemory.
         builder.Services.AddOptions();
+
+        // Configure CORS to only allow specific exact origins (dev and prod) and limit methods.
+        var localhostOrProdCorsPolicy = "LocalhostOrProdOnly";
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(localhostOrProdCorsPolicy, policy =>
+            {
+                policy.WithOrigins(
+                        "https://localhost:7203",
+                        "https://ryandenlinger.com",
+                        "https://www.ryandenlinger.com"
+                    )
+                    .WithMethods("PUT", "POST", "DELETE", "OPTIONS")
+                    .AllowAnyHeader();
+            });
+        });
+
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
@@ -76,6 +93,20 @@ public class Program
         app.SeedTestData();
 
         app.MapDefaultEndpoints();
+
+        // Apply a strict Content Security Policy that allows only same-origin resources
+        app.Use(async (context, next) =>
+        {
+            // Strong CSP: only allow resources from the same origin. Adjust if your front-end
+            // needs external CDNs or development allowances.
+            context.Response.Headers["Content-Security-Policy"] =
+                "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
+                "connect-src 'self'; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';";
+            await next();
+        });
+
+        // Enable CORS (only allow localhost and prod origins and restricted methods)
+        app.UseCors(localhostOrProdCorsPolicy);
 
         app.UseDefaultFiles();
         app.MapStaticAssets();
