@@ -1,0 +1,2 @@
+describe('ToastComponent', function () {
+});

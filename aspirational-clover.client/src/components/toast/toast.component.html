@@ -1,0 +1,8 @@
+@if(toast()) {
+  <div [class]="toastClassName()">
+    <div class="toast-text">{{ toast()?.value ?? "" }}</div>
+    <button [class]="buttonClassName()" (click)="close()?.()" [style.background-color]="'#88888850 !important'" [style.color]="'#000000 !important'">
+      <ng-container *ngTemplateOutlet="closeIcon(); context: { width: '16px', height: '16px' }"></ng-container>
+    </button>
+  </div>
+}

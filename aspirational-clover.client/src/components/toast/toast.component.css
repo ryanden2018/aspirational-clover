@@ -1,0 +1,39 @@
+:host {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+
+div.toast {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  padding: 4px;
+  border: solid 1px;
+  border-color: #888888;
+  border-radius: 4px;
+  color: #000000;
+  z-index: 20000;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 8px;
+}
+
+div.toast-success {
+  background-color: #4cff00;
+}
+
+div.toast-error {
+  background-color: #ff6a00;
+}
+
+div.toast-warning {
+  background-color: #ffd800;
+}
+
+div.toast-text {
+  text-wrap: nowrap;
+}

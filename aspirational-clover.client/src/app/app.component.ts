@@ -6,6 +6,7 @@ import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 import { PropertyViewerComponent } from "../components/property-viewer/property-viewer.component";
 import { TabBarComponent } from '../components/tab-bar/tab-bar.component';
 import { SaveModalComponent } from '../components/save-modal/save-modal.component';
+import { ToastComponent } from "../components/toast/toast.component";
 import { ResourcesComponent } from "../components/resources/resources.component";
 import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
 import { GraphicsPanelComponent } from "../components/graphics-panel/graphics-panel.component";
@@ -27,6 +28,7 @@ import { ThemeService } from "./theme.service";
     ResourcesComponent,
     AnchoredToolTipComponent,
     SaveModalComponent,
+    ToastComponent,
   ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
@@ -38,6 +40,10 @@ export class AppComponent implements OnInit {
   appPropertyViewerClassName = computed(() => this._themeService.classNames().propertyViewer);
   appTabBarClassName = computed(() => this._themeService.classNames().tabBar);
   appBodyClassName = computed(() => this._themeService.classNames().appBody);
+
+  toastSignal = computed(() => this._documentService.toast());
+
+  closeToast = () => this._documentService.closeToast();
 
   constructor(
     private _documentService: DocumentService,

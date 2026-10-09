@@ -14,3 +14,5 @@ export type ToolTipSignal = Omit<AnchorSignal, "anchorType"> & { anchorType: "to
     content: string;
   }
 };
+
+export type ToastSignal = { value: string; type: "success" | "error" | "warning" } | null;
