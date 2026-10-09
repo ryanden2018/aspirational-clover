@@ -185,6 +185,11 @@ public class DocumentService : IDocumentService
         }).ToList();
     }
 
+    private bool isShapeIdZero(ShapeDTO shape)
+    {
+        return shape?.Circle?.Id == 0 || shape?.Rectangle?.Id == 0 || shape?.TextBox?.Id == 0 || shape?.Polyline?.Id == 0;
+    }
+
     // DO NOT UPDATE LAYER IDS HERE -- THAT IS DONE IN LAYER PROCESSING
     private void UpdateShapes(List<ShapeDTO>? shapesToUpdate, List<ShapeDTO>? updateSource)
     {
@@ -436,6 +441,10 @@ public class DocumentService : IDocumentService
                 var layerId = lModel.Id;
                 l.Id = layerId;
                 UpdateLayerIds(layerId, l.Shapes);
+                l.Shapes?.ForEach(shapeDTO =>
+                {
+                    CreateShapeFromDTO(l.Id, shapeDTO);
+                });
             });
 
         // Step 2: Update existing layers
@@ -451,6 +460,11 @@ public class DocumentService : IDocumentService
             layer.Hidden = docLayer.Hidden;
             layer.ZIndex = docLayer.ZIndex;
             UpdateLayerIds(layer.Id, docLayer.Shapes); // update the layer IDs of the associated shapes
+            var shapesToCreate = docLayer.Shapes?.Where(shape => isShapeIdZero(shape));
+            shapesToCreate?.ToList()?.ForEach(shapeDTO =>
+            {
+                CreateShapeFromDTO(layer.Id, shapeDTO);
+            });
         }));
 
         // Step 3: Delete shapes that are no longer used
