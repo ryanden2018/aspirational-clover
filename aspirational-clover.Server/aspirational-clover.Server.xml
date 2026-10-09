@@ -332,7 +332,8 @@
         </member>
         <member name="M:aspirational_clover.Server.Interfaces.IDocumentService.UpdateDocument(aspirational_clover.Server.DTOs.DocumentDTO)">
             <summary>
-            Updates an existing document along with its associated hydrated layers and shapes.
+            Updates an existing document along with its associated hydrated layers and shapes. Returns a tuple of
+            the updated document and a list of layer IDs that need to be deleted (but it does NOT actually delete them!)
             </summary>
             <param name="documentDTO"></param>
             <returns></returns>

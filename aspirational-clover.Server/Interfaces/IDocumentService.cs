@@ -36,11 +36,12 @@ public interface IDocumentService
     Task<DocumentDTO?> CreateDocument(DocumentDTO documentDTO);
 
     /// <summary>
-    /// Updates an existing document along with its associated hydrated layers and shapes.
+    /// Updates an existing document along with its associated hydrated layers and shapes. Returns a tuple of
+    /// the updated document and a list of layer IDs that need to be deleted (but it does NOT actually delete them!)
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
-    Task<DocumentDTO?> UpdateDocument(DocumentDTO documentDTO);
+    Task<(DocumentDTO?, List<int>)> UpdateDocument(DocumentDTO documentDTO);
 
     /// <summary>
     /// Deletes a document by its ID, along with its associated layers and shapes.

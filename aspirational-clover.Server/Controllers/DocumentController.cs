@@ -148,7 +148,9 @@ public class DocumentController : ControllerBase
         }
 
         if (id != model.Id) return BadRequest("ID mismatch");
-        var updated = await _documentService.UpdateDocument(model);
+        var (updated, layerIdsToDelete) = await _documentService.UpdateDocument(model);
+        await _db.SaveChangesAsync();
+        _db.Layers.RemoveRange(_db.Layers.Where(l => layerIdsToDelete.Contains(l.Id)));
         await _db.SaveChangesAsync();
         return NoContent();
     }
