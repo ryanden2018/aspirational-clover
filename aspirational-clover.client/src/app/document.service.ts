@@ -10,6 +10,7 @@ import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
 import { getToken } from "../util/getToken";
 import { defaultSlugs, apiDocumentSamplesUrl, apiDocumentUrl, apiDocumentSlugUrl } from "../constants";
+import { ToastSignal } from "../types";
 
 @Injectable({
   providedIn: "root"
@@ -42,6 +43,12 @@ export class DocumentService {
   private _saveModalOpen = signal<boolean>(false);
 
   saveModalOpen = this._saveModalOpen.asReadonly();
+
+  private _toast = signal<ToastSignal>(null);
+
+  toast = this._toast.asReadonly();
+
+  closeToast = () => this._toast.set(null);
 
   setSelectedLayer(documentClientUuid: string, layerClientUuid: string): void {
     if (!documentClientUuid || !layerClientUuid) return;
@@ -215,6 +222,16 @@ export class DocumentService {
       });
     }).then(async () => {
       await this.retrieveDocumentBySlug(slug);
+    }).then(() => {
+      this._toast.set({ type: "success", value: "Saved successfully." });
+      setTimeout(() => {
+        this._toast.set(null);
+      }, 5000);
+    }).catch(() => {
+      this._toast.set({ type: "error", value: "Save failed." });
+      setTimeout(() => {
+        this._toast.set(null);
+      }, 5000);
     });
   }
 
