@@ -1,48 +1,62 @@
-import {
-//  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
+import { DocumentService } from './document.service';
+import { ResourcesService } from './resources.service';
+import { ThemeService } from './theme.service';
+import { HotkeysService } from './hotkeys.service';
 
 describe('AppComponent', () => {
   let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
-  let httpMock: HttpTestingController;
+  let docFlags: any;
+  let hotFlags: any;
 
   beforeEach(async () => {
+    docFlags = { retrieveCalled: false };
+    const documentServiceStub = {
+      retrieveSampleDocumentsOnce: () => { docFlags.retrieveCalled = true; },
+      toast: () => null,
+      closeToast: () => {},
+    };
+
+    const resourcesServiceStub = { subscribeResources: () => {} };
+
+    const themeServiceStub = { classNames: () => ({ toolBar: '', propertyViewer: '', tabBar: '', appBody: '' }) };
+
+    hotFlags = { connectDeleteCalled: false, connectCtrlZCalled: false };
+    const hotkeysServiceStub = {
+      connectDeleteKeydown: () => { hotFlags.connectDeleteCalled = true; },
+      connectCtrlZKeydown: () => { hotFlags.connectCtrlZCalled = true; },
+      connectCtrlYKeydown: () => {},
+      connectCtrlShiftZKeydown: () => {},
+      connectCtrlCKeydown: () => {},
+      connectCtrlVKeydown: () => {},
+    };
+
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      // imports: [HttpClientTestingModule]
+      imports: [AppComponent],
+      providers: [
+        { provide: DocumentService, useValue: documentServiceStub },
+        { provide: ResourcesService, useValue: resourcesServiceStub },
+        { provide: ThemeService, useValue: themeServiceStub },
+        { provide: HotkeysService, useValue: hotkeysServiceStub },
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 
   it('should create the app', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should retrieve weather forecasts from the server', () => {
-    const mockForecasts = [
-      { date: '2021-10-01', temperatureC: 20, temperatureF: 68, summary: 'Mild' },
-      { date: '2021-10-02', temperatureC: 25, temperatureF: 77, summary: 'Warm' }
-    ];
-
+  it('should call retrieveSampleDocumentsOnce and connect hotkeys on init', () => {
     component.ngOnInit();
 
-    const req = httpMock.expectOne('/weatherforecast');
-    expect(req.request.method).toEqual('GET');
-    req.flush(mockForecasts);
-
-    expect(component.documents).toEqual(mockForecasts);
+    expect(docFlags.retrieveCalled).toBe(true);
+    expect(hotFlags.connectDeleteCalled).toBe(true);
+    expect(hotFlags.connectCtrlZCalled).toBe(true);
   });
 });
