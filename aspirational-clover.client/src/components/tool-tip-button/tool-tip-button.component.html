@@ -1,3 +1,4 @@
-<button #targetButton [class]="buttonClassName()" (click)="click()?.()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [disabled]="disabled()">
+<button #targetButton type="button" [class]="buttonClassName()" (click)="click()?.()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [disabled]="disabled()"
+        [attr.aria-label]="ariaLabel" [attr.aria-pressed]="ariaPressed" [attr.aria-haspopup]="ariaHaspopup ?? 'false'">
   <ng-content></ng-content>
 </button>

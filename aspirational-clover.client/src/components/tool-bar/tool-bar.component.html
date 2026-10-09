@@ -1,42 +1,42 @@
 
 
-<app-tool-tip-button id="toolbar-new-window-icon" toolTipContent="New" positioning="right-center" (click)="onClickNew()">
+<app-tool-tip-button id="toolbar-new-window-icon" toolTipContent="New" positioning="right-center" (click)="onClickNew()" [aria-label]="'New'">
   <ng-container *ngTemplateOutlet="newWindowIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
 <!--<app-tool-tip-button id="toolbar-file-open-icon" toolTipContent="Open" positioning="right-center">
   <ng-container *ngTemplateOutlet="fileOpenIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
-<app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center" [disabled]="saveButtonDisabled()" (click)="onClickSave()">
+<app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center" [disabled]="saveButtonDisabled()" (click)="onClickSave()" [aria-label]="'Save'">
   <ng-container *ngTemplateOutlet="saveIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
 <!--<app-tool-tip-button id="toolbar-save-as-icon" toolTipContent="Save As" positioning="right-center">
   <ng-container *ngTemplateOutlet="saveAsIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
-<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo (Ctrl+Z)" positioning="right-center" (click)="onClickUndo()">
+<app-tool-tip-button id="toolbar-undo-icon" toolTipContent="Undo (Ctrl+Z)" positioning="right-center" (click)="onClickUndo()" [aria-label]="'Undo'">
   <ng-container *ngTemplateOutlet="undoIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo (Ctrl+Y)" positioning="right-center" (click)="onClickRedo()">
+<app-tool-tip-button id="toolbar-redo-icon" toolTipContent="Redo (Ctrl+Y)" positioning="right-center" (click)="onClickRedo()" [aria-label]="'Redo'">
   <ng-container *ngTemplateOutlet="redoIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy (Ctrl+C)" positioning="right-center" (click)="onClickCopy()">
+<app-tool-tip-button id="toolbar-copy-icon" toolTipContent="Copy (Ctrl+C)" positioning="right-center" (click)="onClickCopy()" [aria-label]="'Copy'">
   <ng-container *ngTemplateOutlet="contentCopyIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste (Ctrl+V)" positioning="right-center" (click)="onClickPaste()">
+<app-tool-tip-button id="toolbar-paste-icon" toolTipContent="Paste (Ctrl+V)" positioning="right-center" (click)="onClickPaste()" [aria-label]="'Paste'">
   <ng-container *ngTemplateOutlet="contentPasteIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-rectangle-icon" toolTipContent="Rectangle" positioning="right-center" (click)="onClickRectangle()">
+<app-tool-tip-button id="toolbar-rectangle-icon" toolTipContent="Rectangle" positioning="right-center" (click)="onClickRectangle()" [aria-label]="'Rectangle'">
   <ng-container *ngTemplateOutlet="rectangleIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-circle-icon" toolTipContent="Circle" positioning="right-center" (click)="onClickCircle()">
+<app-tool-tip-button id="toolbar-circle-icon" toolTipContent="Circle" positioning="right-center" (click)="onClickCircle()" [aria-label]="'Circle'">
   <ng-container *ngTemplateOutlet="circleIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
 <!--<app-tool-tip-button id="toolbar-polyline-icon" toolTipContent="Polyline" positioning="right-center" (click)="onClickPolyline()">
   <ng-container *ngTemplateOutlet="polylineIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
-<app-tool-tip-button id="toolbar-text-box-icon" toolTipContent="Text Box" positioning="right-center" (click)="onClickTextBox()">
+<app-tool-tip-button id="toolbar-text-box-icon" toolTipContent="Text Box" positioning="right-center" (click)="onClickTextBox()" [aria-label]="'Text Box'">
   <ng-container *ngTemplateOutlet="addNotesIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<app-tool-tip-button id="toolbar-toggle-icon" (click)="toggleDarkMode()" toolTipContent="Toggle Dark Mode" positioning="right-center">
+<app-tool-tip-button id="toolbar-toggle-icon" (click)="toggleDarkMode()" toolTipContent="Toggle Dark Mode" positioning="right-center" [aria-label]="'Toggle dark mode'" [aria-pressed]="isDarkMode()">
   <ng-container *ngTemplateOutlet="toggleDarkModeIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
 <!--<a href="https://www.linkedin.com/in/ryan-d-2b689aa0" target="_blank">
