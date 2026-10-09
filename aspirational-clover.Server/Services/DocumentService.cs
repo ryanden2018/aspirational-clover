@@ -432,7 +432,7 @@ public class DocumentService : IDocumentService
         var documentLayerIds = documentLayersMap.Keys;
         var layerIdsToDelete = existingLayerIds.Except(documentLayerIds);
         _db.Layers.RemoveRange(layerIdsToDelete.Select(l => new Layer { Id = l }));
-        (existingDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
+        (documentDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
             .ToList()
             .ForEach(l =>
             {
