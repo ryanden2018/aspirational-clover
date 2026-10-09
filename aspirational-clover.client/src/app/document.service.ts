@@ -204,7 +204,7 @@ export class DocumentService {
     return !defaultSlugs.includes(this.activeDocument()?.documentSlug ?? "");
   }
 
-  saveDocument() {
+  saveDocument(finalize?: () => void) {
     const documentToSave = this.activeDocument();
     const slug = documentToSave?.documentSlug;
     if (!slug || !documentToSave) return;
@@ -232,10 +232,13 @@ export class DocumentService {
       setTimeout(() => {
         this._toast.set(null);
       }, 5000);
-    });
+    })
+    .finally(() => {
+      finalize?.();
+    })
   }
 
-  onSave() {
+  onSave(finalize?: () => void) {
     if (!this.allowSave()) return;
 
     const id = this.activeDocument()?.id;
@@ -245,7 +248,7 @@ export class DocumentService {
     if (id === 0) {
       this._saveModalOpen.set(true);
     } else {
-      this.saveDocument();
+      this.saveDocument(finalize);
     }
   }
 

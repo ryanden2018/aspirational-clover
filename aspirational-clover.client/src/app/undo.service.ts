@@ -122,4 +122,11 @@ export class UndoService {
       redo: redo.next,
     }});
   }
+
+  clearStack() {
+    const documentClientUuid = this._documentService.activeDocumentClientUuid();
+    const current = this.state()[documentClientUuid];
+    if (!current) return; // nothing to do
+    this.state.set({ ...this.state(), [documentClientUuid]: { undo: null, redo: null }});
+  }
 }

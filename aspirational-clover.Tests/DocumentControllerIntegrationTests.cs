@@ -1,12 +1,14 @@
+using aspirational_clover.Server.DTOs;
+using aspirational_clover.Server.Models;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net.Http;
-using aspirational_clover.Server.DTOs;
+using System.Collections.Generic;
 
 namespace aspirational_clover.Tests;
 
@@ -46,26 +48,28 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
 
         var initialRotationAngle = 125;
 
-        var getNewItem = (int rotationAngle, int documentId, int layerId, int circleId) => new
+        var documentSlug = Guid.NewGuid().ToString();
+
+        var getNewItem = (int rotationAngle, int documentId, int layerId, int circleId) => new DocumentDTO
         {
             Id = documentId,
-            DocumentSlug = Guid.NewGuid().ToString(),
+            DocumentSlug = documentSlug,
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow,
-            Layers = new[]
+            Layers = new List<LayerDTO>
             {
-                new
+                new LayerDTO
                 {
                     Id = layerId,
                     DocumentId = documentId,
                     Name = "layer-1",
                     Hidden = false,
                     ZIndex = 0,
-                    Shapes = new[]
+                    Shapes = new List<ShapeDTO>
                     {
-                        new
+                        new ShapeDTO
                         {
-                            Circle = new
+                            Circle = new Circle
                             {
                                 Id = circleId,
                                 LayerId = layerId,
@@ -129,5 +133,116 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
 
         Assert.Equal(getDoc2.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetInt32(),
             updateRotationAngle);
+    }
+
+    [Fact]
+    public async Task Add_Shape_Workflow()
+    {
+        var client = _factory.CreateClient();
+
+        var documentSlug = Guid.NewGuid().ToString();
+
+        var postPayload = new DocumentDTO
+        {
+            Id = 0,
+            DocumentSlug = documentSlug,
+            CreatedAt = DateTime.UtcNow,
+            LastUpdatedAt = DateTime.UtcNow,
+            Layers = new List<LayerDTO>
+            {
+                new LayerDTO
+                {
+                    Id = 0,
+                    DocumentId = 0,
+                    Name = "layer-1",
+                    Hidden = false,
+                    ZIndex = 0,
+                    Shapes = new List<ShapeDTO>
+                    {
+                        new ShapeDTO
+                        {
+                            Circle = new Circle
+                            {
+                                Id = 0,
+                                LayerId = 0,
+                                FillColorFrom = "#000000",
+                                FillColorTo = "",
+                                FillAngle = 0,
+                                CenterX = 0,
+                                CenterY = 0,
+                                Radius = 1,
+                                RotationAngle = 0,
+                                RotationCenterOffsetX = 0,
+                                RotationCenterOffsetY = 0,
+                                SkewX = 0,
+                                SkewY = 0
+                            },
+                        }
+                    }
+                }
+            }
+        };
+
+        var getPutPayload = (int documentId, int layerId, int circleId) => new DocumentDTO
+        {
+            Id = documentId,
+            DocumentSlug = documentSlug,
+            CreatedAt = DateTime.UtcNow,
+            LastUpdatedAt = DateTime.UtcNow,
+            Layers = new List<LayerDTO>
+            {
+                new LayerDTO
+                {
+                    Id = layerId,
+                    DocumentId = documentId,
+                    Name = "layer-1",
+                    Hidden = false,
+                    ZIndex = 0,
+                    Shapes = new List<ShapeDTO>
+                    {
+                        new ShapeDTO
+                        {
+                            Circle = new Circle
+                            {
+                                Id = circleId,
+                                LayerId = layerId,
+                                FillColorFrom = "#000000",
+                                FillColorTo = "",
+                                FillAngle = 0,
+                                CenterX = 0,
+                                CenterY = 0,
+                                Radius = 1,
+                                RotationAngle = 0,
+                                RotationCenterOffsetX = 0,
+                                RotationCenterOffsetY = 0,
+                                SkewX = 0,
+                                SkewY = 0
+                            },
+                        },
+                        new ShapeDTO
+                        {
+                            Rectangle = new Rectangle
+                            {
+                                Id = 0,
+                                LayerId = layerId,
+                                FillColorFrom = "#000000",
+                                FillColorTo = "",
+                                X = 0,
+                                Y = 0,
+                                Width = 1,
+                                Height = 1,
+                                RotationAngle = 0,
+                                RotationCenterOffsetX = 0,
+                                RotationCenterOffsetY = 0,
+                                SkewX = 0,
+                                SkewY = 0,
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+
     }
 }
