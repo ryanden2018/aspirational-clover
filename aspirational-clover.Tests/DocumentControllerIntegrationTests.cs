@@ -3,9 +3,9 @@ using aspirational_clover.Server.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,11 +13,11 @@ using Xunit;
 
 namespace aspirational_clover.Tests;
 
-public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFactory<aspirational_clover.Server.Program>>
+public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFactory<Server.Program>>
 {
-    private readonly WebApplicationFactory<aspirational_clover.Server.Program> _factory;
+    private readonly WebApplicationFactory<Server.Program> _factory;
 
-    public DocumentControllerIntegrationTests(WebApplicationFactory<aspirational_clover.Server.Program> factory)
+    public DocumentControllerIntegrationTests(WebApplicationFactory<Server.Program> factory)
     {
         _factory = factory;
     }
@@ -132,10 +132,10 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
     }
 
     [Fact]
-    public async Task Post_Put_Workflow()
+    public async Task Update_Shape_Workflow()
     {
-        var initialRotationAngle = (float)125;
-        var updateRotationAngle = (float)87;
+        var initialRotationAngle = 125f;
+        var updateRotationAngle = 87f;
         await postPutWorkflow(initialRotationAngle, doc =>
         {
             var shape = doc?.Layers[0]?.Shapes[0];
@@ -147,142 +147,142 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         }, updateRotationAngle, doc => (float) doc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetDecimal());
     }
 
-    //[Fact]
-    //public async Task Add_Shape_Workflow()
-    //{
-    //    var client = _factory.CreateClient();
+    [Fact]
+    public async Task Delete_Shape_Workflow()
+    {
+        var initialRotationAngle = 38f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            doc.Layers[0].Shapes.RemoveAt(0);
+            return doc;
+        }, 0f, doc =>
+        {
+            var shapes = doc.RootElement.GetProperty("layers")[0].GetProperty("shapes");
+            if (shapes.ValueKind != JsonValueKind.Array) return -1f;
+            return shapes.GetArrayLength();
+        });
+    }
 
-    //    var documentSlug = Guid.NewGuid().ToString();
+    [Fact]
+    public async Task Add_Shape_Workflow()
+    {
+        var initialRotationAngle = 62f;
+        var rectangleWidth = 5.2f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            var layer = doc.Layers[0];
+            if (layer == null || layer.Shapes == null) return doc;
+            var layerId = layer.Id;
+            layer.Shapes.Add(new ShapeDTO
+            {
+                Rectangle = new Rectangle
+                {
+                    Id = 0,
+                    LayerId = layerId,
+                    FillColorFrom = "#000000",
+                    FillColorTo = "",
+                    X = 0,
+                    Y = 0,
+                    Width = rectangleWidth,
+                    Height = 1,
+                    RotationAngle = 0,
+                    RotationCenterOffsetX = 0,
+                    RotationCenterOffsetY = 0,
+                    SkewX = 0,
+                    SkewY = 0,
+                }
+            });
+            return doc;
+        }, rectangleWidth, doc =>
+        {
+            var shapes = doc.RootElement.GetProperty("layers")[0].GetProperty("shapes");
+            for (int i = 0; i < 2; i++)
+            {
+                var shape = shapes[i];
+                var rectangle = shape.GetProperty("rectangle");
+                if (rectangle.ValueKind != JsonValueKind.Null)
+                {
+                    return (float)rectangle.GetProperty("width").GetDecimal();
+                }
+            }
+            return -1f;
+        });
+    }
 
-    //    var rectangleWidth = (float) 5.2;
+    [Fact]
+    public async Task Add_Layer_Workflow()
+    {
+        var initialRotationAngle = 62f;
+        var rectangleWidth = 8.7f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            var layer = new LayerDTO
+            {
+                Id = 0,
+                DocumentId = doc.Id,
+                Name = "layer-2",
+                Hidden = false,
+                ZIndex = 105,
+                Shapes = new List<ShapeDTO>(),
+            };
+            layer.Shapes.Add(new ShapeDTO
+            {
+                Rectangle = new Rectangle
+                {
+                    Id = 0,
+                    LayerId = 0,
+                    FillColorFrom = "#000000",
+                    FillColorTo = "",
+                    X = 0,
+                    Y = 0,
+                    Width = rectangleWidth,
+                    Height = 1,
+                    RotationAngle = 0,
+                    RotationCenterOffsetX = 0,
+                    RotationCenterOffsetY = 0,
+                    SkewX = 0,
+                    SkewY = 0,
+                }
+            });
+            doc.Layers.Add(layer);
+            return doc;
+        }, rectangleWidth, doc =>
+        {
+            var layers = doc.RootElement.GetProperty("layers");
+            for (int i = 0; i < 2; i++)
+            {
+                var layer = layers[i];
+                var rectangle = layer.GetProperty("shapes")[0].GetProperty("rectangle");
+                if (rectangle.ValueKind != JsonValueKind.Null)
+                {
+                    return (float)rectangle.GetProperty("width").GetDecimal();
+                }
+            }
+            return -1f;
+        });
+    }
 
-    //    var postPayload = new DocumentDTO
-    //    {
-    //        Id = 0,
-    //        DocumentSlug = documentSlug,
-    //        CreatedAt = DateTime.UtcNow,
-    //        LastUpdatedAt = DateTime.UtcNow,
-    //        Layers = new List<LayerDTO>
-    //        {
-    //            new LayerDTO
-    //            {
-    //                Id = 0,
-    //                DocumentId = 0,
-    //                Name = "layer-1",
-    //                Hidden = false,
-    //                ZIndex = 0,
-    //                Shapes = new List<ShapeDTO>
-    //                {
-    //                    new ShapeDTO
-    //                    {
-    //                        Circle = new Circle
-    //                        {
-    //                            Id = 0,
-    //                            LayerId = 0,
-    //                            FillColorFrom = "#000000",
-    //                            FillColorTo = "",
-    //                            FillAngle = 0,
-    //                            CenterX = 0,
-    //                            CenterY = 0,
-    //                            Radius = 1,
-    //                            RotationAngle = 0,
-    //                            RotationCenterOffsetX = 0,
-    //                            RotationCenterOffsetY = 0,
-    //                            SkewX = 0,
-    //                            SkewY = 0
-    //                        },
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    };
+    [Fact]
+    public async Task Update_Layer_Workflow()
+    {
+        var initialRotationAngle = 48f;
+        var updateZIndex = 12004f;
+        await postPutWorkflow(initialRotationAngle, doc => doc, updateZIndex, doc => (float)doc.RootElement.GetProperty("layers")[0].GetProperty("zIndex").GetDecimal());
+    }
 
-    //    var getPutPayload = (int documentId, int layerId, int circleId) => new DocumentDTO
-    //    {
-    //        Id = documentId,
-    //        DocumentSlug = documentSlug,
-    //        CreatedAt = DateTime.UtcNow,
-    //        LastUpdatedAt = DateTime.UtcNow,
-    //        Layers = new List<LayerDTO>
-    //        {
-    //            new LayerDTO
-    //            {
-    //                Id = layerId,
-    //                DocumentId = documentId,
-    //                Name = "layer-1",
-    //                Hidden = false,
-    //                ZIndex = 0,
-    //                Shapes = new List<ShapeDTO>
-    //                {
-    //                    new ShapeDTO
-    //                    {
-    //                        Circle = new Circle
-    //                        {
-    //                            Id = circleId,
-    //                            LayerId = layerId,
-    //                            FillColorFrom = "#000000",
-    //                            FillColorTo = "",
-    //                            FillAngle = 0,
-    //                            CenterX = 0,
-    //                            CenterY = 0,
-    //                            Radius = 1,
-    //                            RotationAngle = 0,
-    //                            RotationCenterOffsetX = 0,
-    //                            RotationCenterOffsetY = 0,
-    //                            SkewX = 0,
-    //                            SkewY = 0
-    //                        },
-    //                    },
-    //                    new ShapeDTO
-    //                    {
-    //                        Rectangle = new Rectangle
-    //                        {
-    //                            Id = 0,
-    //                            LayerId = layerId,
-    //                            FillColorFrom = "#000000",
-    //                            FillColorTo = "",
-    //                            X = 0,
-    //                            Y = 0,
-    //                            Width = rectangleWidth,
-    //                            Height = 1,
-    //                            RotationAngle = 0,
-    //                            RotationCenterOffsetX = 0,
-    //                            RotationCenterOffsetY = 0,
-    //                            SkewX = 0,
-    //                            SkewY = 0,
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    };
-
-    //    var json = JsonSerializer.Serialize(postPayload);
-
-    //    var postHttpContent = new StringContent(json, Encoding.UTF8, "application/json");
-    //    postHttpContent.Headers.Add("X-CSRF-Token", await getCsrfToken(client));
-    //    var postRes = await client.PostAsync("/api/document", postHttpContent);
-    //    Assert.Equal(HttpStatusCode.Created, postRes.StatusCode);
-
-    //    var createdBody = await postRes.Content.ReadAsStringAsync();
-    //    using var createdDoc = JsonDocument.Parse(createdBody);
-    //    var id = createdDoc.RootElement.GetProperty("id").GetInt32();
-    //    var layerId = createdDoc.RootElement.GetProperty("layers")[0].GetProperty("id").GetInt32();
-    //    var circleId = createdDoc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("id").GetInt32();
-
-    //    var updated = getPutPayload(id, layerId, circleId);
-
-    //    var putJson = JsonSerializer.Serialize(updated);
-    //    var putHttpContent = new StringContent(putJson, Encoding.UTF8, "application/json");
-    //    putHttpContent.Headers.Add("X-CSRF-Token", await getCsrfToken(client));
-    //    var putRes = await client.PutAsync($"/api/document/{id}", putHttpContent);
-    //    Assert.Equal(HttpStatusCode.NoContent, putRes.StatusCode);
-
-    //    var getRes2 = await client.GetAsync($"/api/document/{id}");
-    //    Assert.Equal(HttpStatusCode.OK, getRes2.StatusCode);
-    //    var getBody2 = await getRes2.Content.ReadAsStringAsync();
-    //    using var getDoc2 = JsonDocument.Parse(getBody2);
-
-    //    Assert.Equal(rectangleWidth, getDoc2.RootElement.GetProperty("layers")[0].GetProperty("shapes")[1].GetProperty("rectangle").GetProperty("width").GetInt32());
-    //}
+    [Fact]
+    public async Task Delete_Layer_Workflow()
+    {
+        var initialRotationAngle = 71f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            doc.Layers = new List<LayerDTO>();
+            return doc;
+        }, 0f, doc =>
+        {
+            var layers = doc.RootElement.GetProperty("layers");
+            if (layers.ValueKind != JsonValueKind.Array) return -1f;
+            return layers.GetArrayLength();
+        });
+    }
 }
