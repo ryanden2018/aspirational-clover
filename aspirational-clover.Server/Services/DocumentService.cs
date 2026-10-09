@@ -3,6 +3,7 @@ using aspirational_clover.Server.Extensions;
 using aspirational_clover.Server.Interfaces;
 using aspirational_clover.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace aspirational_clover.Server.Services;
 
@@ -391,7 +392,7 @@ public class DocumentService : IDocumentService
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
-    public async Task<DocumentDTO?> UpdateDocument(DocumentDTO documentDTO)
+    public async Task<(DocumentDTO?, List<int>)> UpdateDocument(DocumentDTO documentDTO)
     {
         // note carefully: mutating the DTO DOES NOT alter the DB
         // The purpose of this is to obtain the fully hydrated data structure, which involves a
@@ -402,7 +403,7 @@ public class DocumentService : IDocumentService
         // validation: ID and slug must match
         if (existingDTO == null || existingDTO.Id != documentDTO.Id || existingDTO.DocumentSlug != documentDTO.DocumentSlug)
         {
-            return null;
+            return (null, new List<int>());
         }
 
         var documentId = existingDTO.Id;
@@ -410,7 +411,7 @@ public class DocumentService : IDocumentService
         var existing = await _db.Documents.FindAsync(documentId);
         if (existing == null)
         {
-            return null;
+            return (null, new List<int>());
         }
 
         // we only update the LastUpdatedAt value here (altering the slug is not supported here)
@@ -427,11 +428,10 @@ public class DocumentService : IDocumentService
         var documentLayersMap = (documentDTO.Layers ?? new List<LayerDTO>())
             .ToDictionary(l => l.Id, l => l);
 
-        // Step 1: Create and delete layers
+        // Step 1: Create layers, and mark layers for deletion
         var existingLayerIds = existingLayersMap.Keys;
         var documentLayerIds = documentLayersMap.Keys;
         var layerIdsToDelete = existingLayerIds.Except(documentLayerIds);
-        _db.Layers.RemoveRange(layerIdsToDelete.Select(l => new Layer { Id = l }));
         (documentDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
             .ToList()
             .ForEach(l =>
@@ -479,7 +479,7 @@ public class DocumentService : IDocumentService
         var shapesToUpdate = ShapeSetIntersection(existingShapes, documentShapes);
         UpdateShapes(shapesToUpdate, documentShapes);
 
-        return documentDTO;
+        return (documentDTO, layerIdsToDelete.ToList());
     }
 
     /// <summary>

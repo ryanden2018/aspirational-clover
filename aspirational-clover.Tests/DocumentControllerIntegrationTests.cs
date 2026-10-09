@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -132,50 +131,6 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
     }
 
     [Fact]
-    public async Task Update_Shape_Workflow()
-    {
-        var initialRotationAngle = 125f;
-        var updateRotationAngle = 87f;
-        await postPutWorkflow(initialRotationAngle, doc =>
-        {
-            var shape = doc?.Layers[0]?.Shapes[0];
-            if (shape?.Circle != null)
-            {
-                shape.Circle.RotationAngle = updateRotationAngle;
-            }
-            return doc;
-        }, updateRotationAngle, doc => (float) doc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetDecimal());
-    }
-
-    [Fact]
-    public async Task Delete_Shape_Workflow()
-    {
-        var initialRotationAngle = 38f;
-        await postPutWorkflow(initialRotationAngle, doc =>
-        {
-            doc.Layers[0].Shapes.RemoveAt(0);
-            return doc;
-        }, 0f, doc =>
-        {
-            var shapes = doc.RootElement.GetProperty("layers")[0].GetProperty("shapes");
-            if (shapes.ValueKind != JsonValueKind.Array) return -1f;
-            return shapes.GetArrayLength();
-        });
-    }
-
-    [Fact]
-    public async Task Update_Layer_Workflow()
-    {
-        var initialRotationAngle = 48f;
-        var updateZIndex = 12004f;
-        await postPutWorkflow(initialRotationAngle, doc =>
-        {
-            doc.Layers[0].ZIndex = (int)updateZIndex;
-            return doc;
-        }, updateZIndex, doc => (float)doc.RootElement.GetProperty("layers")[0].GetProperty("zIndex").GetDecimal());
-    }
-
-    [Fact]
     public async Task Add_Shape_Workflow()
     {
         var initialRotationAngle = 62f;
@@ -218,6 +173,38 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
                 }
             }
             return -1f;
+        });
+    }
+
+    [Fact]
+    public async Task Update_Shape_Workflow()
+    {
+        var initialRotationAngle = 125f;
+        var updateRotationAngle = 87f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            var shape = doc?.Layers[0]?.Shapes[0];
+            if (shape?.Circle != null)
+            {
+                shape.Circle.RotationAngle = updateRotationAngle;
+            }
+            return doc;
+        }, updateRotationAngle, doc => (float) doc.RootElement.GetProperty("layers")[0].GetProperty("shapes")[0].GetProperty("circle").GetProperty("rotationAngle").GetDecimal());
+    }
+
+    [Fact]
+    public async Task Delete_Shape_Workflow()
+    {
+        var initialRotationAngle = 38f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            doc.Layers[0].Shapes.RemoveAt(0);
+            return doc;
+        }, 0f, doc =>
+        {
+            var shapes = doc.RootElement.GetProperty("layers")[0].GetProperty("shapes");
+            if (shapes.ValueKind != JsonValueKind.Array) return -1f;
+            return shapes.GetArrayLength();
         });
     }
 
@@ -274,20 +261,31 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
         });
     }
 
+    [Fact]
+    public async Task Update_Layer_Workflow()
+    {
+        var initialRotationAngle = 48f;
+        var updateZIndex = 12004f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            doc.Layers[0].ZIndex = (int)updateZIndex;
+            return doc;
+        }, updateZIndex, doc => (float)doc.RootElement.GetProperty("layers")[0].GetProperty("zIndex").GetDecimal());
+    }
 
-    //[Fact]
-    //public async Task Delete_Layer_Workflow()
-    //{
-    //    var initialRotationAngle = 71f;
-    //    await postPutWorkflow(initialRotationAngle, doc =>
-    //    {
-    //        doc.Layers = new List<LayerDTO>();
-    //        return doc;
-    //    }, 0f, doc =>
-    //    {
-    //        var layers = doc.RootElement.GetProperty("layers");
-    //        if (layers.ValueKind != JsonValueKind.Array) return -1f;
-    //        return layers.GetArrayLength();
-    //    });
-    //}
+    [Fact]
+    public async Task Delete_Layer_Workflow()
+    {
+        var initialRotationAngle = 71f;
+        await postPutWorkflow(initialRotationAngle, doc =>
+        {
+            doc.Layers = new List<LayerDTO>();
+            return doc;
+        }, 0f, doc =>
+        {
+            var layers = doc.RootElement.GetProperty("layers");
+            if (layers.ValueKind != JsonValueKind.Array) return -1f;
+            return layers.GetArrayLength();
+        });
+    }
 }
