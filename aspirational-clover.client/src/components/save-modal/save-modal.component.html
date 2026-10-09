@@ -2,11 +2,11 @@
 <div class="app-modal-overlay"></div>
 
 <div class="save-modal-container">
-  <div [class]="saveModalClassName()">
+  <div [class]="saveModalClassName()" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
     <div class="save-modal-title">
-      <div class="save-modal-title-text">Save Document</div>
+      <div id="saveModalTitle" class="save-modal-title-text">Save Document</div>
       <div class="save-modal-title-buttons">
-        <button [class]="buttonClassName()" (click)="onClickCancel($event)">
+        <button [class]="buttonClassName()" (click)="onClickCancel($event)" aria-label="Close save dialog">
           <ng-container *ngTemplateOutlet="closeIcon(); context: { width: '24px', height: '24px' }"></ng-container>
         </button>
       </div>
@@ -17,10 +17,10 @@
       <p>Any saved content is subject to moderation or deletion, at any time, without notice.</p>
     </div>
     <div class="save-modal-buttons">
-      <button [class]="buttonClassName()" [style.padding]="'6px'" (click)="onClickCancel($event)">
+      <button [class]="buttonClassName()" [style.padding]="'6px'" (click)="onClickCancel($event)" aria-label="Cancel save">
         Cancel
       </button>
-      <button [class]="buttonClassName()" [style.padding]="'6px'" (click)="onClickSave($event)">
+      <button [class]="buttonClassName()" [style.padding]="'6px'" (click)="onClickSave($event)" aria-label="Confirm save">
         Save
       </button>
     </div>

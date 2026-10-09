@@ -1,16 +1,16 @@
-<div [class]="layerEditorClass()">
+<div [class]="layerEditorClass()" role="list" aria-label="Layers list">
   @for (layer of sortedLayers(); track layer.clientUuid) {
-    <div [class]="layer.clientUuid === selectedLayerClientUuid() ? selectedLayerClass() : unselectedLayerClass()" (click)="onClickLayer($event, layer)">
-      <app-tool-tip-button [id]="'layer-visibility-button-' + layer.clientUuid" toolTipContent="Visibility" [timeout]="1500" positioning="bottom-left" (click)="onClickVisibility($event, layer)">
+    <div [class]="layer.clientUuid === selectedLayerClientUuid() ? selectedLayerClass() : unselectedLayerClass()" (click)="onClickLayer($event, layer)" role="button" tabindex="0" [attr.aria-pressed]="layer.clientUuid === selectedLayerClientUuid()" [attr.aria-label]="layer.name">
+      <app-tool-tip-button [id]="'layer-visibility-button-' + layer.clientUuid" toolTipContent="Visibility" [timeout]="1500" positioning="bottom-left" (click)="onClickVisibility($event, layer)" [aria-label]="'Toggle visibility for ' + layer.name">
         <ng-container *ngTemplateOutlet="getVisibilityIcon(layer.hidden); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
-      <app-tool-tip-button [id]="'layer-raise-button-' + layer.clientUuid" toolTipContent="Raise" [timeout]="1500" positioning="bottom-left" (click)="onClickRaiseLayer($event, layer)">
+      <app-tool-tip-button [id]="'layer-raise-button-' + layer.clientUuid" toolTipContent="Raise" [timeout]="1500" positioning="bottom-left" (click)="onClickRaiseLayer($event, layer)" [aria-label]="'Raise ' + layer.name">
         <ng-container *ngTemplateOutlet="arrowUpwardIcon(); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
-      <app-tool-tip-button [id]="'layer-lower-button-' + layer.clientUuid" toolTipContent="Lower" [timeout]="1500" positioning="bottom-left" (click)="onClickLowerLayer($event, layer)">
+      <app-tool-tip-button [id]="'layer-lower-button-' + layer.clientUuid" toolTipContent="Lower" [timeout]="1500" positioning="bottom-left" (click)="onClickLowerLayer($event, layer)" [aria-label]="'Lower ' + layer.name">
         <ng-container *ngTemplateOutlet="arrowDownwardIcon(); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
-      <app-tool-tip-button [id]="'layer-delete-button-' + layer.clientUuid" toolTipContent="Delete" [timeout]="1500" positioning="bottom-left" (click)="onClickDeleteLayer($event, layer)" [disabled]="deleteLayerButtonDisasbled()">
+      <app-tool-tip-button [id]="'layer-delete-button-' + layer.clientUuid" toolTipContent="Delete" [timeout]="1500" positioning="bottom-left" (click)="onClickDeleteLayer($event, layer)" [disabled]="deleteLayerButtonDisasbled()" [aria-label]="'Delete ' + layer.name">
         <ng-container *ngTemplateOutlet="deleteIcon(); context: { width: '18px', height: '18px' }"></ng-container>
       </app-tool-tip-button>
       <div class="app-layer-editor-layer-text">{{ layer.name }}</div>

@@ -1,4 +1,4 @@
-import { Component, input, computed, viewChild, ElementRef } from "@angular/core";
+import { Component, Input, input, computed, viewChild, ElementRef } from "@angular/core";
 
 import { ThemeService } from "../../app/theme.service";
 import { AnchorService } from "../../app/anchor.service";
@@ -16,6 +16,10 @@ export class ToolTipButtonComponent {
   positioning = input<'bottom-left' | 'right-center'>('bottom-left');
   timeout = input<number>(0);
   disabled = input<boolean>(false);
+
+  @Input('aria-label') ariaLabel?: string;
+  @Input('aria-pressed') ariaPressed?: string | boolean;
+  @Input('aria-haspopup') ariaHaspopup?: string | boolean;
 
   buttonClassName = computed(() => this._themeService.classNames().button);
 

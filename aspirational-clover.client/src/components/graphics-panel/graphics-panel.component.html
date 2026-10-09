@@ -2,7 +2,7 @@
   <div class="graphics-panel-svg-container-middle">
     <div class="graphics-panel-svg-container-inner">
       @if (activeDocument() !== null) {
-        <svg viewBox="0 0 850 1100" [class]="graphicsPanelSvgClassName()" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()" [attr.style.cursor]="isCreatingShape() ? 'crosshair' : 'default'">
+        <svg viewBox="0 0 850 1100" [class]="graphicsPanelSvgClassName()" (mousedown)="onSvgMouseDown($event)" (click)="onSvgClick()" [attr.style.cursor]="isCreatingShape() ? 'crosshair' : 'default'" role="img" aria-label="Drawing canvas" tabindex="0">
           @for (layer of sortedLayers(); track layer.clientUuid) {
             @for (shape of layer.shapes; track getClientUuidFromShape(shape)) {
               @if (typeof shape.circle === "object" && shape.circle !== null) {
@@ -15,6 +15,9 @@
                 <circle
                         (mousedown)="onCircleMouseDown($event, shape.circle)"
                         (click)="onCircleClick($event, shape.circle)"
+                        role="button"
+                        [attr.aria-label]="'Circle ' + (shape.circle?.clientUuid ?? '')"
+                        tabindex="0"
                         [class]="isCreatingShape() ? 'transformed-elem cursor-crosshair' : 'transformed-elem cursor-grab'"
                         [attr.transform-origin]="getTransformOriginCircle(shape.circle)"
                         [attr.transform]="getTransform(shape.circle)"
@@ -36,6 +39,9 @@
                 <rect
                       (mousedown)="onRectangleMouseDown($event, shape.rectangle)"
                       (click)="onRectangleClick($event, shape.rectangle)"
+                      role="button"
+                      [attr.aria-label]="'Rectangle ' + (shape.rectangle?.clientUuid ?? '')"
+                      tabindex="0"
                       [class]="isCreatingShape() ? 'transformed-elem cursor-crosshair' : 'transformed-elem cursor-grab'"
                       [attr.transform-origin]="getTransformOriginRectangle(shape.rectangle)"
                       [attr.transform]="getTransform(shape.rectangle)"
@@ -52,6 +58,9 @@
                 <text
                       (mousedown)="onTextBoxMouseDown($event, shape.textBox)"
                       (click)="onTextBoxClick($event, shape.textBox)"
+                      role="button"
+                      [attr.aria-label]="'Text box ' + (shape.textBox?.clientUuid ?? '')"
+                      tabindex="0"
                       [class]="isCreatingShape() ? 'cursor-crosshair' : 'cursor-grab'"
                       [attr.x]="shape.textBox.x"
                       [attr.y]="shape.textBox.y"
