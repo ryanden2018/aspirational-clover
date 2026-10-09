@@ -3,6 +3,7 @@ import { NgTemplateOutlet } from "@angular/common";
 
 import { DocumentService } from '../../app/document.service';
 import { ResourcesService } from "../../app/resources.service";
+import { UndoService } from "../../app/undo.service";
 import { ThemeService } from "../../app/theme.service";
 
 @Component({
@@ -23,12 +24,12 @@ export class SaveModalComponent {
   
   closeIcon = computed(() => this._resourcesService.resources()?.closeIcon?.());
 
-  constructor(private _documentService: DocumentService, private _themeService: ThemeService, private _resourcesService: ResourcesService) {}
+  constructor(private _documentService: DocumentService, private _themeService: ThemeService, private _resourcesService: ResourcesService, private _undoService: UndoService) {}
 
   onClickSave(event: MouseEvent) {
     event.stopPropagation();
     this._documentService.closeSaveModal();
-    this._documentService.saveDocument();
+    this._documentService.saveDocument(() => this._undoService.clearStack());
   }
 
   onClickCancel(event: MouseEvent) {
