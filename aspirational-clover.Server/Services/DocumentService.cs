@@ -394,7 +394,8 @@ public class DocumentService : IDocumentService
         // in order to obtain objects whose mutations are tracked by Entity Framework.
         var existingDTO = await GetDocumentByIdWithLayersAndShapes(documentDTO.Id);
 
-        if (existingDTO == null || existingDTO.Id != documentDTO.Id)
+        // validation: ID and slug must match
+        if (existingDTO == null || existingDTO.Id != documentDTO.Id || existingDTO.DocumentSlug != documentDTO.DocumentSlug)
         {
             return null;
         }
@@ -441,7 +442,8 @@ public class DocumentService : IDocumentService
         var layerIdsToUpdate = existingLayerIds.Intersect(documentLayerIds);
         await Task.WhenAll(layerIdsToUpdate.Select(async layerId =>
         {
-            var docLayer = documentLayersMap.ElementAtOrDefault(layerId).Value;
+            LayerDTO? docLayer = null;
+            documentLayersMap.TryGetValue(layerId, out docLayer);
             var layer = await _db.Layers.Where(l => l.Id == layerId).FirstOrDefaultAsync();
             if (docLayer == null || layer == null) return;
             layer.Name = docLayer.Name;

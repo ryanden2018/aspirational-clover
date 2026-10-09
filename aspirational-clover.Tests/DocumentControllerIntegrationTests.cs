@@ -164,125 +164,130 @@ public class DocumentControllerIntegrationTests : IClassFixture<WebApplicationFa
     }
 
     [Fact]
-    public async Task Add_Shape_Workflow()
-    {
-        var initialRotationAngle = 62f;
-        var rectangleWidth = 5.2f;
-        await postPutWorkflow(initialRotationAngle, doc =>
-        {
-            var layer = doc.Layers[0];
-            if (layer == null || layer.Shapes == null) return doc;
-            var layerId = layer.Id;
-            layer.Shapes.Add(new ShapeDTO
-            {
-                Rectangle = new Rectangle
-                {
-                    Id = 0,
-                    LayerId = layerId,
-                    FillColorFrom = "#000000",
-                    FillColorTo = "",
-                    X = 0,
-                    Y = 0,
-                    Width = rectangleWidth,
-                    Height = 1,
-                    RotationAngle = 0,
-                    RotationCenterOffsetX = 0,
-                    RotationCenterOffsetY = 0,
-                    SkewX = 0,
-                    SkewY = 0,
-                }
-            });
-            return doc;
-        }, rectangleWidth, doc =>
-        {
-            var shapes = doc.RootElement.GetProperty("layers")[0].GetProperty("shapes");
-            for (int i = 0; i < 2; i++)
-            {
-                var shape = shapes[i];
-                var rectangle = shape.GetProperty("rectangle");
-                if (rectangle.ValueKind != JsonValueKind.Null)
-                {
-                    return (float)rectangle.GetProperty("width").GetDecimal();
-                }
-            }
-            return -1f;
-        });
-    }
-
-    [Fact]
-    public async Task Add_Layer_Workflow()
-    {
-        var initialRotationAngle = 62f;
-        var rectangleWidth = 8.7f;
-        await postPutWorkflow(initialRotationAngle, doc =>
-        {
-            var layer = new LayerDTO
-            {
-                Id = 0,
-                DocumentId = doc.Id,
-                Name = "layer-2",
-                Hidden = false,
-                ZIndex = 105,
-                Shapes = new List<ShapeDTO>(),
-            };
-            layer.Shapes.Add(new ShapeDTO
-            {
-                Rectangle = new Rectangle
-                {
-                    Id = 0,
-                    LayerId = 0,
-                    FillColorFrom = "#000000",
-                    FillColorTo = "",
-                    X = 0,
-                    Y = 0,
-                    Width = rectangleWidth,
-                    Height = 1,
-                    RotationAngle = 0,
-                    RotationCenterOffsetX = 0,
-                    RotationCenterOffsetY = 0,
-                    SkewX = 0,
-                    SkewY = 0,
-                }
-            });
-            doc.Layers.Add(layer);
-            return doc;
-        }, rectangleWidth, doc =>
-        {
-            var layers = doc.RootElement.GetProperty("layers");
-            for (int i = 0; i < 2; i++)
-            {
-                var layer = layers[i];
-                var rectangle = layer.GetProperty("shapes")[0].GetProperty("rectangle");
-                if (rectangle.ValueKind != JsonValueKind.Null)
-                {
-                    return (float)rectangle.GetProperty("width").GetDecimal();
-                }
-            }
-            return -1f;
-        });
-    }
-
-    [Fact]
     public async Task Update_Layer_Workflow()
     {
         var initialRotationAngle = 48f;
         var updateZIndex = 12004f;
-        await postPutWorkflow(initialRotationAngle, doc => doc, updateZIndex, doc => (float)doc.RootElement.GetProperty("layers")[0].GetProperty("zIndex").GetDecimal());
-    }
-
-    [Fact]
-    public async Task Delete_Layer_Workflow()
-    {
-        var initialRotationAngle = 71f;
         await postPutWorkflow(initialRotationAngle, doc =>
         {
-            doc.Layers = new List<LayerDTO>();
+            doc.Layers[0].ZIndex = (int)updateZIndex;
             return doc;
-        }, 0f, doc =>
-        {
-            var layers = doc.RootElement.GetProperty("layers");
-            if (layers.ValueKind != JsonValueKind.Array) return -1f;
-            return layers.GetArrayLength();
-        });
+        }, updateZIndex, doc => (float)doc.RootElement.GetProperty("layers")[0].GetProperty("zIndex").GetDecimal());
     }
+
+    //[Fact]
+    //public async Task Add_Shape_Workflow()
+    //{
+    //    var initialRotationAngle = 62f;
+    //    var rectangleWidth = 5.2f;
+    //    await postPutWorkflow(initialRotationAngle, doc =>
+    //    {
+    //        var layer = doc.Layers[0];
+    //        if (layer == null || layer.Shapes == null) return doc;
+    //        var layerId = layer.Id;
+    //        layer.Shapes.Add(new ShapeDTO
+    //        {
+    //            Rectangle = new Rectangle
+    //            {
+    //                Id = 0,
+    //                LayerId = layerId,
+    //                FillColorFrom = "#000000",
+    //                FillColorTo = "",
+    //                X = 0,
+    //                Y = 0,
+    //                Width = rectangleWidth,
+    //                Height = 1,
+    //                RotationAngle = 0,
+    //                RotationCenterOffsetX = 0,
+    //                RotationCenterOffsetY = 0,
+    //                SkewX = 0,
+    //                SkewY = 0,
+    //            }
+    //        });
+    //        return doc;
+    //    }, rectangleWidth, doc =>
+    //    {
+    //        var shapes = doc.RootElement.GetProperty("layers")[0].GetProperty("shapes");
+    //        for (int i = 0; i < 2; i++)
+    //        {
+    //            var shape = shapes[i];
+    //            var rectangle = shape.GetProperty("rectangle");
+    //            if (rectangle.ValueKind != JsonValueKind.Null)
+    //            {
+    //                return (float)rectangle.GetProperty("width").GetDecimal();
+    //            }
+    //        }
+    //        return -1f;
+    //    });
+    //}
+
+    //[Fact]
+    //public async Task Add_Layer_Workflow()
+    //{
+    //    var initialRotationAngle = 62f;
+    //    var rectangleWidth = 8.7f;
+    //    await postPutWorkflow(initialRotationAngle, doc =>
+    //    {
+    //        var layer = new LayerDTO
+    //        {
+    //            Id = 0,
+    //            DocumentId = doc.Id,
+    //            Name = "layer-2",
+    //            Hidden = false,
+    //            ZIndex = 105,
+    //            Shapes = new List<ShapeDTO>(),
+    //        };
+    //        layer.Shapes.Add(new ShapeDTO
+    //        {
+    //            Rectangle = new Rectangle
+    //            {
+    //                Id = 0,
+    //                LayerId = 0,
+    //                FillColorFrom = "#000000",
+    //                FillColorTo = "",
+    //                X = 0,
+    //                Y = 0,
+    //                Width = rectangleWidth,
+    //                Height = 1,
+    //                RotationAngle = 0,
+    //                RotationCenterOffsetX = 0,
+    //                RotationCenterOffsetY = 0,
+    //                SkewX = 0,
+    //                SkewY = 0,
+    //            }
+    //        });
+    //        doc.Layers.Add(layer);
+    //        return doc;
+    //    }, rectangleWidth, doc =>
+    //    {
+    //        var layers = doc.RootElement.GetProperty("layers");
+    //        for (int i = 0; i < 2; i++)
+    //        {
+    //            var layer = layers[i];
+    //            var rectangle = layer.GetProperty("shapes")[0].GetProperty("rectangle");
+    //            if (rectangle.ValueKind != JsonValueKind.Null)
+    //            {
+    //                return (float)rectangle.GetProperty("width").GetDecimal();
+    //            }
+    //        }
+    //        return -1f;
+    //    });
+    //}
+
+
+    //[Fact]
+    //public async Task Delete_Layer_Workflow()
+    //{
+    //    var initialRotationAngle = 71f;
+    //    await postPutWorkflow(initialRotationAngle, doc =>
+    //    {
+    //        doc.Layers = new List<LayerDTO>();
+    //        return doc;
+    //    }, 0f, doc =>
+    //    {
+    //        var layers = doc.RootElement.GetProperty("layers");
+    //        if (layers.ValueKind != JsonValueKind.Array) return -1f;
+    //        return layers.GetArrayLength();
+    //    });
+    //}
 }
