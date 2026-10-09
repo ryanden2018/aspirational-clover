@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ToolBarComponent } from "../components/tool-bar/tool-bar.component";
 import { PropertyViewerComponent } from "../components/property-viewer/property-viewer.component";
 import { TabBarComponent } from '../components/tab-bar/tab-bar.component';
+import { SaveModalComponent } from '../components/save-modal/save-modal.component';
 import { ResourcesComponent } from "../components/resources/resources.component";
 import { AnchoredToolTipComponent } from "../components/anchored-tool-tip/anchored-tool-tip.component";
 import { GraphicsPanelComponent } from "../components/graphics-panel/graphics-panel.component";
@@ -25,6 +26,7 @@ import { ThemeService } from "./theme.service";
     GraphicsPanelComponent,
     ResourcesComponent,
     AnchoredToolTipComponent,
+    SaveModalComponent,
   ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',

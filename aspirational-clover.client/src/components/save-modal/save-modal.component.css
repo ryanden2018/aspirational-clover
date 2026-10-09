@@ -1,0 +1,83 @@
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+
+div.save-modal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 20000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #88888850;
+}
+
+div.save-modal {
+  border-radius: 10px;
+  border: solid 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+div.save-modal-light {
+  background-color: #f2f2f2;
+  border-color: #d2d2d2;
+  color: #000000;
+}
+
+div.save-modal-dark {
+  background-color: #1a1a1a;
+  border-color: #1f1f1f;
+  color: #ffffff;
+}
+
+div.save-modal-title {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: 18px;
+  display: flex;
+  width: 100%;
+  border-bottom: solid 1px;
+  border-color: #888888;
+}
+
+div.save-modal-title-text {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+div.save-modal-title-buttons {
+  border-top-right-radius: 10px;
+  overflow: hidden;
+  padding: 4px;
+}
+
+div.save-modal-content {
+  padding: 30px;
+  width: 350px;
+  max-width: 350px;
+  text-wrap: wrap;
+}
+
+div.save-modal-buttons {
+  gap: 50px;
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+  justify-content: center;
+  border-top: solid 1px;
+  border-color: #888888;
+}

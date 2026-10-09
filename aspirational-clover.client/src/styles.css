@@ -227,3 +227,8 @@ div.app-tab-bar-inner {
   margin-right: 4px;
   padding: 0px;
 }
+
+div.app-modal-overlay {
+  background-color: #44444450;
+  z-index: 10000;
+}
