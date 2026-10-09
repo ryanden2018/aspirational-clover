@@ -15,7 +15,7 @@ import { defaultSlugs, apiDocumentSamplesUrl, apiDocumentUrl, apiDocumentSlugUrl
   providedIn: "root"
 })
 export class DocumentService {
-  documents = signal<AppDocument[]>(defaultSlugs.map(documentSlug => ({
+  private _documents = signal<AppDocument[]>(defaultSlugs.map(documentSlug => ({
     id: 0,
     clientUuid: newUuidV4(),
     documentSlug,
@@ -33,9 +33,15 @@ export class DocumentService {
     }],
   })));
 
+  documents = this._documents.asReadonly();
+
   private _newDocumentCount = signal<number>(1);
 
   private _selectedLayerClientUuidByDocumentClientUuid = signal<Record<string, string>>({});
+
+  private _saveModalOpen = signal<boolean>(false);
+
+  saveModalOpen = this._saveModalOpen.asReadonly();
 
   setSelectedLayer(documentClientUuid: string, layerClientUuid: string): void {
     if (!documentClientUuid || !layerClientUuid) return;
@@ -83,7 +89,7 @@ export class DocumentService {
       this.currentUrl.set(url);
       const slug = getDocumentSlugFromUrl(url);
       if (slug && !this.documents().find(d => d.documentSlug === slug) && !defaultSlugs.includes(slug)) {
-        this.documents.set([...(this.documents() ?? []), {
+        this._documents.set([...(this.documents() ?? []), {
           id: 0,
           clientUuid: newUuidV4(),
           documentSlug: slug,
@@ -105,11 +111,6 @@ export class DocumentService {
     });
   }
 
-  getInitialDocuments = () => {
-
-
-  }
-
   getSampleDocuments(): Observable<AppDocument[]> {
     return this.http.get<AppDocument[]>(apiDocumentSamplesUrl);
   }
@@ -123,7 +124,7 @@ export class DocumentService {
         const docsMap = new Map(docs.map(doc => [doc.documentSlug, doc]));
         const existingDocs = this.documents() ?? [];
         const newDocs = existingDocs.map(doc => docsMap.get(doc.documentSlug) ?? doc);
-        this.documents.set(newDocs);
+        this._documents.set(newDocs);
       },
       error: (err) => {
         console.error('Error fetching documents:', err);
@@ -140,10 +141,10 @@ export class DocumentService {
         next: (doc) => {
           const currentDocuments = this.documents() ?? [];
           if (!currentDocuments.find(d => d.documentSlug === slug)) {
-            this.documents.set([...currentDocuments, doc]);
+            this._documents.set([...currentDocuments, doc]);
           } else {
             const newDocuments = currentDocuments.map(d => d.documentSlug === slug ? doc : d);
-            this.documents.set(newDocuments);
+            this._documents.set(newDocuments);
           }
           resolve(slug);
         },
@@ -155,7 +156,7 @@ export class DocumentService {
   }
 
   updateDocumentInMemory(updatedDocument: AppDocument) {
-    this.documents.set(
+    this._documents.set(
       this.documents().map(doc => (doc.clientUuid === updatedDocument.clientUuid) ? updatedDocument : doc)
     );
   }
@@ -178,14 +179,14 @@ export class DocumentService {
         shapes: []
       }]
     }
-    this.documents.set([...this.documents(), newDocument]);
+    this._documents.set([...this.documents(), newDocument]);
     this._newDocumentCount.set(this._newDocumentCount() + 1)
     this._router.navigateByUrl(getDocumentUrl(newDocument));
   }
 
   closeDocument(clientUuid: string) {
     const isActiveDocument = (this.activeDocument()?.clientUuid === clientUuid);
-    this.documents.set(this.documents().filter(document => document.clientUuid !== clientUuid));
+    this._documents.set(this.documents().filter(document => document.clientUuid !== clientUuid));
     if (isActiveDocument) {
       this._router.navigateByUrl(getDocumentUrl(this.documents()[0]));
     }
@@ -215,5 +216,23 @@ export class DocumentService {
     }).then(async () => {
       await this.retrieveDocumentBySlug(slug);
     });
+  }
+
+  onSave() {
+    if (!this.allowSave()) return;
+
+    const id = this.activeDocument()?.id;
+
+    if (typeof id !== "number") return;
+
+    if (id === 0) {
+      this._saveModalOpen.set(true);
+    } else {
+      this.saveDocument();
+    }
+  }
+
+  closeSaveModal() {
+    this._saveModalOpen.set(false);
   }
 }
