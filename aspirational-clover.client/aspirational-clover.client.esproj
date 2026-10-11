@@ -3,9 +3,10 @@
     <StartupCommand>npm start</StartupCommand>
     <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
     <!-- Allows the build (or compile) script located on package.json to run on Build -->
-    <ShouldRunBuildScript>true</ShouldRunBuildScript>
+    <!-- Default to true but allow skipping by setting SkipClientBuild=true in MSBuild/dotnet args -->
+    <ShouldRunBuildScript Condition="'$(SkipClientBuild)' != 'true'">true</ShouldRunBuildScript>
     <!-- Also run the build script on Publish so production artifacts are produced -->
-    <RunBuildScriptDuringPublish>true</RunBuildScriptDuringPublish>
+    <RunBuildScriptDuringPublish Condition="'$(SkipClientBuild)' != 'true'">true</RunBuildScriptDuringPublish>
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\aspirational-clover.client\browser\</BuildOutputFolder>
   </PropertyGroup>
