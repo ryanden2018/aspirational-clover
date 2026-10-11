@@ -37,6 +37,8 @@
       <ClientDistFiles Include="..\aspirational-clover.client\dist\aspirational-clover.client\browser\**\*.*" />
     </ItemGroup>
     <Message Importance="high" Text="Copying client dist assets (count: %(ClientDistFiles.Identity)) to wwwroot..." />
+    <!-- Ensure the approot folder is cleared before copying new client assets -->
+    <RemoveDir Directories="$(ProjectDir)wwwroot\approot" />
     <MakeDir Directories="$(ProjectDir)wwwroot\approot" />
     <Copy SourceFiles="@(ClientDistFiles)" DestinationFiles="@(ClientDistFiles->'$(ProjectDir)wwwroot\approot\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
