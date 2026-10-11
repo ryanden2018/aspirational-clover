@@ -116,6 +116,12 @@
             Gets the DbSet for Polyline entities, allowing CRUD opreations on the Polylines table in the database.
             </summary>
         </member>
+        <member name="T:aspirational_clover.Server.Data.DesignTimeDbContextFactory">
+            <summary>
+            Design-time factory for AppDbContext so EF tools can create a properly configured
+            DbContext when running commands like `dotnet ef database update`.
+            </summary>
+        </member>
         <member name="T:aspirational_clover.Server.DTOs.DocumentContainerDTO">
             <summary>
             Represents a container for a collection of DocumentDTO objects,
