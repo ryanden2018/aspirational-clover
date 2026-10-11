@@ -54,6 +54,7 @@ public class Program
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
+
         // For now we will only use the in memory database. Eventually we want to sub this out for PostgreSQL in production.
         if (env.IsDevelopment())
         {
