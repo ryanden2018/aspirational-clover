@@ -446,6 +446,18 @@
             Gets or sets the skew in degrees along the Y-axis for the object.
             </summary>
         </member>
+        <member name="T:aspirational_clover.Server.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:aspirational_clover.Server.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:aspirational_clover.Server.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:aspirational_clover.Server.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:aspirational_clover.Server.Models.Circle">
             <summary>
             Represents a circle shape with properties for fill, layer, and transformation.
