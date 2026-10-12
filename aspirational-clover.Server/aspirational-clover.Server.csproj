@@ -25,9 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\aspirational-clover.client\aspirational-clover.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\aspirational-clover.ServiceDefaults\aspirational-clover.ServiceDefaults.csproj" />
   </ItemGroup>
 
