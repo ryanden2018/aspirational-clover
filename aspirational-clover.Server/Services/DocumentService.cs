@@ -1,9 +1,9 @@
-﻿using aspirational_clover.Server.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+
+using aspirational_clover.Server.DTOs;
 using aspirational_clover.Server.Extensions;
 using aspirational_clover.Server.Interfaces;
 using aspirational_clover.Server.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace aspirational_clover.Server.Services;
 
@@ -44,21 +44,22 @@ public class DocumentService : IDocumentService
         return circles.Concat(rectangles).Concat(textBoxes).Concat(polylines);
     }
 
-    private void CreateShapeFromDTO(int layerId, ShapeDTO shapeDTO)
+    private async Task CreateShapeFromDTO(int layerId, ShapeDTO shapeDTO)
     {
         shapeDTO.LayerId = layerId;
-        CreateShape(layerId, shapeDTO.Circle, c => _db.Circles.Add(c));
-        CreateShape(layerId, shapeDTO.Rectangle, r => _db.Rectangles.Add(r));
-        CreateShape(layerId, shapeDTO.TextBox, t => _db.TextBoxes.Add(t));
-        CreateShape(layerId, shapeDTO.Polyline, p => _db.Polylines.Add(p));
+        await CreateShape(layerId, shapeDTO.Circle, c => _db.Circles.Add(c));
+        await CreateShape(layerId, shapeDTO.Rectangle, r => _db.Rectangles.Add(r));
+        await CreateShape(layerId, shapeDTO.TextBox, t => _db.TextBoxes.Add(t));
+        await CreateShape(layerId, shapeDTO.Polyline, p => _db.Polylines.Add(p));
     }
 
-    private void DeleteShapes(List<ShapeDTO> shapes)
+    private async Task DeleteShapes(List<ShapeDTO> shapes)
     {
         _db.Circles.RemoveRange(shapes.Where(s => s?.Circle != null).Select(s => s?.Circle ?? new Circle { Id = 0 }));
         _db.Rectangles.RemoveRange(shapes.Where(s => s?.Rectangle != null).Select(s => s?.Rectangle ?? new Rectangle { Id = 0 }));
         _db.TextBoxes.RemoveRange(shapes.Where(s => s?.TextBox != null).Select(s => s?.TextBox ?? new TextBox { Id = 0 }));
         _db.Polylines.RemoveRange(shapes.Where(s => s?.Polyline != null).Select(s => s?.Polyline ?? new Polyline { Id = 0 }));
+        await _db.SaveChangesAsync();
     }
 
     private void UpdateLayerIds(int layerId, List<ShapeDTO>? shapes)
@@ -192,7 +193,7 @@ public class DocumentService : IDocumentService
     }
 
     // DO NOT UPDATE LAYER IDS HERE -- THAT IS DONE IN LAYER PROCESSING
-    private void UpdateShapes(List<ShapeDTO>? shapesToUpdate, List<ShapeDTO>? updateSource)
+    private async Task UpdateShapes(List<ShapeDTO>? shapesToUpdate, List<ShapeDTO>? updateSource)
     {
         if (shapesToUpdate == null || updateSource == null) return;
 
@@ -269,6 +270,8 @@ public class DocumentService : IDocumentService
                 }
             }
         }
+
+        await _db.SaveChangesAsync();
     }
 
     // METHODS THAT SHOULD NOT BE CHANGED WHEN ADDING A SHAPE TYPE
@@ -322,26 +325,28 @@ public class DocumentService : IDocumentService
         return populatedDocument ?? new DocumentDTO(item);
     }
 
-    private void CreateShape<T>(int layerId, T? shape, Action<T> addShape) where T : ILayerable {
+    private async Task CreateShape<T>(int layerId, T? shape, Action<T> addShape) where T : ILayerable {
         if (shape == null) return;
         shape.LayerId = layerId;
         shape.Id = 0;
         addShape(shape);
+        await _db.SaveChangesAsync();
     }
 
-    private void CreateLayerAndShapes(int documentId, LayerDTO layerDTO)
+    private async Task CreateLayerAndShapes(int documentId, LayerDTO layerDTO)
     {
         var layer = layerDTO.ProjectToModel();
         layer.Id = 0;
         layer.DocumentId = documentId;
         _db.Layers.Add(layer);
+        await _db.SaveChangesAsync();
         var layerId = layer.Id;
         layerDTO.Id = layerId;
         var shapes = layerDTO.Shapes ?? new List<ShapeDTO>();
 
         foreach (var shapeDTO in shapes)
         {
-            CreateShapeFromDTO(layerId, shapeDTO);
+            await CreateShapeFromDTO(layerId, shapeDTO);
         }
     }
 
@@ -369,6 +374,7 @@ public class DocumentService : IDocumentService
         document.CreatedAt = now;
         document.LastUpdatedAt = now;
         _db.Documents.Add(document);
+        await _db.SaveChangesAsync();
         var documentId = document.Id;
         documentDTO.Id = documentId;
         documentDTO.Name = document.Name;
@@ -379,7 +385,7 @@ public class DocumentService : IDocumentService
 
         foreach (var layerDTO in layers)
         {
-            CreateLayerAndShapes(documentId, layerDTO);
+            await CreateLayerAndShapes(documentId, layerDTO);
         }
 
         return documentDTO;
@@ -392,7 +398,7 @@ public class DocumentService : IDocumentService
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
-    public async Task<(DocumentDTO?, List<int>)> UpdateDocument(DocumentDTO documentDTO)
+    public async Task<DocumentDTO?> UpdateDocument(DocumentDTO documentDTO)
     {
         // note carefully: mutating the DTO DOES NOT alter the DB
         // The purpose of this is to obtain the fully hydrated data structure, which involves a
@@ -403,7 +409,7 @@ public class DocumentService : IDocumentService
         // validation: ID and slug must match
         if (existingDTO == null || existingDTO.Id != documentDTO.Id || existingDTO.DocumentSlug != documentDTO.DocumentSlug)
         {
-            return (null, new List<int>());
+            return null;
         }
 
         var documentId = existingDTO.Id;
@@ -411,7 +417,7 @@ public class DocumentService : IDocumentService
         var existing = await _db.Documents.FindAsync(documentId);
         if (existing == null)
         {
-            return (null, new List<int>());
+            return null;
         }
 
         // we only update the LastUpdatedAt value here (altering the slug is not supported here)
@@ -432,54 +438,60 @@ public class DocumentService : IDocumentService
         var existingLayerIds = existingLayersMap.Keys;
         var documentLayerIds = documentLayersMap.Keys;
         var layerIdsToDelete = existingLayerIds.Except(documentLayerIds);
-        (documentDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
-            .ToList()
-            .ForEach(l =>
+        var newLayers = (documentDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
+            .ToList();
+
+        foreach (LayerDTO layerDTO in newLayers)
+        {
+            Layer lModel = layerDTO.ProjectToModel();
+            _db.Layers.Add(lModel);
+            await _db.SaveChangesAsync();
+            var layerId = lModel.Id;
+            layerDTO.Id = layerId;
+            UpdateLayerIds(layerId, layerDTO.Shapes);
+            var shapes = layerDTO.Shapes ?? new List<ShapeDTO>();
+            foreach (ShapeDTO shapeDTO in shapes)
             {
-                Layer lModel = l.ProjectToModel();
-                _db.Layers.Add(lModel);
-                var layerId = lModel.Id;
-                l.Id = layerId;
-                UpdateLayerIds(layerId, l.Shapes);
-                l.Shapes?.ForEach(shapeDTO =>
-                {
-                    CreateShapeFromDTO(l.Id, shapeDTO);
-                });
-            });
+                await CreateShapeFromDTO(layerDTO.Id, shapeDTO);
+            }
+        }
 
         // Step 2: Update existing layers
         var layerIdsToUpdate = existingLayerIds.Intersect(documentLayerIds);
-        await Task.WhenAll(layerIdsToUpdate.Select(async layerId =>
-        {
+        foreach (int layerId in layerIdsToUpdate) {
             LayerDTO? docLayer = null;
             documentLayersMap.TryGetValue(layerId, out docLayer);
             var layer = await _db.Layers.Where(l => l.Id == layerId).FirstOrDefaultAsync();
-            if (docLayer == null || layer == null) return;
+            if (docLayer == null || layer == null) continue;
             layer.Name = docLayer.Name;
             layer.ClientUuid = docLayer.ClientUuid;
             layer.Hidden = docLayer.Hidden;
             layer.ZIndex = docLayer.ZIndex;
             UpdateLayerIds(layer.Id, docLayer.Shapes); // update the layer IDs of the associated shapes
-            var shapesToCreate = docLayer.Shapes?.Where(shape => isShapeIdZero(shape));
-            shapesToCreate?.ToList()?.ForEach(shapeDTO =>
+            var shapesToCreate = docLayer.Shapes?.Where(shape => isShapeIdZero(shape)) ?? new List<ShapeDTO>();
+            foreach (ShapeDTO shapeDTO in shapesToCreate)
             {
-                CreateShapeFromDTO(layer.Id, shapeDTO);
-            });
-        }));
+                await CreateShapeFromDTO(layer.Id, shapeDTO);
+            }
+        }
 
         // Step 3: Delete shapes that are no longer used
         var documentShapes = documentDTO.Layers?.Aggregate(new List<ShapeDTO>(),
             (acc, val) => acc.Concat(val?.Shapes ?? new List<ShapeDTO>()).ToList());
         var existingShapes = existingDTO.Layers?.Aggregate(new List<ShapeDTO>(),
             (acc, val) => acc.Concat(val?.Shapes ?? new List<ShapeDTO>()).ToList());
-        DeleteShapes(ShapeSetDifference(existingShapes, documentShapes));
+        await DeleteShapes(ShapeSetDifference(existingShapes, documentShapes));
 
         // Step 4: Update shapes
         // Note: for the intersection, the order is important because only existingShapes will be tracked by Entity Framework
         var shapesToUpdate = ShapeSetIntersection(existingShapes, documentShapes);
-        UpdateShapes(shapesToUpdate, documentShapes);
+        await UpdateShapes(shapesToUpdate, documentShapes);
 
-        return (documentDTO, layerIdsToDelete.ToList());
+        // Step 5: delete layers marked for deletion
+        _db.RemoveRange(_db.Layers.Where(d => layerIdsToDelete.Contains(d.Id)));
+        await _db.SaveChangesAsync();
+
+        return documentDTO;
     }
 
     /// <summary>
@@ -497,9 +509,11 @@ public class DocumentService : IDocumentService
         var layers = await _db.Layers.Where(l => l.DocumentId == id).ToListAsync();
         var layerIds = layers.Select(l => l.Id).ToList();
         _db.Layers.RemoveRange(layers);
+        await _db.SaveChangesAsync();
         var shapes = await getShapes(layerIds);
-        DeleteShapes(shapes.ToList());
+        await DeleteShapes(shapes.ToList());
         _db.Documents.Remove(existing);
+        await _db.SaveChangesAsync();
 
         return true;
     }
