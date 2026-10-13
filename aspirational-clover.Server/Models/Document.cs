@@ -1,4 +1,7 @@
-﻿namespace aspirational_clover.Server.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aspirational_clover.Server.Models;
 
 /// <summary>
 /// Represents a document entity with properties for identification, slug, and timestamps for creation and last update.
@@ -8,6 +11,8 @@ public class Document
     /// <summary>
     /// Gets or sets the unique identifier for the document.
     /// </summary>
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     /// <summary>
