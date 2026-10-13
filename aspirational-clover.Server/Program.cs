@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using aspirational_clover.Server.Data;
 
@@ -107,7 +106,7 @@ public class Program
         app.UseCors(localhostOrProdCorsPolicy);
 
         app.UseDefaultFiles();
-        app.MapStaticAssets();
+        app.UseStaticFiles();
 
         if (env.IsDevelopment())
         {
