@@ -126,7 +126,6 @@ public class DocumentController : ControllerBase
         }
 
         var created = await _documentService.CreateDocument(model);
-        await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(GetById), new { id = model.Id }, created);
     }
 
@@ -148,10 +147,7 @@ public class DocumentController : ControllerBase
         }
 
         if (id != model.Id) return BadRequest("ID mismatch");
-        var (updated, layerIdsToDelete) = await _documentService.UpdateDocument(model);
-        await _db.SaveChangesAsync();
-        _db.Layers.RemoveRange(_db.Layers.Where(l => layerIdsToDelete.Contains(l.Id)));
-        await _db.SaveChangesAsync();
+        await _documentService.UpdateDocument(model);
         return NoContent();
     }
 
@@ -170,7 +166,6 @@ public class DocumentController : ControllerBase
         }
 
         var result = await _documentService.DeleteDocument(id);
-        await _db.SaveChangesAsync();
         return NoContent();
     }
 }

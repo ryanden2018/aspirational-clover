@@ -41,7 +41,7 @@ public interface IDocumentService
     /// </summary>
     /// <param name="documentDTO"></param>
     /// <returns></returns>
-    Task<(DocumentDTO?, List<int>)> UpdateDocument(DocumentDTO documentDTO);
+    Task<DocumentDTO?> UpdateDocument(DocumentDTO documentDTO);
 
     /// <summary>
     /// Deletes a document by its ID, along with its associated layers and shapes.
