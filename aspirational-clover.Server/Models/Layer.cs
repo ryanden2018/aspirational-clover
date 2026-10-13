@@ -1,4 +1,7 @@
-﻿namespace aspirational_clover.Server.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aspirational_clover.Server.Models;
 
 /// <summary>
 /// Represents a layer within a document, allowing for the organization and management of different elements in a 
@@ -9,6 +12,8 @@ public class Layer
     /// <summary>
     /// The unique ID of this layer.
     /// </summary>
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     /// <summary>

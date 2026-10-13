@@ -1,15 +1,20 @@
-﻿namespace aspirational_clover.Server.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using aspirational_clover.Server.Interfaces;
+
+namespace aspirational_clover.Server.Models;
 
 /// <summary>
 /// Represents a text box with formatted text.
 /// </summary>
 public class TextBox : ILayerable
-{    
+{
     /// <summary>
     /// Gets or sets the unique ID for this text box.
     /// </summary>
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     /// <summary>

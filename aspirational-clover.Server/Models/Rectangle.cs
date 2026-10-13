@@ -1,6 +1,9 @@
-﻿namespace aspirational_clover.Server.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using aspirational_clover.Server.Interfaces;
+
+namespace aspirational_clover.Server.Models;
 
 /// <summary>
 /// Represents a rectangle shape with properties for fill, layer, and transformation.
@@ -10,6 +13,8 @@ public class Rectangle : IFillable, ILayerable, ITransformable
     /// <summary>
     /// Gets or sets the unique identifier for the rectangle.
     /// </summary>
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     /// <summary>
