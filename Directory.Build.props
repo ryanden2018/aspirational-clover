@@ -1,0 +1,6 @@
+<Project>
+  <!-- Only enable the client build during Debug builds. Override with /p:BuildClient=false -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+	<BuildClient Condition="'$(BuildClient)' == ''">true</BuildClient>
+  </PropertyGroup>
+</Project>
