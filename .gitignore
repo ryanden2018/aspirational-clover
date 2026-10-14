@@ -1,5 +1,6 @@
 .vs/
 Debug/
+Release/
 debug/
 obj/
 openapi/
