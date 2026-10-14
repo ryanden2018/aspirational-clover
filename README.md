@@ -8,7 +8,8 @@ and have trouble doing so.
 
 ## Running the full stack in Visual Studio
 
-Clone the solution, run Clean followed by Rebuild, then run the solution with ***https***. After a few
+Clone the solution, __build the client project (requires npm and Angular CLI tools)__, then run Clean followed by Rebuild, and finally
+run the solution with ***https***. After a few
 minutes, your web browser should automatically open to the Aspire dashboard. You can then create
 a new tab and open it to `https://localhost:7203/` to view the application running locally.
 While the full stack is running, you can point your browser to `https://localhost:7203/scalar/v1` to view
