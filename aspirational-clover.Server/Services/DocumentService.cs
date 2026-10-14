@@ -344,10 +344,10 @@ public class DocumentService : IDocumentService
         layerDTO.Id = layerId;
         var shapes = layerDTO.Shapes ?? new List<ShapeDTO>();
 
-        foreach (var shapeDTO in shapes)
+        await Task.WhenAll(shapes.Select(async shapeDTO =>
         {
             await CreateShapeFromDTO(layerId, shapeDTO);
-        }
+        }));
     }
 
     /// <summary>
@@ -383,10 +383,10 @@ public class DocumentService : IDocumentService
         documentDTO.LastUpdatedAt = document.LastUpdatedAt;
         var layers = documentDTO.Layers ?? new List<LayerDTO>();
 
-        foreach (var layerDTO in layers)
+        await Task.WhenAll(layers.Select(async layerDTO =>
         {
             await CreateLayerAndShapes(documentId, layerDTO);
-        }
+        }));
 
         return documentDTO;
     }
@@ -441,7 +441,7 @@ public class DocumentService : IDocumentService
         var newLayers = (documentDTO.Layers ?? new List<LayerDTO>()).Where(l => l.Id == 0)
             .ToList();
 
-        foreach (LayerDTO layerDTO in newLayers)
+        await Task.WhenAll(newLayers.Select(async layerDTO =>
         {
             Layer lModel = layerDTO.ProjectToModel();
             _db.Layers.Add(lModel);
@@ -450,30 +450,31 @@ public class DocumentService : IDocumentService
             layerDTO.Id = layerId;
             UpdateLayerIds(layerId, layerDTO.Shapes);
             var shapes = layerDTO.Shapes ?? new List<ShapeDTO>();
-            foreach (ShapeDTO shapeDTO in shapes)
+            await Task.WhenAll(shapes.Select(async shapeDTO =>
             {
                 await CreateShapeFromDTO(layerDTO.Id, shapeDTO);
-            }
-        }
+            }));
+        }));
 
         // Step 2: Update existing layers
         var layerIdsToUpdate = existingLayerIds.Intersect(documentLayerIds);
-        foreach (int layerId in layerIdsToUpdate) {
+        await Task.WhenAll(layerIdsToUpdate.Select(async layerId =>
+        {
             LayerDTO? docLayer = null;
             documentLayersMap.TryGetValue(layerId, out docLayer);
             var layer = await _db.Layers.Where(l => l.Id == layerId).FirstOrDefaultAsync();
-            if (docLayer == null || layer == null) continue;
+            if (docLayer == null || layer == null) return;
             layer.Name = docLayer.Name;
             layer.ClientUuid = docLayer.ClientUuid;
             layer.Hidden = docLayer.Hidden;
             layer.ZIndex = docLayer.ZIndex;
             UpdateLayerIds(layer.Id, docLayer.Shapes); // update the layer IDs of the associated shapes
             var shapesToCreate = docLayer.Shapes?.Where(shape => isShapeIdZero(shape)) ?? new List<ShapeDTO>();
-            foreach (ShapeDTO shapeDTO in shapesToCreate)
+            await Task.WhenAll(shapesToCreate.Select(async shapeDTO =>
             {
                 await CreateShapeFromDTO(layer.Id, shapeDTO);
-            }
-        }
+            }));
+        }));
 
         // Step 3: Delete shapes that are no longer used
         var documentShapes = documentDTO.Layers?.Aggregate(new List<ShapeDTO>(),
