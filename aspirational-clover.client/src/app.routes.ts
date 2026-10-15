@@ -1,16 +1,12 @@
 import { Routes } from "@angular/router";
 
-import { documentUrlPrefix } from "./constants";
+import { documentUrlPrefix, defaultSlugs } from "./constants";
 
 export const routes: Routes = [
   {
     path: "",
-    redirectTo: "home",
+    redirectTo: `${ documentUrlPrefix.slice(1) }/${ defaultSlugs[0] }`,
     pathMatch: "full",
-  },
-  {
-    path: "home",
-    loadComponent: () => import("./app/app.component").then(m => m.AppComponent),
   },
   {
     path: documentUrlPrefix.slice(1),
