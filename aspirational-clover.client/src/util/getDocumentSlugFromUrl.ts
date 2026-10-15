@@ -1,5 +1,5 @@
-import { documentUrlPrefix } from "../constants";
-
 export function getDocumentSlugFromUrl(url: string): string {
-  return url?.split?.(`${ documentUrlPrefix }/`)?.[1] ?? "";
+  const parts: string[] = url?.split?.("?")?.[0]?.split("/") ?? [];
+  if (parts.length === 0) return "";
+  return parts[parts.length - 1];
 }

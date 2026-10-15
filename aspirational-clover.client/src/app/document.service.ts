@@ -8,6 +8,7 @@ import { AppDocument, Layer } from "../data/model";
 import { getDocumentSlugFromUrl } from "../util/getDocumentSlugFromUrl";
 import { newUuidV4 } from "../util/uuid";
 import { getDocumentUrl } from "../util/getDocumentUrl";
+import { getDocumentUrlFromSlug } from "../util/getDocumentUrlFromSlug";
 import { getToken } from "../util/getToken";
 import { defaultSlugs, apiDocumentSamplesUrl, apiDocumentUrl, apiDocumentSlugUrl } from "../constants";
 import { ToastSignal } from "../types";
@@ -42,7 +43,11 @@ export class DocumentService {
 
   private _saveModalOpen = signal<boolean>(false);
 
+  private _openModalOpen = signal<boolean>(false);
+
   saveModalOpen = this._saveModalOpen.asReadonly();
+
+  openModalOpen = this._openModalOpen.asReadonly();
 
   private _toast = signal<ToastSignal>(null);
 
@@ -140,7 +145,7 @@ export class DocumentService {
   }
 
   retrieveDocumentBySlug(slug: string): Promise<string> {
-    return new Promise<string>(resolve => {
+    return new Promise<string>((resolve, reject) => {
       this.http.get<AppDocument>(`${apiDocumentSlugUrl}/${slug}`).pipe(
         filter(x => x?.documentSlug === slug),
         first()
@@ -157,6 +162,11 @@ export class DocumentService {
         },
         error: (err) => {
           console.error('Error fetching document by slug:', err);
+          this._toast.set({ type: "error", value: "Failed to fetch." });
+          setTimeout(() => {
+            this._toast.set(null);
+          }, 5000);
+          reject(err);
         }
       });
     });
@@ -254,5 +264,21 @@ export class DocumentService {
 
   closeSaveModal() {
     this._saveModalOpen.set(false);
+  }
+
+  closeOpenModal() {
+    this._openModalOpen.set(false);
+  }
+
+  openDocumentByUrl(url: string) {
+    const slug = getDocumentSlugFromUrl(url);
+    if (!slug) return;
+    this.retrieveDocumentBySlug(slug).then(() => {
+      this._router.navigateByUrl(getDocumentUrlFromSlug(slug));
+    });
+  }
+
+  onOpenDocument() {
+    this._openModalOpen.set(true);
   }
 }

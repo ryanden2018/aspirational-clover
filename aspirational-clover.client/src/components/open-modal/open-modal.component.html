@@ -1,0 +1,30 @@
+@if (openModalOpen()) {
+<div class="app-modal-overlay"></div>
+
+<div class="default-modal-container">
+  <div [class]="openModalClassName()" role="dialog" aria-modal="true" aria-labelledby="openModalTitle">
+    <div class="default-modal-title">
+      <div id="openModalTitle" class="default-modal-title-text">Open Document</div>
+      <div class="default-modal-title-buttons">
+        <button [class]="buttonClassName()" (click)="onClickCancel($event)" aria-label="Close open dialog">
+          <ng-container *ngTemplateOutlet="closeIcon(); context: { width: '24px', height: '24px' }"></ng-container>
+        </button>
+      </div>
+    </div>
+    <div class="default-modal-content">
+      <p>Please paste the full URL of the document you wish to open.</p>
+      <div>
+        <input class="input-field" type="text" name="open-document-url" [value]="openModalUrl()" (input)="onInputUrl($event)"  aria-label="Text box document URL" />
+      </div>
+    </div>
+    <div class="default-modal-buttons">
+      <button [class]="buttonClassName()" [style.padding]="'6px'" (click)="onClickCancel($event)" aria-label="Cancel open">
+        Cancel
+      </button>
+      <button [class]="buttonClassName()" [style.padding]="'6px'" (click)="onClickOpen($event)" aria-label="Confirm open">
+        Open
+      </button>
+    </div>
+  </div>
+</div>
+}

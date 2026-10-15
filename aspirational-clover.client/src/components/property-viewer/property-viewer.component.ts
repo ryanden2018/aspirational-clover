@@ -50,7 +50,7 @@ export class PropertyViewerComponent {
   onChangeDocumentName = (event: Event) => {
     const document = this._documentService.activeDocument();
     if (!document) return;
-    const newDocument = { ...document, name: (event.target as any)?.value ?? "" };
+    const newDocument = { ...document, name: (event.target as HTMLInputElement)?.value ?? "" };
     const command = createUpdateDocumentCommand(document, newDocument);
     this._undoService.applyCommand(command, "forward");
     this._undoService.pushCommand(command);
@@ -59,7 +59,7 @@ export class PropertyViewerComponent {
   onChangeLayerName = (event: Event) => {
     const layer = this._documentService.selectedLayer();
     if (!layer) return;
-    const updatedLayer = { ...layer, name: (event.target as any)?.value ?? "" };
+    const updatedLayer = { ...layer, name: (event.target as HTMLInputElement)?.value ?? "" };
     const command = createLayerUpdateCommand(layer, updatedLayer);
     if (!command) return;
     this._undoService.applyCommand(command, "forward");
@@ -67,7 +67,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeTextBoxX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.textBox) {
       const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, x: newValue }});
       if (command) {
@@ -78,7 +78,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeTextBoxY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.textBox) {
       const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, y: newValue }});
       if (command) {
@@ -89,7 +89,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeTextBoxContent = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = ((event.target as any)?.value as string) ?? "";
+    const newValue = ((event.target as HTMLInputElement)?.value as string) ?? "";
     const updatedTextBox = updateTextBoxContent(shape?.textBox, newValue);
     if (shape?.textBox && updatedTextBox) {
       const command = createShapeUpdateCommand(shape, { ...shape, textBox: updatedTextBox });
@@ -101,7 +101,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeFontSize = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseInt(((event.target as any)?.value as string) ?? "0", 10);
+    const newValue = Number.parseInt(((event.target as HTMLInputElement)?.value as string) ?? "0", 10);
     if (shape?.textBox) {
       const command = createShapeUpdateCommand(shape, { ...shape, textBox: { ...shape.textBox, fontSize: newValue }});
       if (command) {
@@ -112,7 +112,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, x: newValue }});
       if (command) {
@@ -123,7 +123,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, y: newValue }});
       if (command) {
@@ -134,7 +134,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleWidth = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, width: newValue }});
       if (command) {
@@ -145,7 +145,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleHeight = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, height: newValue }});
       if (command) {
@@ -166,7 +166,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleFillColorFrom = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = ((event.target as any)?.value as string) ?? "";
+    const newValue = ((event.target as HTMLInputElement)?.value as string) ?? "";
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorFrom: newValue }});
       if (command) {
@@ -187,7 +187,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleFillColorTo = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = ((event.target as any)?.value as string) ?? "";
+    const newValue = ((event.target as HTMLInputElement)?.value as string) ?? "";
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillColorTo: newValue }});
       if (command) {
@@ -198,7 +198,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleFillAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, fillAngle: newValue }});
       if (command) {
@@ -209,7 +209,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleRotationAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, rotationAngle: newValue }});
       if (command) {
@@ -220,7 +220,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleSkewX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, skewX: newValue }});
       if (command) {
@@ -231,7 +231,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeRectangleSkewY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.rectangle) {
       const command = createShapeUpdateCommand(shape, { ...shape, rectangle: { ...shape.rectangle, skewY: newValue }});
       if (command) {
@@ -252,7 +252,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleCenterX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, centerX: newValue }});
       if (command) {
@@ -263,7 +263,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleCenterY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, centerY: newValue }});
       if (command) {
@@ -274,7 +274,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleRadius = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, radius: newValue }});
       if (command) {
@@ -295,7 +295,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleFillColorFrom = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = ((event.target as any)?.value as string) ?? "";
+    const newValue = ((event.target as HTMLInputElement)?.value as string) ?? "";
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorFrom: newValue }});
       if (command) {
@@ -316,7 +316,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleFillColorTo = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = ((event.target as any)?.value as string) ?? "";
+    const newValue = ((event.target as HTMLInputElement)?.value as string) ?? "";
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillColorTo: newValue }});
       if (command) {
@@ -327,7 +327,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleFillAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, fillAngle: newValue }});
       if (command) {
@@ -338,7 +338,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleRotationAngle = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, rotationAngle: newValue }});
       if (command) {
@@ -349,7 +349,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleSkewX = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewX: newValue }});
       if (command) {
@@ -360,7 +360,7 @@ export class PropertyViewerComponent {
   }
 
   onChangeCircleSkewY = (event: Event, shape: Shape | null | undefined) => {
-    const newValue = Number.parseFloat(((event.target as any)?.value as string) ?? "0");
+    const newValue = Number.parseFloat(((event.target as HTMLInputElement)?.value as string) ?? "0");
     if (shape?.circle) {
       const command = createShapeUpdateCommand(shape, { ...shape, circle: { ...shape.circle, skewY: newValue }});
       if (command) {
