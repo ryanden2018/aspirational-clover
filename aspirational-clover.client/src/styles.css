@@ -233,7 +233,7 @@ div.app-modal-overlay {
   z-index: 10000;
 }
 
-div.open-modal-container {
+div.default-modal-container {
   position: absolute;
   top: 0;
   left: 0;

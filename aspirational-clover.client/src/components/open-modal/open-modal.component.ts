@@ -29,8 +29,10 @@ export class OpenModalComponent {
 
   onClickOpen(event: MouseEvent) {
     event.stopPropagation();
+    const url = this.openModalUrl();
     this._documentService.closeOpenModal();
-    this._documentService.openDocumentByUrl(this.openModalUrl());
+    this._documentService.openDocumentByUrl(url);
+    this.openModalUrl.set("");
   }
 
   onClickCancel(event: MouseEvent) {
