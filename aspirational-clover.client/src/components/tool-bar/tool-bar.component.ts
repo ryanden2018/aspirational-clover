@@ -70,4 +70,6 @@ export class ToolBarComponent {
   saveButtonDisabled = computed(() => !this._documentService.allowSave());
 
   onClickSave = () => this._documentService.onSave(() => this._undoService.clearStack());
+
+  onClickOpen = () => this._documentService.onOpenDocument();
 }

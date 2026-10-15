@@ -30,6 +30,7 @@ export class ThemeService {
     "tabBarTabInactive": `app-tab-bar-tab ${this._mode() === "light" ? "app-tab-bar-tab-inactive-light" : "app-tab-bar-tab-inactive-dark"}`,
     "toolTip": `tool-tip ${this._mode() === "light" ? "tool-tip-light" : "tool-tip-dark"}`,
     "graphicsPanelSvg": `graphics-panel-svg ${this._mode() === "light" ? "graphics-panel-svg-light" : "graphics-panel-svg-dark"}`,
-    "saveModal": `save-modal ${this._mode() === "light" ? "save-modal-light" : "save-modal-dark"}`,
+    "saveModal": `default-modal ${this._mode() === "light" ? "default-modal-light" : "default-modal-dark"}`,
+    "openModal": `default-modal ${this._mode() === "light" ? "default-modal-light" : "default-modal-dark"}`,
   }));
 }

@@ -1,7 +1,7 @@
 <app-tool-tip-button id="toolbar-new-window-icon" toolTipContent="New" positioning="right-center" (click)="onClickNew()" [aria-label]="'New'">
   <ng-container *ngTemplateOutlet="newWindowIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>
-<!--<app-tool-tip-button id="toolbar-file-open-icon" toolTipContent="Open" positioning="right-center">
+<app-tool-tip-button id="toolbar-file-open-icon" toolTipContent="Open" positioning="right-center" (click)="onClickOpen()">
   <ng-container *ngTemplateOutlet="fileOpenIcon(); context: { width: '32px', height: '32px' }"></ng-container>
 </app-tool-tip-button>-->
 <app-tool-tip-button id="toolbar-save-icon" toolTipContent="Save" positioning="right-center" [disabled]="saveButtonDisabled()" (click)="onClickSave()" [aria-label]="'Save'">
