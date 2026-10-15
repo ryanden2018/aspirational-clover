@@ -91,77 +91,7 @@ export class GraphicsPanelComponent implements OnInit {
     this._selectionService.setSelectedShapeClientUuid(null);
   }
 
-  getInitialShape(event: MouseEvent, mode: "rectangle" | "circle" | "polyline" | "textbox"): Shape | null {
-    const layerId = this._documentService.selectedLayer()?.id;
 
-    if (layerId === undefined) return null;
-
-    switch (mode) {
-      case 'rectangle':
-        return { layerId, circle: null, textBox: null, polyline: null, rectangle: {
-          x: truncateFloat(event.offsetX ?? 0, 0),
-          y: truncateFloat(event.offsetY ?? 0, 0),
-          width: 0,
-          height: 0,
-          fillColorFrom: "#333333",
-          fillColorTo: "#999999",
-          fillAngle: 0,
-          id: 0,
-          clientUuid: newUuidV4(),
-          layerId,
-          rotationAngle: 0,
-          rotationCenterOffsetX: 0,
-          rotationCenterOffsetY: 0,
-          skewX: 0,
-          skewY: 0,
-        } };
-      case 'circle':
-        return { layerId, rectangle: null, textBox: null, polyline: null, circle: {
-          centerX: truncateFloat(event.offsetX ?? 0, 0),
-          centerY: truncateFloat(event.offsetY ?? 0, 0),
-          radius: 0,
-          fillColorFrom: "#333333",
-          fillColorTo: "#999999",
-          fillAngle: 0,
-          id: 0,
-          clientUuid: newUuidV4(),
-          layerId,
-          rotationAngle: 0,
-          rotationCenterOffsetX: 0,
-          rotationCenterOffsetY: 0,
-          skewX: 0,
-          skewY: 0,
-        } };
-      case 'textbox':
-        return { layerId, circle: null, rectangle: null, polyline: null, textBox: {
-          x: truncateFloat(event.offsetX ?? 0, 0),
-          y: truncateFloat(event.offsetY ?? 0, 0),
-          id: 0,
-          clientUuid: newUuidV4(),
-          layerId,
-          content: "{\"text\":\"Click to enter text (no sensitive data!)\"}",
-          fontSize: 24,
-        } };
-      default:
-        return null;
-    }
-  }
-
-  updateShapeForShapesTool(shape: Shape, dx: number, dy: number, shapeClientUuid?: string | null | undefined): Shape | null {
-     if (shape.circle) {
-       return { ...shape, circle: { ...shape.circle, radius: truncateFloat(Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)), 0), clientUuid: shapeClientUuid ?? shape.circle.clientUuid }};
-     }
-
-     if (shape.rectangle) {
-       return { ...shape, rectangle: { ...shape.rectangle, width: truncateFloat(dx, 0), height: truncateFloat(dy, 0), clientUuid: shapeClientUuid ?? shape.rectangle.clientUuid }};
-     }
-
-     if (shape.textBox) {
-       return { ...shape, textBox: { ...shape.textBox, x: truncateFloat(shape.textBox.x + dx, 0), y: truncateFloat(shape.textBox.y + dy, 0), clientUuid: shapeClientUuid ?? shape.textBox.clientUuid }};
-     }
-
-     return null;
-  }
 
   onSvgMouseDown = (event: MouseEvent) => {
     if (!event.target) return;
@@ -295,16 +225,19 @@ export class GraphicsPanelComponent implements OnInit {
   }
 
   onCircleMouseDown = (event: MouseEvent, circle: Circle) => {
+    event.stopPropagation();
     this.onShapeMouseDown(event, { layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
       (initial, update) => ({ ...initial, circle: { ...circle, centerX: truncateFloat(circle.centerX + update.dx, 0), centerY: truncateFloat(circle.centerY + update.dy, 0) } }));
   }
 
   onRectangleMouseDown = (event: MouseEvent, rectangle: Rectangle) => {
+    event.stopPropagation();
     this.onShapeMouseDown(event, { layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
       (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: truncateFloat(rectangle.x + update.dx, 0), y: truncateFloat(rectangle.y + update.dy, 0) }}));
   }
 
   onTextBoxMouseDown = (event: MouseEvent, textBox: TextBox) => {
+    event.stopPropagation();
     this.onShapeMouseDown(event, { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
       (initial, update) => ({ ...initial, textBox: { ...textBox, x: truncateFloat(textBox.x + update.dx, 0), y: truncateFloat(textBox.y + update.dy, 0) }}));
   }
