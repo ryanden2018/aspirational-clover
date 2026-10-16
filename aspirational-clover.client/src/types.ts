@@ -20,7 +20,7 @@ export type ToolTipSignal = Omit<AnchorSignal, "anchorType"> & { anchorType: "to
 export type ToastSignal = { value: string; type: "success" | "error" | "warning" } | null;
 
 export interface GraphicsMouseEvent {
-  type: "down" | "up" | "click" | "move";
+  type: "down" | "up" | "click" | "move" | "dblclick";
   event: MouseEvent;
   shape?: Shape | null | undefined;
   updater?: ((initial: Shape, update: { dx: number, dy: number }) => Shape) | null | undefined;

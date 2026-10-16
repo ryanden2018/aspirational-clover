@@ -2,7 +2,7 @@
   <div class="graphics-panel-svg-container-middle">
     <div class="graphics-panel-svg-container-inner">
       @if (activeDocument() !== null) {
-        <svg viewBox="0 0 850 1100" [class]="graphicsPanelSvgClassName()" (mousedown)="onSvgMouseDown($event)" (mousemove)="onSvgMouseMove($event)" (click)="onSvgClick()" [attr.style.cursor]="isCreatingShape() ? 'crosshair' : 'default'" role="img" aria-label="Drawing canvas" tabindex="0">
+        <svg viewBox="0 0 850 1100" [class]="graphicsPanelSvgClassName()" (mousedown)="onSvgMouseDown($event)" (mousemove)="onSvgMouseMove($event)" (click)="onSvgClick($event)" (dblclick)="onSvgDblClick($event)" [attr.style.cursor]="isCreatingShape() ? 'crosshair' : 'default'" role="img" aria-label="Drawing canvas" tabindex="0">
           @for (layer of sortedLayers(); track layer.clientUuid) {
             @for (shape of layer.shapes; track getClientUuidFromShape(shape)) {
               @if (typeof shape.circle === "object" && shape.circle !== null) {
