@@ -6,9 +6,11 @@ import { DocumentService } from "./document.service";
 import { UndoService } from "./undo.service";
 import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
 import { newUuidV4 } from "../util/uuid";
-import { Shape } from "../data/shapes";
+import { Shape, Coord } from "../data/shapes";
 import { createAddShapeCommand } from "../commands/addShape";
 import { createDeleteShapeCommand } from "../commands/deleteShape";
+import { createCoordsJson } from "../util/createCoordsJson";
+import { getCoords } from "../util/getCoords";
 
 @Injectable({
   providedIn: "root"
@@ -41,6 +43,10 @@ export class SelectionService {
     this._clipboardService.copy(JSON.stringify(shape));
   }
 
+  translateCoords(coords: Coord[], delta: number): Coord[] {
+    return coords.map(coord => ({ x: coord.x + delta, y: coord.y + delta }));
+  }
+
   processPastedShape(shape: Shape): Shape | null {
     const delta = 20;
     if (shape?.circle) {
@@ -53,6 +59,12 @@ export class SelectionService {
 
     if (shape?.textBox) {
       return { ...shape, textBox: { ...shape.textBox, clientUuid: newUuidV4(), x: shape.textBox.x + delta, y: shape.textBox.y + delta }};
+    }
+
+    if (shape?.polyline) {
+      return { ...shape, polyline: { ...shape.polyline, clientUuid: newUuidV4(), coords: createCoordsJson(
+        this.translateCoords(getCoords(shape.polyline), delta)
+      ) }};
     }
 
     return null;
