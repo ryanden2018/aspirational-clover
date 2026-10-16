@@ -15,6 +15,7 @@ import { newUuidV4 } from "../util/uuid";
 import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
 import { createCoordsJson } from "../util/createCoordsJson";
 import { getCoords } from "../util/getCoords";
+import { Coord } from "../data/shapes";
 
 @Injectable({
   providedIn: "root"
@@ -118,7 +119,7 @@ export class GraphicsService {
        if (coords.length === 0) return shape;
        if (dx === 0 && dy === 0) return shape; // don't add a new coord if the differential is exactly zero
        const lastCoords = coords[coords.length - 1];
-       const newCoords = [...coords, { x: lastCoords.x + dx, y: lastCoords.y + dy }];
+       const newCoords = [...coords, { x: truncateFloat(lastCoords.x + dx, 0), y: truncateFloat(lastCoords.y + dy, 0) }];
        return { ...shape, polyline: { ...shape.polyline, coords: createCoordsJson(newCoords) }};
      }
 
@@ -160,6 +161,8 @@ export class GraphicsService {
     };
 
     this._graphicsSubscription = mouseDown$.pipe(
+      // this filter is NOT functional-safe but is specifically required for when we are creating a new polyline
+      filter(() => this._shapeToolsService.mode() !== "polyline-pending"),
       switchMap(mouseDownEvent => {
         if (mouseDownEvent?.shape) {
           // target is a shape
@@ -192,7 +195,7 @@ export class GraphicsService {
           const mode = this._shapeToolsService.mode();
 
           if (mouseDownEvent?.event && mode) {
-            const isClickOnlyEvent = mode === "textbox";
+            const isClickOnlyEvent = (mode === "textbox");
             const initialShape = this.getInitialShape(mouseDownEvent?.event, mode);
             const selectedLayer = this._documentService.selectedLayer();
             const selectedLayerClientUuid = selectedLayer?.clientUuid;
@@ -213,9 +216,12 @@ export class GraphicsService {
                     this._undoService.applyCommand(addShapeCommand, "forward");
                   }
                 }),
-                scan(moveAccumulator, { x: mouseDownEvent?.event?.offsetX ?? 0, y: mouseDownEvent?.event?.offsetY ?? 0, dx: 0, dy: 0 } as MoveAccumulator),
+                filter(x => !!x),
+                scan((acc, current) => [...acc, { x: current?.event?.offsetX ?? 0, y: current?.event?.offsetY ?? 0 }],
+                  [{ x: mouseDownEvent?.event?.offsetX ?? 0, y: mouseDownEvent?.event?.offsetY ?? 0 }] as Coord[]),
                 map(coords => {
-                  const newShape = this.updateShapeForShapesTool(initialShape, coords.dx, coords.dy) ?? initialShape;
+                  if (!initialShape?.polyline) return null;
+                  const newShape: Shape = { ...initialShape, polyline: { ...(initialShape.polyline), coords: createCoordsJson(coords)}};
                   const command = createShapeUpdateCommand(initialShape, newShape);
                   if (!command) return null;
                   return { command };
