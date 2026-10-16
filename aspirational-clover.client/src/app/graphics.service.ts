@@ -12,7 +12,6 @@ import { ShapeToolsService } from "./shape-tools.service";
 import { SelectionService } from "./selection.service";
 import { truncateFloat } from "../util/truncateFloat";
 import { newUuidV4 } from "../util/uuid";
-import { UpdateShapeCommand } from "../data/commands";
 import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
 
 @Injectable({
@@ -235,12 +234,15 @@ export class GraphicsService {
     ).subscribe(() => {});
   }
 
-  connectWindowMouseUpListener() {
-    window.document.addEventListener("mouseup", ev => {
-      this._mouseEventSignal.set({
-        type: "up",
-        event: ev,
-      });
+  windowMouseUpHandler = (ev: MouseEvent) => {
+    this._mouseEventSignal.set({
+      type: "up",
+      event: ev,
     });
+  }
+
+  connectWindowMouseUpListener() {
+    window.document.removeEventListener("mouseup", this.windowMouseUpHandler, { capture: true });
+    window.document.addEventListener("mouseup", this.windowMouseUpHandler, { capture: true });
   }
 }
