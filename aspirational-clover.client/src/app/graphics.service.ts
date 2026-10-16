@@ -13,6 +13,8 @@ import { SelectionService } from "./selection.service";
 import { truncateFloat } from "../util/truncateFloat";
 import { newUuidV4 } from "../util/uuid";
 import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
+import { createCoordsJson } from "../util/createCoordsJson";
+import { getCoords } from "../util/getCoords";
 
 @Injectable({
   providedIn: "root"
@@ -32,7 +34,7 @@ export class GraphicsService {
     this._mouseEventSignal.set(event);
   }
 
-  getInitialShape(event: MouseEvent, mode: "rectangle" | "circle" | "polyline" | "textbox"): Shape | null {
+  getInitialShape(event: MouseEvent, mode: "rectangle" | "circle" | "polyline" | "textbox" | "polyline-pending"): Shape | null {
     const layerId = this._documentService.selectedLayer()?.id;
 
     if (layerId === undefined) return null;
@@ -73,6 +75,16 @@ export class GraphicsService {
           skewX: 0,
           skewY: 0,
         } };
+      case 'polyline':
+        return { layerId, rectangle: null, textBox: null, circle: null, polyline: {
+          coords: createCoordsJson([{ x: truncateFloat(event.offsetX ?? 0, 0), y: truncateFloat(event.offsetY ?? 0, 0) }]),
+          fillColorFrom: "#333333",
+          fillColorTo: "#999999",
+          fillAngle: 0,
+          id: 0,
+          clientUuid: newUuidV4(),
+          layerId,
+        }};
       case 'textbox':
         return { layerId, circle: null, rectangle: null, polyline: null, textBox: {
           x: truncateFloat(event.offsetX ?? 0, 0),
@@ -101,6 +113,15 @@ export class GraphicsService {
        return { ...shape, textBox: { ...shape.textBox, x: truncateFloat(shape.textBox.x + dx, 0), y: truncateFloat(shape.textBox.y + dy, 0), clientUuid: shapeClientUuid ?? shape.textBox.clientUuid }};
      }
 
+     if (shape.polyline) {
+       const coords = getCoords(shape.polyline);
+       if (coords.length === 0) return shape;
+       if (dx === 0 && dy === 0) return shape; // don't add a new coord if the differential is exactly zero
+       const lastCoords = coords[coords.length - 1];
+       const newCoords = [...coords, { x: lastCoords.x + dx, y: lastCoords.y + dy }];
+       return { ...shape, polyline: { ...shape.polyline, coords: createCoordsJson(newCoords) }};
+     }
+
      return null;
   }
 
@@ -110,6 +131,8 @@ export class GraphicsService {
     const mouseDown$ = mouse$.pipe(filter(ev => ev?.type === "down"));
     const mouseUp$ = mouse$.pipe(filter(ev => ev?.type === "up"));
     const mouseMove$ = mouse$.pipe(filter(ev => ev?.type === "move"));
+    const mouseClick$ = mouse$.pipe(filter(ev => ev?.type === "click"));
+    const mouseDblClick$ = mouse$.pipe(filter(ev => ev?.type === "dblclick"));
 
     type MoveAccumulator = {
       x: number | null;
@@ -169,7 +192,7 @@ export class GraphicsService {
           const mode = this._shapeToolsService.mode();
 
           if (mouseDownEvent?.event && mode) {
-            const isClickOnlyEvent = mode === "textbox" || mode === "polyline";
+            const isClickOnlyEvent = mode === "textbox";
             const initialShape = this.getInitialShape(mouseDownEvent?.event, mode);
             const selectedLayer = this._documentService.selectedLayer();
             const selectedLayerClientUuid = selectedLayer?.clientUuid;
@@ -179,6 +202,51 @@ export class GraphicsService {
             const addShapeCommand = createAddShapeCommand(selectedLayerClientUuid, initialShape);
 
             if (!addShapeCommand) return of(null);
+
+            if (mode === "polyline") {
+              return mouseClick$.pipe(
+                takeUntil(mouseDblClick$),
+                mergeWith(of(null)),
+                tap(() => {
+                  if (this._shapeToolsService.mode() === "polyline") {
+                    this._shapeToolsService.setMode("polyline-pending");
+                    this._undoService.applyCommand(addShapeCommand, "forward");
+                  }
+                }),
+                scan(moveAccumulator, { x: mouseDownEvent?.event?.offsetX ?? 0, y: mouseDownEvent?.event?.offsetY ?? 0, dx: 0, dy: 0 } as MoveAccumulator),
+                map(coords => {
+                  const newShape = this.updateShapeForShapesTool(initialShape, coords.dx, coords.dy) ?? initialShape;
+                  const command = createShapeUpdateCommand(initialShape, newShape);
+                  if (!command) return null;
+                  return { command };
+                }),
+                tap((value) => {
+                  if (value?.command) {
+                    this._undoService.applyCommand(value.command, "forward");
+                  }
+                }),
+                mergeWith(of(null)), // prevent empty stream from reaching last()
+                last(),
+                tap(value => {
+                  if (value?.command && initialShape?.polyline) {
+                    const newShapeCoords = value?.command?.payload?.forward?.polyline?.coords;
+                    if (newShapeCoords) {
+                      const newShape: Shape = { ...initialShape, polyline: { ...(initialShape.polyline), coords: newShapeCoords } };
+                      const newCommand = { ...addShapeCommand, payload: { reverse: null, forward: newShape }};
+                      this._undoService.pushCommand(newCommand);
+                    }
+                  }
+                  this._shapeToolsService.setMode(null); // from "polyline-pending"
+
+                  const shapeClientUuid = getClientUuidFromShape(addShapeCommand.payload.forward);
+                  if (shapeClientUuid) {
+                    setTimeout(() => {
+                      this._selectionService.setSelectedShapeClientUuid(shapeClientUuid);
+                    }, 10);
+                  }
+                }),
+              );
+            }
 
             return mouseMove$.pipe(
               takeUntil(mouseUp$),

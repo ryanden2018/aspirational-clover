@@ -6,10 +6,12 @@ import { ThemeService } from "../../app/theme.service";
 import { ShapeToolsService } from "../../app/shape-tools.service";
 import { GraphicsService } from "../../app/graphics.service";
 import { Transformable, Layerable, Fillable } from "../../data/interfaces";
-import { Circle, Rectangle, TextBox } from "../../data/shapes";
+import { Circle, Rectangle, TextBox, Polyline } from "../../data/shapes";
 import { getClientUuidFromShape } from '../../util/getClientUuidFromShape';
 import { parseTextBoxContent } from "../../util/textUtils";
 import { truncateFloat } from "../../util/truncateFloat";
+import { getCoords } from "../../util/getCoords";
+import { createCoordsJson } from "../../util/createCoordsJson";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -82,8 +84,21 @@ export class GraphicsPanelComponent implements OnInit {
     this._selectionService.setSelectedShapeClientUuid(textBox.clientUuid);
   }
 
-  onSvgClick = () => {
+  onSvgClick = (event: MouseEvent) => {
     this._selectionService.setSelectedShapeClientUuid(null);
+    if (!event.target) return;
+    this._graphicsService.pushEvent({
+      type: "click",
+      event,
+    });
+  }
+
+  onSvgDblClick = (event: MouseEvent) => {
+    if (!event.target) return;
+    this._graphicsService.pushEvent({
+      type: "dblclick",
+      event,
+    });
   }
 
   onSvgMouseDown = (event: MouseEvent) => {
@@ -126,9 +141,23 @@ export class GraphicsPanelComponent implements OnInit {
     event.stopPropagation();
     this._graphicsService.pushEvent({
       type: "down",
-      shape: { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
+      shape: { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null },
       event,
       updater: (initial, update) => ({ ...initial, textBox: { ...textBox, x: truncateFloat(textBox.x + update.dx, 0), y: truncateFloat(textBox.y + update.dy, 0) }})
     });
   }
+
+  onPolylineMouseDown = (event: MouseEvent, polyline: Polyline) => {
+    event.stopPropagation();
+    this._graphicsService.pushEvent({
+      type: "down",
+      shape: { layerId: polyline.layerId, circle: null, rectangle: null, textBox: null, polyline },
+      event,
+      updater: (initial, update) => {
+        const coords = getCoords(polyline);
+        const newCoords = coords.map(coord => ({ x: truncateFloat(coord.x + update.dx, 0), y: truncateFloat(coord.y + update.dy, 0)}));
+        return { ...initial, polyline: { ...polyline, coords: createCoordsJson(newCoords) }};
+      },
+    });
+  };
 }

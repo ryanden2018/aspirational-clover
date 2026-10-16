@@ -9,9 +9,9 @@ import { SelectionService } from "./selection.service";
 export class ShapeToolsService {
   constructor (private _selectionService: SelectionService) {}
 
-  private _mode = signal<"rectangle" | "circle" | "polyline" | "textbox" | null>(null);
+  private _mode = signal<"rectangle" | "circle" | "polyline" | "polyline-pending" | "textbox" | null>(null);
 
-  setMode(mode: "rectangle" | "circle" | "polyline" | "textbox" | null) {
+  setMode(mode: "rectangle" | "circle" | "polyline" | "polyline-pending" | "textbox" | null) {
     if (mode !== null) {
       this._selectionService.setSelectedShapeClientUuid(null);
     }
