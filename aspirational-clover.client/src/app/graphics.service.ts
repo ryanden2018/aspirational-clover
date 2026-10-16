@@ -157,7 +157,7 @@ export class GraphicsService {
                 this._undoService.applyCommand(command, "forward");
               }
             }),
-            mergeWith(of(null)),
+            mergeWith(of(null)), // prevent empty stream reaching last()
             last(),
             tap(command => {
               if (command) {
@@ -183,6 +183,7 @@ export class GraphicsService {
 
             return mouseMove$.pipe(
               takeUntil(mouseUp$),
+              mergeWith(of(null)), // ensure the tap runs
               tap(() => {
                 if (this._shapeToolsService.mode()) {
                   this._shapeToolsService.setMode(null); // only execute this side effect once
@@ -206,7 +207,7 @@ export class GraphicsService {
                   this._undoService.applyCommand(value.command, "forward");
                 }
               }),
-              mergeWith(of(null)),
+              mergeWith(of(null)), // prevent empty stream reaching last()
               last(),
               tap(value => {
                 if (!value) return;
