@@ -1,6 +1,6 @@
 import { Injectable, signal } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { filter, switchMap, scan, throttleTime, takeUntil, tap, map, last, of, Subscription } from "rxjs";
+import { filter, switchMap, scan, throttleTime, takeUntil, tap, map, last, of, Subscription, mergeWith } from "rxjs";
 
 import { Shape } from "../data/shapes";
 import { GraphicsMouseEvent } from "../types";
@@ -152,13 +152,17 @@ export class GraphicsService {
               }
               return null;
             }),
-            filter(x => !!x),
             tap(command => {
-              this._undoService.applyCommand(command, "forward");
+              if (command) {
+                this._undoService.applyCommand(command, "forward");
+              }
             }),
+            mergeWith(of(null)),
             last(),
             tap(command => {
-              this._undoService.pushCommand(command);
+              if (command) {
+                this._undoService.pushCommand(command);
+              }
             })
           );
         } else {
@@ -197,12 +201,17 @@ export class GraphicsService {
                 if (!command) return null;
                 return { command, dx: coords.dx, dy: coords.dy };
               }),
-              filter(x => !!x),
-              tap(({ command }) => {
-                this._undoService.applyCommand(command, "forward");
+              tap((value) => {
+                if (value?.command) {
+                  this._undoService.applyCommand(value.command, "forward");
+                }
               }),
+              mergeWith(of(null)),
               last(),
-              tap(({ dx, dy }: { command: UpdateShapeCommand, dx: number, dy: number }) => {
+              tap(value => {
+                if (!value) return;
+                const dx: number = value?.dx ?? 0;
+                const dy: number = value?.dy ?? 0;
                 const newShape = this.updateShapeForShapesTool(addShapeCommand.payload.forward, dx, dy, getClientUuidFromShape(addShapeCommand.payload.forward));
                 if (newShape) {
                   const newCommand = { ...addShapeCommand, payload: { reverse: null, forward: newShape }};
