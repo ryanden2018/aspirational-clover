@@ -13,4 +13,9 @@
     <ProjectReference Include="..\aspirational-clover.Server\aspirational-clover.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Override transitive MessagePack to pick up patched 2.5.x builds. Using a floating 2.5.* ensures the resolver picks the latest 2.5 patch (including prerelease when allowed). -->
+    <PackageReference Include="MessagePack" Version="2.5.*" />
+  </ItemGroup>
+
 </Project>
