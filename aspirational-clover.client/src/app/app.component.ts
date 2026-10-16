@@ -15,6 +15,7 @@ import { DocumentService } from './document.service';
 import { ResourcesService } from "./resources.service";
 import { HotkeysService } from "./hotkeys.service";
 import { ThemeService } from "./theme.service";
+import { GraphicsService } from "./graphics.service";
 
 @Component({
   selector: 'app-root',
@@ -52,10 +53,13 @@ export class AppComponent implements OnInit {
     private _resourcesService: ResourcesService,
     private _themeService: ThemeService,
     private _hotkeysService: HotkeysService,
+    private _graphicsService: GraphicsService,
   ) {
     // Subscribe icons etc so we only need to import the template once.
     // DO NOT place this line in ngOnInit(), it will throw a runtime eror (NG0203).
     this._resourcesService.subscribeResources(this._resources);
+
+    this._graphicsService.subscribeGraphicsMouseEvent();
   }
 
   ngOnInit() {
@@ -66,6 +70,7 @@ export class AppComponent implements OnInit {
     this._hotkeysService.connectCtrlShiftZKeydown();
     this._hotkeysService.connectCtrlCKeydown();
     this._hotkeysService.connectCtrlVKeydown();
+    this._graphicsService.connectWindowMouseUpListener();
   }
 
   protected readonly title = signal('aspirational-clover.client');

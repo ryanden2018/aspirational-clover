@@ -1,17 +1,12 @@
 import { Component, computed, OnInit } from '@angular/core';
-import { filter, fromEvent, map, scan, takeUntil, first, tap, withLatestFrom } from 'rxjs';
 
 import { DocumentService } from "../../app/document.service";
-import { UndoService } from "../../app/undo.service";
 import { SelectionService } from "../../app/selection.service";
 import { ThemeService } from "../../app/theme.service";
 import { ShapeToolsService } from "../../app/shape-tools.service";
+import { GraphicsService } from "../../app/graphics.service";
 import { Transformable, Layerable, Fillable } from "../../data/interfaces";
-import { Circle, Rectangle, Shape, TextBox } from "../../data/shapes";
-import { createShapeUpdateCommand } from "../../commands/updateShape";
-import { UpdateShapeCommand } from "../../data/commands";
-import { newUuidV4 } from "../../util/uuid"; 
-import { createAddShapeCommand } from '../../commands/addShape';
+import { Circle, Rectangle, TextBox } from "../../data/shapes";
 import { getClientUuidFromShape } from '../../util/getClientUuidFromShape';
 import { parseTextBoxContent } from "../../util/textUtils";
 import { truncateFloat } from "../../util/truncateFloat";
@@ -25,10 +20,10 @@ import { truncateFloat } from "../../util/truncateFloat";
 export class GraphicsPanelComponent implements OnInit {
   constructor(
     private _documentService: DocumentService,
-    private _undoService: UndoService,
     private _shapeToolsService: ShapeToolsService,
     private _selectionService: SelectionService,
     private _themeService: ThemeService,
+    private _graphicsService: GraphicsService,
   ) { }
 
   ngOnInit() {
@@ -91,154 +86,49 @@ export class GraphicsPanelComponent implements OnInit {
     this._selectionService.setSelectedShapeClientUuid(null);
   }
 
-
-
   onSvgMouseDown = (event: MouseEvent) => {
     if (!event.target) return;
-    const mode = this._shapeToolsService.mode();
-    if (mode === null) return;
-    const isClickOnlyEvent = this._shapeToolsService.mode() === "textbox" || this._shapeToolsService.mode() === "polyline";
-    this._shapeToolsService.setMode(null);
-
-    const initial: Shape | null = this.getInitialShape(event, mode);
-
-    if (!initial) return;
-
-    const offsetX = event.offsetX;
-    const offsetY = event.offsetY;
-
-    const selectedLayer = this._documentService.selectedLayer();
-    const selectedLayerClientUuid = selectedLayer?.clientUuid;
-    
-    if (!selectedLayerClientUuid) return;
-
-    const addShapeCommand = createAddShapeCommand(selectedLayerClientUuid, initial);
-
-    if (!addShapeCommand) return;
-    this._undoService.applyCommand(addShapeCommand, "forward");
-
-    if (isClickOnlyEvent) {
-      this._undoService.pushCommand(addShapeCommand); // if we need to track mouse movements, push comes LATER
-      return;
-    }
-
-    let cancelled: boolean = false;
-    let lastCommand: UpdateShapeCommand | null = null;
-    let lastDx: number = 0;
-    let lastDy: number = 0;
-    fromEvent(window.document as any, "mouseup", { capture: "true" as any })
-      .pipe(first())
-      .subscribe(() => {
-        if (!lastCommand) return;
-        if (cancelled) {
-          this._undoService.applyCommand(lastCommand, "reverse");
-          this._undoService.applyCommand(addShapeCommand, "reverse");
-        } else {
-          const newShape = this.updateShapeForShapesTool(addShapeCommand.payload.forward, lastDx, lastDy, getClientUuidFromShape(addShapeCommand.payload.forward));
-          if (newShape) {
-            const newCommand = { ...addShapeCommand, payload: { reverse: null, forward: newShape }};
-            this._undoService.pushCommand(newCommand);
-          }
-          const shapeClientUuid = getClientUuidFromShape(addShapeCommand.payload.forward);
-          if (shapeClientUuid) {
-            // the svg click handler will automatically deselect so we need to wait an interval before reselecting
-            setTimeout(() => {
-              this._selectionService.setSelectedShapeClientUuid(shapeClientUuid);
-            }, 10);
-          }
-        }
-      });
-    fromEvent(event.target, "mousemove", { capture: "true" } as any)
-      .pipe(
-        map((ev) => {
-          const myOffsetX = (ev as MouseEvent)?.offsetX;
-          const myOffsetY = (ev as MouseEvent)?.offsetY;
-          if (typeof myOffsetX === "number" && myOffsetX > 0 && typeof myOffsetY === "number" && myOffsetY > 0) {
-            return { dx: myOffsetX - offsetX, dy: myOffsetY - offsetY };
-          }
-          return { dx: 0, dy: 0 };
-        }),
-        map(({ dx, dy }) => {
-          const target: Shape = this.updateShapeForShapesTool(initial, dx, dy) ?? initial;
-          return { command: createShapeUpdateCommand(initial, target), dx, dy };
-        }),
-        filter(x => !!x?.command),
-        tap(x => {
-          lastCommand = x?.command;
-          lastDx = x?.dx;
-          lastDy = x?.dy;
-        }),
-        map(x => x?.command),
-        filter(x => !!x),
-        takeUntil(fromEvent(window.document as any, "mouseup", { capture: "true" } as any)),
-      )
-      .subscribe(command => {
-        this._undoService.applyCommand(command, "forward");
-      });
+    this._graphicsService.pushEvent({
+      type: "down",
+      event,
+    });
   }
 
-  onShapeMouseDown = (event: MouseEvent, initial: Shape, updater: (initial: Shape, update: { dx: number, dy: number }) => Shape) => {
+  onSvgMouseMove = (event: MouseEvent) => {
     if (!event.target) return;
-    if (this._shapeToolsService.mode() !== null) return; // don't allow moving shapes while creating new shapes
-    const offsetX = event.offsetX;
-    const offsetY = event.offsetY;
-    let cancelled: boolean = false; // TODO: 'esc' keyboard listener
-    let lastCommand: UpdateShapeCommand | null = null;
-    this._selectionService.setSelectedShapeClientUuid(getClientUuidFromShape(initial) ?? null);
-    fromEvent(window.document as any, "mouseup", { capture: "true" } as any)
-      .pipe(
-        withLatestFrom(this._shapeToolsService.modeAsObservable),
-        filter(([_, value]) => value === null),
-        first()
-      )
-      .subscribe(() => {
-        if (!lastCommand) return;
-        if (cancelled) {
-          this._undoService.applyCommand(lastCommand, 'reverse');
-        } else {
-          this._undoService.pushCommand(lastCommand);
-        }
-      });
-    fromEvent(event.target, "mousemove", { capture: "true" } as any)
-      .pipe(
-        withLatestFrom(this._shapeToolsService.modeAsObservable),
-        filter(([_, value]) => value === null),
-        map(([ev]) => {
-          const myOffsetX = (ev as MouseEvent)?.offsetX;
-          const myOffsetY = (ev as MouseEvent)?.offsetY;
-          if (typeof myOffsetX === "number" && myOffsetX > 0 && typeof myOffsetY === "number" && myOffsetY > 0) {
-            return { dx: myOffsetX - offsetX, dy: myOffsetY - offsetY };
-          }
-          return { dx: 0, dy: 0 };
-        }),
-        map(({ dx, dy }) => {
-          const target: Shape = updater(initial, { dx, dy });
-          return createShapeUpdateCommand(initial, target);
-        }),
-        filter(x => !!x),
-        tap(x => { lastCommand = x }),
-        takeUntil(fromEvent(window.document as any, "mouseup", { capture: "true"} as any))
-      )
-      .subscribe(command => {
-        this._undoService.applyCommand(command, "forward");
-      });
+    this._graphicsService.pushEvent({
+      type: "move",
+      event,
+    });
   }
 
   onCircleMouseDown = (event: MouseEvent, circle: Circle) => {
     event.stopPropagation();
-    this.onShapeMouseDown(event, { layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
-      (initial, update) => ({ ...initial, circle: { ...circle, centerX: truncateFloat(circle.centerX + update.dx, 0), centerY: truncateFloat(circle.centerY + update.dy, 0) } }));
+    this._graphicsService.pushEvent({
+      type: "down",
+      shape: { layerId: circle.layerId, circle, rectangle: null, textBox: null, polyline: null },
+      event,
+      updater: (initial, update) => ({ ...initial, circle: { ...circle, centerX: truncateFloat(circle.centerX + update.dx, 0), centerY: truncateFloat(circle.centerY + update.dy, 0) } })
+    });
   }
 
   onRectangleMouseDown = (event: MouseEvent, rectangle: Rectangle) => {
     event.stopPropagation();
-    this.onShapeMouseDown(event, { layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
-      (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: truncateFloat(rectangle.x + update.dx, 0), y: truncateFloat(rectangle.y + update.dy, 0) }}));
+    this._graphicsService.pushEvent({
+      type: "down",
+      shape: { layerId: rectangle.layerId, circle: null, rectangle, textBox: null, polyline: null },
+      event,
+      updater: (initial, update) => ({ ...initial, rectangle: { ...rectangle, x: truncateFloat(rectangle.x + update.dx, 0), y: truncateFloat(rectangle.y + update.dy, 0) }})
+    });
   }
 
   onTextBoxMouseDown = (event: MouseEvent, textBox: TextBox) => {
     event.stopPropagation();
-    this.onShapeMouseDown(event, { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
-      (initial, update) => ({ ...initial, textBox: { ...textBox, x: truncateFloat(textBox.x + update.dx, 0), y: truncateFloat(textBox.y + update.dy, 0) }}));
+    this._graphicsService.pushEvent({
+      type: "down",
+      shape: { layerId: textBox.layerId, circle: null, rectangle: null, textBox, polyline: null},
+      event,
+      updater: (initial, update) => ({ ...initial, textBox: { ...textBox, x: truncateFloat(textBox.x + update.dx, 0), y: truncateFloat(textBox.y + update.dy, 0) }})
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, signal } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { filter, switchMap, scan, throttleTime, takeUntil, tap, map, last, of } from "rxjs";
+import { filter, switchMap, scan, throttleTime, takeUntil, tap, map, last, of, Subscription } from "rxjs";
 
 import { Shape } from "../data/shapes";
 import { GraphicsMouseEvent } from "../types";
@@ -9,19 +9,24 @@ import { createAddShapeCommand } from "../commands/addShape";
 import { UndoService } from "./undo.service";
 import { DocumentService } from "./document.service";
 import { ShapeToolsService } from "./shape-tools.service";
+import { SelectionService } from "./selection.service";
 import { truncateFloat } from "../util/truncateFloat";
 import { newUuidV4 } from "../util/uuid";
+import { UpdateShapeCommand } from "../data/commands";
+import { getClientUuidFromShape } from "../util/getClientUuidFromShape";
 
 @Injectable({
   providedIn: "root"
 })
 export class GraphicsService {
   private _mouseEventSignal = signal<GraphicsMouseEvent | null>(null);
+  private _graphicsSubscription: Subscription | undefined;
 
   constructor(
     private _undoService: UndoService,
     private _documentService: DocumentService,
     private _shapeToolsService: ShapeToolsService,
+    private _selectionService: SelectionService,
   ) {}
 
   pushEvent(event: GraphicsMouseEvent) {
@@ -101,6 +106,7 @@ export class GraphicsService {
   }
 
   subscribeGraphicsMouseEvent() {
+    this._graphicsSubscription?.unsubscribe?.();
     const mouse$ = toObservable(this._mouseEventSignal);
     const mouseDown$ = mouse$.pipe(filter(ev => ev?.type === "down"));
     const mouseUp$ = mouse$.pipe(filter(ev => ev?.type === "up"));
@@ -131,7 +137,7 @@ export class GraphicsService {
       }
     };
 
-    mouseDown$.pipe(
+    this._graphicsSubscription = mouseDown$.pipe(
       switchMap(mouseDownEvent => {
         if (mouseDownEvent?.shape) {
           // target is a shape
@@ -196,8 +202,19 @@ export class GraphicsService {
                 this._undoService.applyCommand(command, "forward");
               }),
               last(),
-              tap(command => {
-                
+              tap(({ dx, dy }: { command: UpdateShapeCommand, dx: number, dy: number }) => {
+                const newShape = this.updateShapeForShapesTool(addShapeCommand.payload.forward, dx, dy, getClientUuidFromShape(addShapeCommand.payload.forward));
+                if (newShape) {
+                  const newCommand = { ...addShapeCommand, payload: { reverse: null, forward: newShape }};
+                  this._undoService.pushCommand(newCommand);
+                }
+
+                const shapeClientUuid = getClientUuidFromShape(addShapeCommand.payload.forward);
+                if (shapeClientUuid) {
+                  setTimeout(() => {
+                    this._selectionService.setSelectedShapeClientUuid(shapeClientUuid);
+                  }, 10);
+                }
               }),
             );
           }
@@ -206,12 +223,14 @@ export class GraphicsService {
         }
       })
     ).subscribe(() => {});
+  }
 
+  connectWindowMouseUpListener() {
     window.document.addEventListener("mouseup", ev => {
       this._mouseEventSignal.set({
         type: "up",
         event: ev,
       });
-    })
+    });
   }
 }
