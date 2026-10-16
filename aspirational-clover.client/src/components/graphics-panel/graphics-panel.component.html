@@ -71,6 +71,40 @@
                       style="user-select:none"
                 >{{ getTextBoxText(shape.textBox) }}</text>
               }
+              @if (typeof shape.polyline === "object" && shape.polyline !== null && !isPolygon(shape.polyline)) {
+                <polyline
+                      (mousedown)="onPolylineMouseDown($event, shape.polyline)"
+                      (click)="onPolylineClick($event, shape.polyline)"
+                      role="button"
+                      [attr.aria-label]="'Polyline ' + (shape.polyline?.clientUuid ?? '')"
+                      tabindex="0"
+                      [class]="isCreatingShape() ? 'cursor-crosshair' : 'cursor-grab'"
+                      [attr.points]="getPolylinePoints(shape.polyline)"
+                      [attr.stroke]="polylineStrokeColor()"
+                      [attr.fill]="'none'"
+                      [attr.stroke-width]="2"
+                />
+              }
+              @if (typeof shape.polyline === "object" && shape.polyline !== null && isPolygon(shape.polyline)) {
+                <defs>
+                  <linearGradient [attr.id]="getGradientId(shape.polyline)" [attr.x1]="getFillX1(shape.polyline)" [attr.y1]="getFillY1(shape.polyline)" [attr.x2]="getFillX2(shape.polyline)" [attr.y2]="getFillY2(shape.polyline)">
+                    <stop offset="0%" [attr.stop-color]="shape.polyline.fillColorFrom" />
+                    <stop offset="100%" [attr.stop-color]="shape.polyline.fillColorTo !== '' ? shape.polyline.fillColorTo : shape.polyline.fillColorFrom" />
+                  </linearGradient>
+                </defs>
+                <polygon
+                      (mousedown)="onPolylineMouseDown($event, shape.polyline)"
+                      (click)="onPolylineClick($event, shape.polyline)"
+                      role="button"
+                      [attr.aria-label]="'Polyline ' + (shape.polyline?.clientUuid ?? '')"
+                      tabindex="0"
+                      [class]="isCreatingShape() ? 'cursor-crosshair' : 'cursor-grab'"
+                      [attr.points]="getPolylinePoints(shape.polyline)"
+                      [attr.stroke]="selectionOutlineColor()"
+                      [attr.fill]="getGradientFillAttr(shape.polyline)"
+                      [attr.stroke-width]="selectedShapeClientUuid() === shape.polyline.clientUuid ? 2 : 0"
+                />
+              }
             }
           }
         </svg>

@@ -12,6 +12,7 @@ import { parseTextBoxContent } from "../../util/textUtils";
 import { truncateFloat } from "../../util/truncateFloat";
 import { getCoords } from "../../util/getCoords";
 import { createCoordsJson } from "../../util/createCoordsJson";
+import { isPolygon } from "../../util/isPolygon";
 
 @Component({
   selector: 'app-graphics-panel',
@@ -43,11 +44,15 @@ export class GraphicsPanelComponent implements OnInit {
 
   textBoxColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
 
+  polylineStrokeColor = computed(() => this._themeService.mode() === "dark" ? "#ffffff" : "#000000");
+
   graphicsPanelSvgClassName = computed(() => this._themeService.classNames().graphicsPanelSvg + " " + (
     this._shapeToolsService.mode() === null ? "" : "cursor-crosshair"
   ));
 
   isCreatingShape = computed(() => this._shapeToolsService.mode() !== null);
+
+  isPolygon = isPolygon;
 
   sortedLayers = computed(() =>
     [...(this.activeDocument()?.layers?.filter(layer => !layer?.hidden) ?? [])]
@@ -70,18 +75,27 @@ export class GraphicsPanelComponent implements OnInit {
   getTextBoxText = (textBox: TextBox) => parseTextBoxContent(textBox);
 
   onCircleClick = (event: MouseEvent, circle: Circle) => {
+    if (this._shapeToolsService.mode() !== null) return;
     event.stopPropagation();
     this._selectionService.setSelectedShapeClientUuid(circle.clientUuid);
   }
 
   onRectangleClick = (event: MouseEvent, rectangle: Rectangle) => {
+    if (this._shapeToolsService.mode() !== null) return;
     event.stopPropagation();
     this._selectionService.setSelectedShapeClientUuid(rectangle.clientUuid);
   }
 
   onTextBoxClick = (event: MouseEvent, textBox: TextBox) => {
+    if (this._shapeToolsService.mode() !== null) return;
     event.stopPropagation();
     this._selectionService.setSelectedShapeClientUuid(textBox.clientUuid);
+  }
+
+  onPolylineClick = (event: MouseEvent, polyline: Polyline) => {
+    if (this._shapeToolsService.mode() !== null) return;
+    event.stopPropagation();
+    this._selectionService.setSelectedShapeClientUuid(polyline.clientUuid);
   }
 
   onSvgClick = (event: MouseEvent) => {
@@ -160,4 +174,17 @@ export class GraphicsPanelComponent implements OnInit {
       },
     });
   };
+
+  getPolylineCoords(polyline: Polyline) {
+    const coords = getCoords(polyline);
+    if (isPolygon(polyline)) {
+      return coords.filter((_, index) => index !== coords.length - 1);
+    }
+    return coords;
+  }
+
+  getPolylinePoints(polyline: Polyline) {
+    const coords = this.getPolylineCoords(polyline);
+    return coords.map(coord => `${coord.x},${coord.y}`).join(" ");
+  }
 }
